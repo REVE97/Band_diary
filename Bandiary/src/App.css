@@ -101,7 +101,7 @@ a {
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: #f7f5ff;
+  background: white;
   font-size: 16px;
 }
 
@@ -123,7 +123,7 @@ a {
   height: 72px;
   padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   background: rgba(255, 255, 255, 0.96);
   border-top: 1px solid #eeeef4;
   backdrop-filter: blur(12px);
@@ -139,9 +139,10 @@ a {
   font-weight: 700;
 }
 
-.bottom-nav-icon {
-  font-size: 18px;
-  line-height: 1;
+.bottom-nav-icon img {
+  width: 24px;
+  height: 24px;
+  display: block;
 }
 
 .bottom-nav-item.active {
@@ -177,10 +178,11 @@ a {
   border-radius: 50%;
 }
 
-.profile-avatar {
+.profile-avatar img{
   width: 58px;
   height: 58px;
   font-size: 28px;
+  border-radius: 999px;
 }
 
 .large-avatar {
@@ -191,7 +193,7 @@ a {
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   overflow: hidden;
   border-radius: 14px;
   background: linear-gradient(135deg, #7857ff, #5f3de8);
@@ -258,48 +260,14 @@ a {
   font-size: 12px;
 }
 
-.schedule-card,
-.vote-card,
 .place-card,
 .recommend-card,
-.recruit-card,
 .studio-card,
-.vote-progress-card,
-.calendar-box,
 .instrument-card {
   border: 1px solid #eeeef6;
   border-radius: 16px;
   background: #ffffff;
   box-shadow: 0 8px 24px rgba(24, 20, 60, 0.05);
-}
-
-.schedule-card {
-  min-height: 72px;
-  padding: 14px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.schedule-time {
-  min-width: 56px;
-  font-size: 18px;
-  font-weight: 900;
-}
-
-.schedule-info {
-  flex: 1;
-}
-
-.schedule-info strong {
-  display: block;
-  font-size: 14px;
-}
-
-.schedule-info p {
-  margin: 6px 0 0;
-  color: #777586;
-  font-size: 12px;
 }
 
 .member-stack {
@@ -313,38 +281,6 @@ a {
   border: 2px solid #ffffff;
   border-radius: 50%;
   background: #d8d2ff;
-}
-
-.vote-card {
-  min-height: 68px;
-  padding: 14px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.vote-icon {
-  width: 34px;
-  height: 34px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: #fff4f4;
-}
-
-.vote-info {
-  flex: 1;
-}
-
-.vote-info strong {
-  display: block;
-  font-size: 14px;
-}
-
-.vote-info p {
-  margin: 5px 0 0;
-  font-size: 12px;
-  color: #777586;
 }
 
 .d-day {
@@ -436,7 +372,6 @@ a {
   background: #6b4eff;
 }
 
-.recruit-list,
 .studio-list,
 .chart-list {
   display: flex;
@@ -444,15 +379,6 @@ a {
   gap: 12px;
 }
 
-.recruit-card {
-  position: relative;
-  min-height: 150px;
-  display: flex;
-  gap: 12px;
-  padding: 12px;
-}
-
-.recruit-thumb,
 .studio-thumb,
 .album-thumb {
   flex: 0 0 auto;
@@ -460,32 +386,6 @@ a {
   background:
     linear-gradient(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.12)),
     linear-gradient(135deg, #1d1d2d, #7c57ff);
-}
-
-.recruit-thumb {
-  width: 92px;
-  height: 126px;
-}
-
-.recruit-content {
-  flex: 1;
-  min-width: 0;
-}
-
-.recruit-top {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.recruit-top strong {
-  font-size: 15px;
-}
-
-.recruit-top span {
-  color: #6b4eff;
-  font-size: 12px;
-  font-weight: 900;
 }
 
 .location {
@@ -707,62 +607,6 @@ a {
   border-radius: 50%;
   background: #ffffff;
 }
-
-.calendar-box {
-  padding: 16px;
-}
-
-.calendar-box h3 {
-  margin: 0 0 14px;
-}
-
-.date-row {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
-}
-
-.date-row button {
-  height: 38px;
-  border-radius: 50%;
-  background: #f7f5ff;
-  font-weight: 900;
-}
-
-.date-row button.active {
-  color: #ffffff;
-  background: #6b4eff;
-}
-
-.vote-progress-card {
-  padding: 14px;
-}
-
-.vote-progress-card strong {
-  display: block;
-  margin-bottom: 12px;
-}
-
-.vote-progress-card p {
-  margin: 10px 0 7px;
-  font-size: 12px;
-  color: #4f4d5d;
-}
-
-.progress-bar {
-  height: 6px;
-  overflow: hidden;
-  border-radius: 999px;
-  background: #eeeef6;
-}
-
-.progress-bar span {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: #6b4eff;
-}
-
 .login-page {
   min-height: calc(100vh - 64px - 72px);
   display: flex;

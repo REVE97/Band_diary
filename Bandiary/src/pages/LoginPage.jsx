@@ -1,11 +1,22 @@
+import { useNavigate } from "react-router-dom"
+
 function LoginPage() {
+  const navigate = useNavigate();
+  
+  const goHome = () => {
+    navigate("/home")
+  }
+
   return (
     <div className="page login-page">
       <div className="login-card">
-        <h1>Bandfolio</h1>
-        <p>밴드를 위한 포트폴리오와 일정 관리 서비스</p>
+        <h1>Bandairy</h1>
+        <p>밴드를 위한 다이어리 서비스</p>
 
-        <button type="button" className="primary-button">
+        <button 
+          type="button" 
+          className="primary-button"
+          onClick={goHome}>
           시작하기
         </button>
       </div>

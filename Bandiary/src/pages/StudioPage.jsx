@@ -2,8 +2,7 @@ function StudioPage() {
   return (
     <div className="page studio-page">
       <div className="tab-row">
-        <button className="active">즐겨찾기</button>
-        <button>리뷰</button>
+        <button className="active">합주실</button>
         <button>주변 맛집</button>
         <button>공연장</button>
       </div>
