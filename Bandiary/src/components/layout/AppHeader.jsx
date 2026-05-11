@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
-import logo from '../../assets/images/logo.png'
+import logo from '../../assets/images/logo.svg'
 
 const pageTitleMap = {
   '/': '',
@@ -18,7 +18,7 @@ function AppHeader() {
   return (
     <header className="app-header">
       <Link to="/" className="logo">
-        <img src={logo} alt="Bandiary 로고" />
+        <img src={logo} alt="Bandiary 로고" aria-label="로고" />
       </Link>
 
       {title && <h1 className="page-title">{title}</h1>}
