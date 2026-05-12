@@ -1,6 +1,9 @@
 import StatCard from '../components/home/StatCard'
 import PlaceCard from '../components/home/PlaceCard'
+
 import profile from '../assets/images/profile.jpeg'
+import picture from '../assets/images/picture_white.svg'
+import video from '../assets/images/video_white.svg'
 
 import { users } from '../mocks/userMock'
 
@@ -18,11 +21,6 @@ function HomePage() {
         </div>
       </section>
 
-      {/* <section className="stats-grid">
-        <StatCard title="가입 밴드" value="3" icon="🎸" />
-        <StatCard title="스크랩" value="12" icon="☆" />
-      </section> */}
-
       <section className="profile-instrument-grid">
         <div className="instrument-card">
           <p>메인 세션</p>
@@ -35,19 +33,19 @@ function HomePage() {
         </div>
       </section>
 
+      <section className="stats-grid">
+        <StatCard title="비디오" value="3" icon={video} />
+        <StatCard title="사진" value="12" icon={picture} />
+      </section>
+
       <section className="home-card-grid">
         <PlaceCard
           title="즐겨찾는 합주실"
-          name="NVM 스튜디오 홍대점"
-          rating="4.8"
+          name="사운드시티 합정"
+          date="2026.05.12"
         />
 
-        <div className="recommend-card">
-          <p className="small-title">오늘의 추천 차트</p>
-          <strong>그니까 웃잖아</strong>
-          <span>JYP</span>
-          <button type="button">▶</button>
-        </div>
+
       </section>
     </div>
   )

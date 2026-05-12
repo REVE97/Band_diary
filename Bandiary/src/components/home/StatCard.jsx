@@ -5,7 +5,9 @@ function StatCard({ title, value, icon }) {
         <p>{title}</p>
         <strong>{value}</strong>
       </div>
-      <span>{icon}</span>
+      <span>
+        <img src={icon} />
+      </span>
     </article>
   )
 }

@@ -198,6 +198,7 @@ a {
   border-radius: 14px;
   background: linear-gradient(135deg, #7857ff, #5f3de8);
   box-shadow: 0 12px 30px rgba(95, 61, 232, 0.25);
+  margin-top: 16px;
 }
 
 .stat-card {
@@ -225,13 +226,14 @@ a {
   line-height: 1;
 }
 
-.stat-card span {
+.stat-card img {
   align-self: flex-end;
-  font-size: 20px;
+  width: 25px;
+  height: 25px;
 }
 
 .section {
-  margin-top: 22px;
+  margin-top: 26px;
 }
 
 .section h3 {
@@ -261,7 +263,6 @@ a {
 }
 
 .place-card,
-.recommend-card,
 .studio-card,
 .instrument-card {
   border: 1px solid #eeeef6;
@@ -296,8 +297,7 @@ a {
   gap: 12px;
 }
 
-.place-card,
-.recommend-card {
+.place-card {
   min-height: 152px;
   padding: 14px;
 }
@@ -309,14 +309,12 @@ a {
   font-weight: 800;
 }
 
-.place-card strong,
-.recommend-card strong {
+.place-card strong {
   display: block;
   font-size: 14px;
 }
 
-.place-card span,
-.recommend-card span {
+.place-card span {
   display: block;
   margin-top: 6px;
   font-size: 12px;
@@ -330,22 +328,6 @@ a {
   background:
     linear-gradient(rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.18)),
     linear-gradient(135deg, #2b2b38, #c59f6a);
-}
-
-.recommend-card {
-  position: relative;
-  background: linear-gradient(135deg, #f8f5ff, #ffffff);
-}
-
-.recommend-card button {
-  position: absolute;
-  right: 14px;
-  bottom: 14px;
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  color: white;
-  background: #111111;
 }
 
 .filter-row,

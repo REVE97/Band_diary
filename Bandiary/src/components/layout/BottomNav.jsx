@@ -7,17 +7,17 @@ import SongIcon from '../../assets/images/song.svg'
 const navItems = [
   {
     path: '/studio',
-    label: '합주실',
+    label: 'Studio',
     icon: StudioIcon
   },
    {
     path: '/home',
-    label: '홈',
+    label: 'Home',
     icon: DiaryIcon
   },
   {
     path: '/profile',
-    label: '연습',
+    label: 'Practice',
     icon: SongIcon
   }
 ]
