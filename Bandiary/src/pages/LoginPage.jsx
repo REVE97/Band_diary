@@ -10,7 +10,7 @@ function LoginPage() {
   return (
     <div className="page login-page">
       <div className="login-card">
-        <h1>Bandairy</h1>
+        <h1>Bandiary</h1>
         <p>밴드를 위한 다이어리 서비스</p>
 
         <button 

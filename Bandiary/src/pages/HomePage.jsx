@@ -1,27 +1,10 @@
-import { useState, useEffect } from 'react'
-import axiosInstance from '../api/api'
-
 import StatCard from '../components/home/StatCard'
 import PlaceCard from '../components/home/PlaceCard'
 import profile from '../assets/images/profile.jpeg'
 
+import { users } from '../mocks/userMock'
+
 function HomePage() {
-  const [users, setUsers] = useState([]);
-
-  const getFetch = async() => {
-    try {
-      const res = await axiosInstance.get("/users");
-      setUsers(res.data);
-    } catch (error) {
-      alert('유저 데이터 불러오기 실패');
-      console.error(error);
-    }
-  }
-
-  useEffect(() => {
-    getFetch();
-  },[]);
-
   return (
     <div className="page home-page">
       <section className="user-greeting">
@@ -43,7 +26,7 @@ function HomePage() {
       <section className="profile-instrument-grid">
         <div className="instrument-card">
           <p>메인 세션</p>
-          <strong>{users.session}</strong>
+          <strong>{users.mainsession}</strong>
         </div>
 
         <div className="instrument-card">
