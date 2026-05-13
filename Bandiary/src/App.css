@@ -262,7 +262,7 @@ a {
   font-size: 12px;
 }
 
-.place-card,
+.content-card,
 .studio-card,
 .instrument-card {
   border: 1px solid #eeeef6;
@@ -297,9 +297,19 @@ a {
   gap: 12px;
 }
 
-.place-card {
+.content-card {
+  width: 100%;
   min-height: 152px;
   padding: 14px;
+  border: 1px solid #eeeef6;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(24, 20, 60, 0.05);
+  text-align: left;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .small-title {
@@ -309,25 +319,50 @@ a {
   font-weight: 800;
 }
 
-.place-card strong {
+.content-card strong {
   display: block;
   font-size: 14px;
 }
 
-.place-card span {
+.content-card span {
   display: block;
   margin-top: 6px;
   font-size: 12px;
   color: #777586;
 }
 
-.place-image {
+.content-image {
+  width: 100%;
   height: 58px;
   margin-top: 12px;
+  overflow: hidden;
   border-radius: 12px;
   background:
     linear-gradient(rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.18)),
     linear-gradient(135deg, #2b2b38, #c59f6a);
+}
+
+.content-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.content-card.active {
+  border-color: #6b4eff;
+  box-shadow: 0 10px 28px rgba(107, 78, 255, 0.18);
+}
+
+.content-card:active {
+  transform: scale(0.98);
+}
+
+.content-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
 }
 
 .filter-row,

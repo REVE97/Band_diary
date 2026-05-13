@@ -1,23 +1,36 @@
+import { useState } from 'react'
+
 import StatCard from '../components/home/StatCard'
-import PlaceCard from '../components/home/PlaceCard'
+import ContentCard from '../components/home/ContentCard'
 
 import profile from '../assets/images/profile.jpeg'
 import picture from '../assets/images/picture_white.svg'
 import video from '../assets/images/video_white.svg'
 
 import { users } from '../mocks/userMock'
+import { contentMockList } from '../mocks/contentMock'
 
 function HomePage() {
+  const [selectedContent, setSelectedContent] = useState(contentMockList[0])
+
+  const videoCount = contentMockList.filter(
+    (content) => content.title === '비디오'
+  ).length
+
+  const pictureCount = contentMockList.filter(
+    (content) => content.title === '사진'
+  ).length
+
   return (
     <div className="page home-page">
       <section className="user-greeting">
         <div>
           <h2>안녕하세요, {users.name}님</h2>
-          <p>환영합니다.</p>
+          <p>11f Band</p>
         </div>
 
         <div className="profile-avatar">
-          <img src={profile} />
+          <img src={profile} alt={`${users.name} 프로필`} />
         </div>
       </section>
 
@@ -34,18 +47,21 @@ function HomePage() {
       </section>
 
       <section className="stats-grid">
-        <StatCard title="비디오" value="3" icon={video} />
-        <StatCard title="사진" value="12" icon={picture} />
+        <StatCard title="비디오" value={videoCount} icon={video} />
+        <StatCard title="사진" value={pictureCount} icon={picture} />
       </section>
 
-      <section className="home-card-grid">
-        <PlaceCard
-          title="즐겨찾는 합주실"
-          name="사운드시티 합정"
-          date="2026.05.12"
-        />
-
-
+      <section>
+        <div className="home-card-grid">
+          {contentMockList.map((content) => (
+            <ContentCard
+              key={content.id}
+              item={content}
+              isActive={selectedContent?.id === content.id}
+              onClick={setSelectedContent}
+            />
+          ))}
+        </div>
       </section>
     </div>
   )
