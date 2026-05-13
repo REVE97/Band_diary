@@ -567,6 +567,8 @@ a {
   display: block;
   border-radius: 16px;
   background: linear-gradient(135deg, #e8f3ec, #d8ddff);
+  border: 1px solid #eeeef6;
+  box-shadow: 0 8px 24px rgba(24, 20, 60, 0.05);
 }
 
 .map-box button {
