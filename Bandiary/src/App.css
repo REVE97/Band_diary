@@ -389,15 +389,13 @@ a {
   background: #6b4eff;
 }
 
-.studio-list,
-.chart-list {
+.studio-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.studio-thumb,
-.album-thumb {
+.studio-thumb {
   flex: 0 0 auto;
   border-radius: 12px;
   background:
@@ -579,51 +577,6 @@ a {
   font-weight: 900;
 }
 
-.chart-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 0;
-  border-bottom: 1px solid #eeeef4;
-}
-
-.rank {
-  width: 24px;
-  font-size: 22px;
-}
-
-.album-thumb {
-  width: 56px;
-  height: 56px;
-}
-
-.song-info {
-  flex: 1;
-}
-
-.song-info strong {
-  display: block;
-  font-size: 14px;
-}
-
-.song-info p {
-  margin: 5px 0;
-  font-size: 12px;
-  color: #777586;
-}
-
-.song-info span {
-  font-size: 11px;
-  color: #777586;
-}
-
-.chart-item button {
-  width: 38px;
-  height: 38px;
-  border: 1px solid #eeeef4;
-  border-radius: 50%;
-  background: #ffffff;
-}
 .login-page {
   min-height: calc(100vh - 64px - 72px);
   display: flex;

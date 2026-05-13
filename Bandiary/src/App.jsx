@@ -3,7 +3,6 @@ import MobileLayout from './components/layout/MobileLayout'
 
 import HomePage from './pages/HomePage'
 import StudioPage from './pages/StudioPage'
-import ChartPage from './pages/ChartPage'
 import ProfilePage from './pages/ProfilePage'
 import LoginPage from './pages/LoginPage'
 
@@ -18,7 +17,6 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/home" element={<HomePage />} />
           <Route path="/studio" element={<StudioPage />} />
-          <Route path="/chart" element={<ChartPage />} />
           <Route path="/profile" element={<ProfilePage />} />
         </Routes>
       </MobileLayout>
