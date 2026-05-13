@@ -1,30 +1,54 @@
+import { useState } from 'react'
+
+import KakaoMap from '../components/common/KakaoMap'
+import { studioMockList } from '../mocks/studioMock'
+
 function StudioPage() {
+  const [selectedStudio, setSelectedStudio] = useState(studioMockList[0])
+
+  const handleStudioClick = (studio) => {
+    setSelectedStudio(studio)
+  }
+
   return (
     <div className="page studio-page">
       <div className="tab-row">
         <button className="active">합주실</button>
         <button>주변 맛집</button>
-        <button>공연장</button>
       </div>
 
       <div className="studio-list">
-        {[1, 2, 3].map((item) => (
-          <article className="studio-card" key={item}>
-            <div className="studio-thumb" />
+        {studioMockList.map((studio) => (
+          <button
+            key={studio.id}
+            type="button"
+            className={
+              selectedStudio.id === studio.id
+                ? 'studio-card active'
+                : 'studio-card'
+            }
+            onClick={() => handleStudioClick(studio)}
+          >
+            
+            <div className="studio-info">
+              <strong>{studio.name}</strong>
+              <span>
+                ₩ {studio.price.toLocaleString()} / {studio.timeUnit}
+              </span>
 
-            <div>
-              <strong>NVM 스튜디오 홍대점</strong>
-              <p>⭐ 4.8 (128)</p>
-              <span>₩ 25,000 / 2시간</span>
+              <div className="tag-row">
+                {studio.tags.map((tag) => (
+                  <span key={tag}>{tag}</span>
+                ))}
+              </div>
+              
             </div>
-
-            <button type="button">♡</button>
-          </article>
+          </button>
         ))}
       </div>
 
       <div className="map-box">
-        <button type="button">지도 보기</button>
+        <KakaoMap studio={selectedStudio} />
       </div>
     </div>
   )
