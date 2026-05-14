@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import MobileLayout from './components/layout/MobileLayout'
 
 import HomePage from './pages/HomePage'
-import StudioPage from './pages/StudioPage'
+import PlacePage from './pages/PlacePage'
 import ProfilePage from './pages/ProfilePage'
 import LoginPage from './pages/LoginPage'
 
@@ -16,7 +16,7 @@ function App() {
           <Route path='/' element={<Navigate to="/login" replace />}></Route>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/home" element={<HomePage />} />
-          <Route path="/studio" element={<StudioPage />} />
+          <Route path="/place" element={<PlacePage />} />
           <Route path="/profile" element={<ProfilePage />} />
         </Routes>
       </MobileLayout>

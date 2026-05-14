@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react'
 
-function KakaoMap({ studio }) {
+function KakaoMap({ place }) {
   const mapRef = useRef(null)
 
   useEffect(() => {
-    if (!studio) return
+    if (!place) return
 
     const kakao = window.kakao
 
@@ -16,8 +16,8 @@ function KakaoMap({ studio }) {
     const container = mapRef.current
 
     const centerPosition = new kakao.maps.LatLng(
-      studio.latitude,
-      studio.longitude
+      place.latitude,
+      place.longitude
     )
 
     const options = {
@@ -32,9 +32,9 @@ function KakaoMap({ studio }) {
     })
 
     marker.setMap(map)
-  }, [studio])
+  }, [place])
 
-  if (!studio) {
+  if (!place) {
     return (
       <div className="kakao-map-empty">
         장소를 선택하면 지도가 표시됩니다.
@@ -45,8 +45,8 @@ function KakaoMap({ studio }) {
   return (
     <div className="kakao-map-wrap">
       <div className="kakao-map-header">
-        <strong>{studio.name}</strong>
-        <span>{studio.address}</span>
+        <strong>{place.name}</strong>
+        <span>{place.address}</span>
       </div>
 
       <div ref={mapRef} className="kakao-map" />

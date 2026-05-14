@@ -6,8 +6,8 @@ import SongIcon from '../../assets/images/song.svg'
 
 const navItems = [
   {
-    path: '/studio',
-    label: 'Studio',
+    path: '/place',
+    label: 'Place',
     icon: StudioIcon
   },
    {
