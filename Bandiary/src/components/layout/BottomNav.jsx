@@ -16,7 +16,7 @@ const navItems = [
     icon: DiaryIcon
   },
   {
-    path: '/profile',
+    path: '/practice',
     label: 'Practice',
     icon: SongIcon
   }

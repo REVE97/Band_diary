@@ -3,7 +3,7 @@ import MobileLayout from './components/layout/MobileLayout'
 
 import HomePage from './pages/HomePage'
 import PlacePage from './pages/PlacePage'
-import ProfilePage from './pages/ProfilePage'
+import PracticePage from './pages/PracticePage'
 import LoginPage from './pages/LoginPage'
 
 import './App.css'
@@ -17,7 +17,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/home" element={<HomePage />} />
           <Route path="/place" element={<PlacePage />} />
-          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/practice" element={<PracticePage />} />
         </Routes>
       </MobileLayout>
     </BrowserRouter>

@@ -29,14 +29,4 @@ export const studioMockList = [
     longitude: 126.936879,
     tags: ['주차불가','직원없음'],
   },
-  {
-    id: 4,
-    name: '리듬팩토리 강남점',
-    price: 30000,
-    timeUnit: '1시간',
-    address: '서울 강남구 테헤란로 25길 17',
-    latitude: 37.500827,
-    longitude: 127.036781,
-    tags: ['주차가능','신디보유'],
-  },
 ]

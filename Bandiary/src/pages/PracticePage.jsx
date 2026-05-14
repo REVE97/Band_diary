@@ -1,25 +1,10 @@
-function ProfilePage() {
+function PracticePage() {
   return (
     <div className="page profile-page">
       <section className="profile-summary">
-        <div className="large-avatar">🙂</div>
-
         <div>
           <h2>효재</h2>
           <p>세션 뮤지션</p>
-          <span className="status-text">활동 가능</span>
-        </div>
-      </section>
-
-      <section className="profile-instrument-grid">
-        <div className="instrument-card">
-          <p>메인 세션</p>
-          <strong>일렉기타</strong>
-        </div>
-
-        <div className="instrument-card">
-          <p>서브 세션</p>
-          <strong>베이스</strong>
         </div>
       </section>
 
@@ -54,4 +39,4 @@ function ProfilePage() {
   )
 }
 
-export default ProfilePage
+export default PracticePage

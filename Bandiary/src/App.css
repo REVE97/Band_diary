@@ -170,8 +170,7 @@ a {
   color: #7c7a88;
 }
 
-.profile-avatar,
-.large-avatar {
+.profile-avatar {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -184,12 +183,6 @@ a {
   height: 58px;
   font-size: 28px;
   border-radius: 999px;
-}
-
-.large-avatar {
-  width: 86px;
-  height: 86px;
-  font-size: 42px;
 }
 
 .stats-grid {
@@ -419,31 +412,7 @@ a {
   font-size: 15px;
 }
 
-.profile-summary {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  padding: 12px 0 20px;
-}
-
-.profile-summary h2 {
-  margin: 0 0 6px;
-  font-size: 21px;
-}
-
-.profile-summary p {
-  margin: 0 0 6px;
-  color: #777586;
-  font-size: 13px;
-}
-
-.status-text {
-  color: #2fb36d;
-  font-size: 12px;
-  font-weight: 900;
-}
-
-.profile-instrument-grid {
+.instrument-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
@@ -461,13 +430,6 @@ a {
 
 .instrument-card strong {
   font-size: 15px;
-}
-
-.profile-description {
-  margin: 0;
-  line-height: 1.6;
-  color: #4f4d5d;
-  font-size: 14px;
 }
 
 .video-grid {

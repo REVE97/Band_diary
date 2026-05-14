@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 
 import KakaoMap from '../components/common/KakaoMap'
+
 import { studioMockList } from '../mocks/studioMock'
 import { restaurantMockList } from '../mocks/restaurantMock'
 

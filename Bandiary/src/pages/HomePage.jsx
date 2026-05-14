@@ -34,7 +34,7 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="profile-instrument-grid">
+      <section className="instrument-grid">
         <div className="instrument-card">
           <p>메인 세션</p>
           <strong>{users.mainsession}</strong>
