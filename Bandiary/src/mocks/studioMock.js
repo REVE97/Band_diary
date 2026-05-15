@@ -1,6 +1,7 @@
 export const studioMockList = [
   {
     id: 1,
+    type: 'studio',
     name: '사운드시티 합주실 합정본점',
     price: 25000,
     timeUnit: '1시간',
@@ -11,6 +12,7 @@ export const studioMockList = [
   },
   {
     id: 2,
+    type: 'studio',
     name: '뮤직스페이스 홍대점',
     price: 22000,
     timeUnit: '1시간',
@@ -21,6 +23,7 @@ export const studioMockList = [
   },
   {
     id: 3,
+    type: 'studio',
     name: '플레이그라운드 신촌점',
     price: 24000,
     timeUnit: '1시간',

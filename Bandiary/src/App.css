@@ -656,3 +656,61 @@ a {
   cursor: not-allowed;
   opacity: 0.4;
 }
+
+/* PDF 미리보기 */
+.pdf-box {
+  width: 100%;
+  min-height: 360px;
+  margin-top: 14px;
+  overflow: hidden;
+  display: block;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #e8f3ec, #d8ddff);
+  border: 1px solid #eeeef6;
+  box-shadow: 0 8px 24px rgba(24, 20, 60, 0.05);
+}
+
+.pdf-preview-wrap {
+  width: 100%;
+  height: 100%;
+  min-height: 360px;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+}
+
+.pdf-preview-header {
+  padding: 12px 14px;
+  border-bottom: 1px solid #eeeef4;
+  background: #ffffff;
+}
+
+.pdf-preview-header strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.pdf-preview-header span {
+  display: block;
+  margin-top: 5px;
+  color: #777586;
+  font-size: 12px;
+}
+
+.pdf-preview-frame {
+  width: 100%;
+  height: 320px;
+  border: 0;
+}
+
+.pdf-preview-empty {
+  width: 100%;
+  min-height: 360px;
+  display: grid;
+  place-items: center;
+  color: #777586;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: center;
+}
