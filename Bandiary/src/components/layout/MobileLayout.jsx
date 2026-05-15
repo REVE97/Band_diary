@@ -1,17 +1,23 @@
-import AppHeader from './AppHeader'
+import { useLocation } from 'react-router-dom'
+
+import Header from './AppHeader'
 import BottomNav from './BottomNav'
 
 function MobileLayout({ children }) {
+  const location = useLocation()
+
+  const isLoginPage = location.pathname === '/login'
+
   return (
     <div className="app-root">
       <div className="mobile-shell">
-        <AppHeader />
+        {!isLoginPage && <Header />}
 
-        <main className="page-content">
+        <main className={isLoginPage ? 'page-content login-only' : 'page-content'}>
           {children}
         </main>
 
-        <BottomNav />
+        {!isLoginPage && <BottomNav />}
       </div>
     </div>
   )
