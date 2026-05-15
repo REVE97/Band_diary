@@ -20,6 +20,14 @@ function PdfPreview({ pdf }) {
       <div className="pdf-preview-header">
         <strong>{pdf.title}</strong>
         <span>{pdf.fileName}</span>
+
+        <a
+          href={pdf.pdfUrl}
+          download={pdf.fileName}
+          className="pdf-download-button"
+        >
+          다운로드
+        </a>
       </div>
 
       <div className="pdf-canvas-box">

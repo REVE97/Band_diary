@@ -680,7 +680,8 @@ a {
 }
 
 .pdf-preview-header {
-  padding: 12px 14px;
+  position: relative;
+  padding: 12px 96px 12px 14px;
   border-bottom: 1px solid #eeeef4;
   background: #ffffff;
 }
@@ -689,6 +690,7 @@ a {
   display: block;
   font-size: 14px;
   font-weight: 900;
+  line-height: 1.3;
 }
 
 .pdf-preview-header span {
@@ -713,4 +715,19 @@ a {
   font-size: 13px;
   font-weight: 800;
   text-align: center;
+}
+
+.pdf-download-button {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  padding: 7px 11px;
+  border-radius: 10px;
+  background: #6b4eff;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
 }
