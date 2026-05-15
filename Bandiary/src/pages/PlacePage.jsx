@@ -8,22 +8,60 @@ import { restaurantMockList } from '../mocks/restaurantMock'
 function PlacePage() {
   const [activeTab, setActiveTab] = useState('studio')
   const [selectedPlace, setSelectedPlace] = useState(null)
+  const [currentPage, setCurrentPage] = useState(1)
+
+  // 페이지네이션 데이터 갯수
+  const itemsPerPage = 2
 
   const currentList = useMemo(() => {
     return activeTab === 'studio' ? studioMockList : restaurantMockList
   }, [activeTab])
 
+  const totalPages = Math.ceil(currentList.length / itemsPerPage)
+
+  const paginatedList = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage
+    const endIndex = startIndex + itemsPerPage
+
+    return currentList.slice(startIndex, endIndex)
+  }, [currentList, currentPage])
+
+  const pageNumbers = useMemo(() => {
+    return Array.from({ length: totalPages }, (_, index) => index + 1)
+  }, [totalPages])
+
   const handleTabClick = (tab) => {
     setActiveTab(tab)
     setSelectedPlace(null)
+    setCurrentPage(1)
   }
 
   const handlePlaceClick = (place) => {
     setSelectedPlace(place)
   }
 
+  const handlePageChange = (page) => {
+    setCurrentPage(page)
+    setSelectedPlace(null)
+  }
+
+  const handlePrevPage = () => {
+    if (currentPage === 1) return
+
+    setCurrentPage((prev) => prev - 1)
+    setSelectedPlace(null)
+  }
+
+  const handleNextPage = () => {
+    if (currentPage === totalPages) return
+
+    setCurrentPage((prev) => prev + 1)
+    setSelectedPlace(null)
+  }
+
   return (
     <div className="page studio-page">
+      {/* 탭 버튼 */}
       <div className="tab-row">
         <button
           type="button"
@@ -42,8 +80,9 @@ function PlacePage() {
         </button>
       </div>
 
+      {/* 데이터 리스트 */}
       <div className="studio-list">
-        {currentList.map((place) => (
+        {paginatedList.map((place) => (
           <button
             key={`${place.type}-${place.id}`}
             type="button"
@@ -78,6 +117,39 @@ function PlacePage() {
         ))}
       </div>
 
+      {/* 페이지네이션  */}
+      {totalPages > 1 && (
+        <div className="pagination">
+          <button
+            type="button"
+            disabled={currentPage === 1}
+            onClick={handlePrevPage}
+          >
+            이전
+          </button>
+
+          {pageNumbers.map((page) => (
+            <button
+              key={page}
+              type="button"
+              className={currentPage === page ? 'active' : ''}
+              onClick={() => handlePageChange(page)}
+            >
+              {page}
+            </button>
+          ))}
+
+          <button
+            type="button"
+            disabled={currentPage === totalPages}
+            onClick={handleNextPage}
+          >
+            다음
+          </button>
+        </div>
+      )}
+
+      {/* 카카오맵 */}
       <div className="map-box">
         <KakaoMap place={selectedPlace} />
       </div>

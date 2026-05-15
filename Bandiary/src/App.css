@@ -624,3 +624,35 @@ a {
   font-size: 13px;
   font-weight: 800;
 }
+
+/* 페이지네이션 */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 16px 0 4px;
+}
+
+.pagination button {
+  min-width: 34px;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid #eeeef6;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #777586;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.pagination button.active {
+  color: #ffffff;
+  background: #6b4eff;
+  border-color: #6b4eff;
+}
+
+.pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
