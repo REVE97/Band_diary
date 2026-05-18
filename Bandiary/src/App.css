@@ -256,7 +256,6 @@ a {
   font-size: 12px;
 }
 
-.content-card,
 .instrument-card {
   border: 1px solid #eeeef6;
   border-radius: 16px;
@@ -569,26 +568,6 @@ a {
   font-size: 14px;
 }
 
-@media (min-width: 431px) {
-  .mobile-shell {
-    margin: 24px 0;
-    min-height: calc(100vh - 48px);
-    border-radius: 34px;
-  }
-
-  .page-content {
-    height: calc(100vh - 48px - 64px - 72px);
-  }
-
-  .page-content-full {
-    height: calc(100vh - 48px);
-  }
-
-  .page-content-full .login-page {
-    min-height: calc(100vh - 48px);
-  }
-}
-
 /* 헤더/하단 네비게이션 없는 페이지 */
 .page-content-full {
   height: 100vh;
@@ -748,4 +727,26 @@ a {
   line-height: 1;
   text-decoration: none;
   white-space: nowrap;
+}
+
+
+/* 미디어 */
+@media (min-width: 431px) {
+  .mobile-shell {
+    margin: 24px 0;
+    min-height: calc(100vh - 48px);
+    border-radius: 34px;
+  }
+
+  .page-content {
+    height: calc(100vh - 48px - 64px - 72px);
+  }
+
+  .page-content-full {
+    height: calc(100vh - 48px);
+  }
+
+  .page-content-full .login-page {
+    min-height: calc(100vh - 48px);
+  }
 }
