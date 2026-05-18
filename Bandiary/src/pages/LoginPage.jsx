@@ -66,6 +66,8 @@ function LoginPage() {
       })
     )
 
+    localStorage.removeItem('bandiaryUser')
+
     navigate('/home')
   }
 
