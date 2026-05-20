@@ -1,41 +1,50 @@
 import { useMemo, useState, useEffect } from 'react'
 
 import KakaoMap from '../components/common/KakaoMap'
-
-import { studioMockList } from '../mocks/studioMock'
-import { restaurantMockList } from '../mocks/restaurantMock'
-
 import supabase from '../api/supabase'
 
 function PlacePage() {
   const [activeTab, setActiveTab] = useState('studio')
   const [selectedPlace, setSelectedPlace] = useState(null)
   const [currentPage, setCurrentPage] = useState(1)
+  const [studioList, setStudioList] = useState([]);
+  const [restaurantList, setRestaurantList] = useState([]);
 
-  // supabase test
-  const [test, setTest] = useState([]); 
-
-  const getfetch = async () => {
+  // Supabase Studio 테이블 데이터 API 호출
+  const getStudio = async () => {
     const { data, error } = await supabase.from("studio").select("*");
 
     if(error) {
       console.error(error)
     } else {
       console.log(data);
-      setTest(data);
+      setStudioList(data);
+    }
+  }
+
+  // Supabase Restaurant 테이블 데이터 API 호출
+  const getRestaurant = async () => {
+    const { data, error } = await supabase.from("restaurant").select("*");
+
+    if(error) {
+      console.error(error)
+    } else {
+      console.log(data);
+      setRestaurantList(data);
     }
   }
 
   useEffect(() => {
-    getfetch();
+    getStudio();
+    getRestaurant();
   },[]);
 
   // 페이지네이션 데이터 갯수
   const itemsPerPage = 2
 
   const currentList = useMemo(() => {
-    return activeTab === 'studio' ? studioMockList : restaurantMockList
-  }, [activeTab])
+    return activeTab === 'studio' ? studioList : restaurantList
+  }, [activeTab, studioList, restaurantList])
 
   const totalPages = Math.ceil(currentList.length / itemsPerPage)
 
