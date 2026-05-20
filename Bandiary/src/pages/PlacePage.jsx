@@ -1,14 +1,34 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 
 import KakaoMap from '../components/common/KakaoMap'
 
 import { studioMockList } from '../mocks/studioMock'
 import { restaurantMockList } from '../mocks/restaurantMock'
 
+import supabase from '../api/supabase'
+
 function PlacePage() {
   const [activeTab, setActiveTab] = useState('studio')
   const [selectedPlace, setSelectedPlace] = useState(null)
   const [currentPage, setCurrentPage] = useState(1)
+
+  // supabase test
+  const [test, setTest] = useState([]); 
+
+  const getfetch = async () => {
+    const { data, error } = await supabase.from("studio").select("*");
+
+    if(error) {
+      console.error(error)
+    } else {
+      console.log(data);
+      setTest(data);
+    }
+  }
+
+  useEffect(() => {
+    getfetch();
+  },[]);
 
   // 페이지네이션 데이터 갯수
   const itemsPerPage = 2
