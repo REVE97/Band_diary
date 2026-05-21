@@ -69,7 +69,7 @@ function LoginPage() {
       return
     }
 
-    localStorage.setItem(
+    sessionStorage.setItem(
       'bandiaryLoginUser',
       JSON.stringify({
         id: matchedUser.id,

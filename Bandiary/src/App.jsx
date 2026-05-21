@@ -6,6 +6,8 @@ import PlacePage from './pages/PlacePage'
 import PracticePage from './pages/PracticePage'
 import LoginPage from './pages/LoginPage'
 
+import ProtectedRoute from './components/common/ProtectedRoute'
+
 import './App.css'
 
 function App() {
@@ -15,9 +17,21 @@ function App() {
         <Routes>
           <Route path='/' element={<Navigate to="/login" replace />}></Route>
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/home" element={<HomePage />} />
-          <Route path="/place" element={<PlacePage />} />
-          <Route path="/practice" element={<PracticePage />} />
+          <Route path="/home" element={
+            <ProtectedRoute>
+              <HomePage />
+            </ProtectedRoute>
+            } />
+          <Route path="/place" element={
+            <ProtectedRoute>
+              <PlacePage />
+            </ProtectedRoute>
+            } />
+          <Route path="/practice" element={
+            <ProtectedRoute>
+              <PracticePage />
+            </ProtectedRoute>
+            } />
         </Routes>
       </MobileLayout>
     </BrowserRouter>

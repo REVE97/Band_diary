@@ -5,6 +5,7 @@ function AppHeader() {
   const navigate = useNavigate();
 
   const logout = () => {
+    sessionStorage.removeItem('bandiaryLoginUser');
     navigate('/login');
   }
 
