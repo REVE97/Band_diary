@@ -1,24 +1,37 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { loginInfo } from '../mocks/userMock'
+import logo from '../assets/images/logo.svg'
+
+import supabase from '../api/supabase'
 
 function LoginPage() {
   const navigate = useNavigate()
 
+  // 사용자 입력 데이터 상태값
   const [loginForm, setLoginForm] = useState({
     userId: '',
     password: '',
   })
 
   const [errorMessage, setErrorMessage] = useState('')
+  const [users, setUsers] = useState([])
+
+  // 임시 로그인 사용자 데이터 API 호출
+  const getUsers = async () => {
+    const { data, error } = await supabase.from('users').select('*')
+
+    if (error) {
+      console.error(error)
+      setErrorMessage('사용자 정보를 불러오지 못했습니다.')
+      return
+    }
+
+    setUsers(data)
+  }
 
   useEffect(() => {
-    const savedUser = localStorage.getItem('bandiaryUser')
-
-    if (!savedUser) {
-      localStorage.setItem('bandiaryUser', JSON.stringify(loginInfo))
-    }
+    getUsers()
   }, [])
 
   const handleInputChange = (event) => {
@@ -40,19 +53,18 @@ function LoginPage() {
       return
     }
 
-    const savedUser = localStorage.getItem('bandiaryUser')
-
-    if (!savedUser) {
-      setErrorMessage('저장된 사용자 정보가 없습니다.')
+    if (Number.isNaN(Number(password))) {
+      setErrorMessage('비밀번호는 숫자로 입력해주세요.')
       return
     }
 
-    const parsedUser = JSON.parse(savedUser)
+    const matchedUser = users.find(
+      (user) =>
+        user.userId === userId.trim() &&
+        user.password === Number(password)
+    )
 
-    const isMatched =
-      parsedUser.userId === userId && parsedUser.password === password
-
-    if (!isMatched) {
+    if (!matchedUser) {
       setErrorMessage('아이디 또는 비밀번호가 일치하지 않습니다.')
       return
     }
@@ -60,13 +72,12 @@ function LoginPage() {
     localStorage.setItem(
       'bandiaryLoginUser',
       JSON.stringify({
-        userId: parsedUser.userId,
-        nickname: parsedUser.nickname,
+        id: matchedUser.id,
+        userId: matchedUser.userId,
+        nickname: matchedUser.nickname,
         isLoggedIn: true,
       })
     )
-
-    localStorage.removeItem('bandiaryUser')
 
     navigate('/home')
   }
@@ -74,7 +85,7 @@ function LoginPage() {
   return (
     <div className="page login-page">
       <div className="login-card">
-        <h1>Bandiary</h1>
+        <img src={logo} alt="Bandiary" className="login-logo" />
         <p>밴드를 위한 다이어리 서비스</p>
 
         <div className="login-form">
@@ -102,7 +113,7 @@ function LoginPage() {
           className="primary-button"
           onClick={handleLogin}
         >
-          시작하기
+          로그인
         </button>
       </div>
     </div>

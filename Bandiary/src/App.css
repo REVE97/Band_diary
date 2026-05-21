@@ -563,9 +563,12 @@ a {
   text-align: center;
 }
 
-.login-card h1 {
-  margin: 0 0 10px;
-  color: #6b4eff;
+.login-logo {
+  display: block;
+  width: 120px;
+  height: auto;
+  margin: 0 auto 10px;
+  object-fit: contain;
 }
 
 .login-card p {
