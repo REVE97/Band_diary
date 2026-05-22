@@ -457,16 +457,18 @@ a {
 }
 
 .studio-card {
+  position: relative;
   width: 100%;
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px;
+  padding: 10px 44px 10px 10px;
   text-align: left;
   border: 1px solid #eeeef6;
   border-radius: 16px;
   background: #ffffff;
   box-shadow: 0 8px 24px rgba(24, 20, 60, 0.05);
+  cursor: pointer;
   transition:
     transform 0.2s ease,
     border-color 0.2s ease,
@@ -503,9 +505,25 @@ a {
   font-weight: 900;
 }
 
-.studio-card button {
-  background: transparent;
+.studio-delete-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #fff1f1;
+  color: #ff4d4f;
   font-size: 18px;
+  font-weight: 900;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.studio-delete-button:active {
+  transform: scale(0.92);
 }
 
 .studio-info {
@@ -1032,4 +1050,30 @@ a {
   color: #777586;
   font-size: 13px;
   line-height: 1.5;
+}
+
+/* 장소 삭제 확인 모달 */
+.delete-confirm-button-row {
+  display: flex;
+  gap: 10px;
+}
+
+.delete-cancel-button,
+.delete-confirm-button {
+  flex: 1;
+  height: 48px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.delete-cancel-button {
+  background: #f1edff;
+  color: #6b4eff;
+}
+
+.delete-confirm-button {
+  background: #ff4d4f;
+  color: #ffffff;
+  box-shadow: 0 8px 18px rgba(255, 77, 79, 0.22);
 }

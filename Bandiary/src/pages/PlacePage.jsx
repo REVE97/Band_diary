@@ -28,12 +28,15 @@ function PlacePage() {
   const [formType, setFormType] = useState('studio')
   const [placeForm, setPlaceForm] = useState(initialForm)
   const [errorMessage, setErrorMessage] = useState('')
+
   const [resultModal, setResultModal] = useState({
     isOpen: false,
     type: '',
     title: '',
     message: '',
   })
+
+  const [deleteTarget, setDeleteTarget] = useState(null)
 
   // Supabase studio 테이블 데이터 API 호출
   const getStudio = async () => {
@@ -125,11 +128,11 @@ function PlacePage() {
   }
 
   const handleCloseResultModal = () => {
-  setResultModal({
-    isOpen: false,
-    type: '',
-    title: '',
-    message: '',
+    setResultModal({
+      isOpen: false,
+      type: '',
+      title: '',
+      message: '',
     })
   }
 
@@ -148,6 +151,17 @@ function PlacePage() {
     }))
 
     setErrorMessage('')
+  }
+
+  // 삭제 확인 모달 열기
+  const handleOpenDeleteModal = (event, place) => {
+    event.stopPropagation()
+    setDeleteTarget(place)
+  }
+
+  // 삭제 확인 모달 닫기
+  const handleCloseDeleteModal = () => {
+    setDeleteTarget(null)
   }
 
   // 입력 데이터 타입 검증
@@ -217,12 +231,13 @@ function PlacePage() {
 
     if (error) {
       console.error(error)
-      
+
       setResultModal({
         isOpen: true,
         type: 'fail',
         title: '등록 실패',
-        message: '장소 등록 중 오류가 발생했습니다. 입력값 또는 Supabase 설정을 확인해주세요.',
+        message:
+          '장소 등록 중 오류가 발생했습니다. 입력값 또는 Supabase 설정을 확인해주세요.',
       })
 
       return
@@ -249,6 +264,63 @@ function PlacePage() {
           ? '합주실 데이터가 성공적으로 등록되었습니다.'
           : '주변 맛집 데이터가 성공적으로 등록되었습니다.',
     })
+  }
+
+  // 합주실, 주변 맛집 데이터 삭제 API 호출
+  const handleDeletePlace = async () => {
+    if (!deleteTarget) return
+
+    const tableName =
+      deleteTarget.type === 'studio' ? 'studio' : 'restaurant'
+
+    const { error } = await supabase
+      .from(tableName)
+      .delete()
+      .eq('id', deleteTarget.id)
+
+    if (error) {
+      console.error(error)
+
+      setResultModal({
+        isOpen: true,
+        type: 'fail',
+        title: '삭제 실패',
+        message:
+          '장소 삭제 중 오류가 발생했습니다. Supabase 설정을 확인해주세요.',
+      })
+
+      setDeleteTarget(null)
+      return
+    }
+
+    if (deleteTarget.type === 'studio') {
+      await getStudio()
+    } else {
+      await getRestaurant()
+    }
+
+    if (
+      selectedPlace?.id === deleteTarget.id &&
+      selectedPlace?.type === deleteTarget.type
+    ) {
+      setSelectedPlace(null)
+    }
+
+    const nextTotalItems = currentList.length - 1
+    const nextTotalPages = Math.ceil(nextTotalItems / itemsPerPage)
+
+    if (currentPage > nextTotalPages && currentPage > 1) {
+      setCurrentPage((prev) => prev - 1)
+    }
+
+    setResultModal({
+      isOpen: true,
+      type: 'success',
+      title: '삭제 완료',
+      message: `${deleteTarget.name} 데이터가 삭제되었습니다.`,
+    })
+
+    setDeleteTarget(null)
   }
 
   return (
@@ -282,9 +354,10 @@ function PlacePage() {
 
       <div className="studio-list">
         {paginatedList.map((place) => (
-          <button
+          <div
             key={`${place.type}-${place.id}`}
-            type="button"
+            role="button"
+            tabIndex={0}
             className={
               selectedPlace?.id === place.id &&
               selectedPlace?.type === place.type
@@ -292,7 +365,21 @@ function PlacePage() {
                 : 'studio-card'
             }
             onClick={() => handlePlaceClick(place)}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                handlePlaceClick(place)
+              }
+            }}
           >
+            <button
+              type="button"
+              className="studio-delete-button"
+              onClick={(event) => handleOpenDeleteModal(event, place)}
+              aria-label={`${place.name} 삭제`}
+            >
+              -
+            </button>
+
             <div className="studio-info">
               <strong>{place.name}</strong>
 
@@ -312,10 +399,11 @@ function PlacePage() {
                 ))}
               </div>
             </div>
-          </button>
+          </div>
         ))}
       </div>
-
+      
+      {/* 페이지네이션 */}
       {totalPages > 1 && (
         <div className="pagination">
           <button
@@ -347,6 +435,7 @@ function PlacePage() {
         </div>
       )}
 
+      {/* 카카오맵  */}
       <div className="map-box">
         <KakaoMap place={selectedPlace} />
       </div>
@@ -364,13 +453,26 @@ function PlacePage() {
         />
       )}
 
-      {/* 추가 결과 Modal */}
+      {/* 추가/삭제 결과 Modal */}
       {resultModal.isOpen && (
         <PlaceResultModal
           type={resultModal.type}
           title={resultModal.title}
           message={resultModal.message}
           onClose={handleCloseResultModal}
+        />
+      )}
+
+      {/* 삭제 확인 Modal */}
+      {deleteTarget && (
+        <PlaceResultModal
+          type="confirm"
+          title="삭제 확인"
+          message={`${deleteTarget.name} 데이터를 삭제하시겠습니까?`}
+          confirmText="삭제"
+          cancelText="취소"
+          onClose={handleCloseDeleteModal}
+          onConfirm={handleDeletePlace}
         />
       )}
     </div>
