@@ -3,29 +3,34 @@ import { useEffect, useState } from 'react'
 function PlaceModal({
   formType,
   placeForm,
+  placeSearchResults,
+  isSearchingPlace,
   errorMessage,
   onClose,
   onSubmit,
   onFormTypeChange,
   onInputChange,
+  onSearchPlace,
+  onSelectSearchPlace,
 }) {
   const [currentStep, setCurrentStep] = useState(1)
   const [stepErrorMessage, setStepErrorMessage] = useState('')
+  const [searchKeyword, setSearchKeyword] = useState('')
 
   const isStudio = formType === 'studio'
   const isRestaurant = formType === 'restaurant'
 
-  const isBasicInfoFilled = isStudio
-    ? placeForm.name.trim() && placeForm.address.trim()
-    : placeForm.name.trim() &&
-      placeForm.category.trim() &&
-      placeForm.address.trim()
+  const hasSelectedPlace =
+    placeForm.name.trim() &&
+    placeForm.address.trim() &&
+    placeForm.latitude &&
+    placeForm.longitude
+
+  const isBasicInfoFilled = isRestaurant
+    ? hasSelectedPlace && placeForm.category.trim()
+    : hasSelectedPlace
 
   const isPriceFilled = placeForm.price.trim()
-
-  const isLocationFilled =
-    placeForm.latitude.trim() && placeForm.longitude.trim()
-
   const isTagsFilled = placeForm.tags.trim()
 
   const isCurrentStepValid = () => {
@@ -38,10 +43,6 @@ function PlaceModal({
     }
 
     if (currentStep === 3) {
-      return Boolean(isLocationFilled)
-    }
-
-    if (currentStep === 4) {
       return Boolean(isTagsFilled)
     }
 
@@ -50,16 +51,12 @@ function PlaceModal({
 
   const getStepErrorMessage = () => {
     if (currentStep === 1) {
-      if (!placeForm.name.trim()) {
-        return isStudio ? '합주실 이름을 입력해주세요.' : '맛집 이름을 입력해주세요.'
+      if (!hasSelectedPlace) {
+        return '장소명을 검색한 뒤 검색 결과에서 장소를 선택해주세요.'
       }
 
       if (isRestaurant && !placeForm.category.trim()) {
         return '카테고리를 입력해주세요.'
-      }
-
-      if (!placeForm.address.trim()) {
-        return '주소를 입력해주세요.'
       }
     }
 
@@ -74,23 +71,6 @@ function PlaceModal({
     }
 
     if (currentStep === 3) {
-      if (!placeForm.latitude.trim()) {
-        return '위도를 입력해주세요.'
-      }
-
-      if (!placeForm.longitude.trim()) {
-        return '경도를 입력해주세요.'
-      }
-
-      if (
-        Number.isNaN(Number(placeForm.latitude)) ||
-        Number.isNaN(Number(placeForm.longitude))
-      ) {
-        return '위도와 경도는 숫자로 입력해주세요.'
-      }
-    }
-
-    if (currentStep === 4) {
       if (!placeForm.tags.trim()) {
         return '태그를 입력해주세요. (,로 구분) ex) 주차 가능,직원 상주'
       }
@@ -102,6 +82,7 @@ function PlaceModal({
   useEffect(() => {
     setCurrentStep(1)
     setStepErrorMessage('')
+    setSearchKeyword('')
   }, [formType])
 
   const handleNextStep = () => {
@@ -115,7 +96,7 @@ function PlaceModal({
     setStepErrorMessage('')
 
     setCurrentStep((prev) => {
-      if (prev >= 5) return prev
+      if (prev >= 4) return prev
       return prev + 1
     })
   }
@@ -134,11 +115,25 @@ function PlaceModal({
     setStepErrorMessage('')
   }
 
+  const handleSearchKeywordChange = (event) => {
+    setSearchKeyword(event.target.value)
+    setStepErrorMessage('')
+  }
+
+  const handleSearchButtonClick = () => {
+    onSearchPlace(searchKeyword)
+  }
+
+  const handleSelectPlace = (searchedPlace) => {
+    onSelectSearchPlace(searchedPlace)
+    setSearchKeyword(searchedPlace.place_name)
+    setStepErrorMessage('')
+  }
+
   const getStepTitle = () => {
-    if (currentStep === 1) return '기본 정보를 입력해주세요.'
+    if (currentStep === 1) return '장소를 검색하고 선택해주세요.'
     if (currentStep === 2) return '가격 정보를 입력해주세요.'
-    if (currentStep === 3) return '위치 정보를 입력해주세요.'
-    if (currentStep === 4) return '태그를 입력해주세요.'
+    if (currentStep === 3) return '태그를 입력해주세요.'
     return '입력한 정보를 확인해주세요.'
   }
 
@@ -188,20 +183,64 @@ function PlaceModal({
           <span className={currentStep === 1 ? 'active' : ''}>1</span>
           <span className={currentStep === 2 ? 'active' : ''}>2</span>
           <span className={currentStep === 3 ? 'active' : ''}>3</span>
-          <span className={currentStep === 4 ? 'active' : ''}>4</span>
-          <span className={currentStep === 5 ? 'active' : ''}>완료</span>
+          <span className={currentStep === 4 ? 'active' : ''}>완료</span>
         </div>
 
         <div className="login-form place-form">
           {currentStep === 1 && (
             <>
-              <input
-                type="text"
-                name="name"
-                value={placeForm.name}
-                placeholder={isStudio ? '합주실 이름' : '맛집 이름'}
-                onChange={handleChangeInput}
-              />
+              <div className="place-search-row">
+                <input
+                  type="text"
+                  value={searchKeyword}
+                  placeholder={
+                    isStudio
+                      ? '합주실 장소명 검색 예: 홍대 합주실'
+                      : '맛집 장소명 검색 예: 홍대 맛집'
+                  }
+                  onChange={handleSearchKeywordChange}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter') {
+                      handleSearchButtonClick()
+                    }
+                  }}
+                />
+
+                <button
+                  type="button"
+                  className="place-search-button"
+                  onClick={handleSearchButtonClick}
+                  disabled={isSearchingPlace}
+                >
+                  {isSearchingPlace ? '검색중' : '검색'}
+                </button>
+              </div>
+
+              {placeSearchResults.length > 0 && (
+                <div className="place-search-result-list">
+                  {placeSearchResults.map((searchedPlace) => (
+                    <button
+                      key={searchedPlace.id}
+                      type="button"
+                      className="place-search-result-item"
+                      onClick={() => handleSelectPlace(searchedPlace)}
+                    >
+                      <strong>{searchedPlace.place_name}</strong>
+                      <span>
+                        {searchedPlace.road_address_name ||
+                          searchedPlace.address_name}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {hasSelectedPlace && (
+                <div className="selected-place-box">
+                  <strong>{placeForm.name}</strong>
+                  <span>{placeForm.address}</span>
+                </div>
+              )}
 
               {isRestaurant && (
                 <input
@@ -212,14 +251,6 @@ function PlaceModal({
                   onChange={handleChangeInput}
                 />
               )}
-
-              <input
-                type="text"
-                name="address"
-                value={placeForm.address}
-                placeholder="주소"
-                onChange={handleChangeInput}
-              />
             </>
           )}
 
@@ -235,30 +266,6 @@ function PlaceModal({
           )}
 
           {currentStep === 3 && (
-            <>
-              <input
-                type="number"
-                inputMode="decimal"
-                step="any"
-                name="latitude"
-                value={placeForm.latitude}
-                placeholder="위도 예: 37.5665"
-                onChange={handleChangeInput}
-              />
-
-              <input
-                type="number"
-                inputMode="decimal"
-                step="any"
-                name="longitude"
-                value={placeForm.longitude}
-                placeholder="경도 예: 126.9780"
-                onChange={handleChangeInput}
-              />
-            </>
-          )}
-
-          {currentStep === 4 && (
             <input
               type="text"
               name="tags"
@@ -268,7 +275,7 @@ function PlaceModal({
             />
           )}
 
-          {currentStep === 5 && (
+          {currentStep === 4 && (
             <div className="place-submit-summary">
               <strong>{placeForm.name}</strong>
 
@@ -280,10 +287,6 @@ function PlaceModal({
                   : `${placeForm.category} · 평균 ₩ ${Number(
                       placeForm.price
                     ).toLocaleString()}`}
-              </span>
-
-              <span>
-                위도 {placeForm.latitude} · 경도 {placeForm.longitude}
               </span>
 
               <span>태그: {placeForm.tags}</span>
@@ -306,7 +309,7 @@ function PlaceModal({
             </button>
           )}
 
-          {currentStep < 5 && (
+          {currentStep < 4 && (
             <button
               type="button"
               className="primary-button"
@@ -317,7 +320,7 @@ function PlaceModal({
             </button>
           )}
 
-          {currentStep === 5 && (
+          {currentStep === 4 && (
             <button
               type="button"
               className="primary-button"

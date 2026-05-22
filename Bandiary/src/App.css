@@ -1077,3 +1077,83 @@ a {
   color: #ffffff;
   box-shadow: 0 8px 18px rgba(255, 77, 79, 0.22);
 }
+
+/* 장소 선택 */
+.place-search-row {
+  display: flex;
+  gap: 8px;
+}
+
+.place-search-row input {
+  flex: 1;
+}
+
+.place-search-button {
+  flex: 0 0 68px;
+  height: 46px;
+  border-radius: 12px;
+  background: #6b4eff;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.place-search-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.place-search-result-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 176px;
+  overflow-y: auto;
+}
+
+.place-search-result-item {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #eeeef6;
+  border-radius: 12px;
+  background: #ffffff;
+  text-align: left;
+}
+
+.place-search-result-item strong {
+  display: block;
+  margin-bottom: 5px;
+  color: #151515;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.place-search-result-item span {
+  display: block;
+  color: #777586;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.selected-place-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid #e8e2ff;
+  border-radius: 14px;
+  background: #f8f5ff;
+  text-align: left;
+}
+
+.selected-place-box strong {
+  color: #6b4eff;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.selected-place-box span {
+  color: #777586;
+  font-size: 12px;
+  line-height: 1.4;
+}

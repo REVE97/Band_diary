@@ -29,6 +29,9 @@ function PlacePage() {
   const [placeForm, setPlaceForm] = useState(initialForm)
   const [errorMessage, setErrorMessage] = useState('')
 
+  const [placeSearchResults, setPlaceSearchResults] = useState([])
+  const [isSearchingPlace, setIsSearchingPlace] = useState(false)
+
   const [resultModal, setResultModal] = useState({
     isOpen: false,
     type: '',
@@ -117,6 +120,7 @@ function PlacePage() {
   const handleOpenModal = () => {
     setFormType(activeTab)
     setPlaceForm(initialForm)
+    setPlaceSearchResults([])
     setErrorMessage('')
     setIsModalOpen(true)
   }
@@ -124,6 +128,7 @@ function PlacePage() {
   const handleCloseModal = () => {
     setIsModalOpen(false)
     setPlaceForm(initialForm)
+    setPlaceSearchResults([])
     setErrorMessage('')
   }
 
@@ -139,6 +144,7 @@ function PlacePage() {
   const handleFormTypeChange = (event) => {
     setFormType(event.target.value)
     setPlaceForm(initialForm)
+    setPlaceSearchResults([])
     setErrorMessage('')
   }
 
@@ -150,6 +156,73 @@ function PlacePage() {
       [name]: value,
     }))
 
+    setErrorMessage('')
+  }
+
+  // 카카오 장소명 검색
+  const searchPlacesByKeyword = (keyword) => {
+    return new Promise((resolve, reject) => {
+      const kakao = window.kakao
+
+      if (!kakao || !kakao.maps || !kakao.maps.services) {
+        reject(new Error('카카오맵 services 라이브러리가 로드되지 않았습니다.'))
+        return
+      }
+
+      const places = new kakao.maps.services.Places()
+
+      places.keywordSearch(keyword, (result, status) => {
+        if (status === kakao.maps.services.Status.OK) {
+          resolve(result)
+          return
+        }
+
+        if (status === kakao.maps.services.Status.ZERO_RESULT) {
+          reject(new Error('검색 결과가 없습니다.'))
+          return
+        }
+
+        reject(new Error('장소 검색 중 오류가 발생했습니다.'))
+      })
+    })
+  }
+
+  // 장소명 검색 버튼 클릭
+  const handleSearchPlaceKeyword = async (keyword) => {
+    if (!keyword.trim()) {
+      setErrorMessage('검색할 장소명을 입력해주세요.')
+      return
+    }
+
+    setIsSearchingPlace(true)
+    setErrorMessage('')
+
+    try {
+      const results = await searchPlacesByKeyword(keyword.trim())
+      setPlaceSearchResults(results.slice(0, 5))
+    } catch (error) {
+      console.error(error)
+      setPlaceSearchResults([])
+      setErrorMessage(error.message)
+    } finally {
+      setIsSearchingPlace(false)
+    }
+  }
+
+  // 카카오 검색 결과 선택
+  const handleSelectSearchPlace = (searchedPlace) => {
+    const address =
+      searchedPlace.road_address_name || searchedPlace.address_name || ''
+
+    setPlaceForm((prev) => ({
+      ...prev,
+      name: searchedPlace.place_name,
+      address,
+      latitude: searchedPlace.y,
+      longitude: searchedPlace.x,
+    }))
+
+    setPlaceSearchResults([])
     setErrorMessage('')
   }
 
@@ -169,14 +242,17 @@ function PlacePage() {
     const { name, category, address, price, latitude, longitude, tags } =
       placeForm
 
-    if (!name.trim()) return '이름을 입력해주세요.'
+    if (!name.trim()) return '장소를 검색하고 선택해주세요.'
+    if (!address.trim()) return '장소 검색 결과에서 주소를 선택해주세요.'
+    if (!latitude || !longitude) {
+      return '장소 검색 결과를 선택해야 지도 위치가 등록됩니다.'
+    }
+
     if (formType === 'restaurant' && !category.trim()) {
       return '음식점 카테고리를 입력해주세요.'
     }
-    if (!address.trim()) return '주소를 입력해주세요.'
+
     if (!price.trim()) return '가격을 입력해주세요.'
-    if (!latitude.trim()) return '위도를 입력해주세요.'
-    if (!longitude.trim()) return '경도를 입력해주세요.'
     if (!tags.trim()) return '태그를 입력해주세요.'
 
     if (Number.isNaN(Number(price))) {
@@ -184,7 +260,7 @@ function PlacePage() {
     }
 
     if (Number.isNaN(Number(latitude)) || Number.isNaN(Number(longitude))) {
-      return '위도와 경도는 숫자로 입력해주세요.'
+      return '선택한 장소의 위도와 경도 값이 올바르지 않습니다.'
     }
 
     return ''
@@ -402,7 +478,7 @@ function PlacePage() {
           </div>
         ))}
       </div>
-      
+
       {/* 페이지네이션 */}
       {totalPages > 1 && (
         <div className="pagination">
@@ -435,7 +511,7 @@ function PlacePage() {
         </div>
       )}
 
-      {/* 카카오맵  */}
+      {/* 카카오맵 */}
       <div className="map-box">
         <KakaoMap place={selectedPlace} />
       </div>
@@ -445,11 +521,15 @@ function PlacePage() {
         <PlaceModal
           formType={formType}
           placeForm={placeForm}
+          placeSearchResults={placeSearchResults}
+          isSearchingPlace={isSearchingPlace}
           errorMessage={errorMessage}
           onClose={handleCloseModal}
           onSubmit={handleAddPlace}
           onFormTypeChange={handleFormTypeChange}
           onInputChange={handleInputChange}
+          onSearchPlace={handleSearchPlaceKeyword}
+          onSelectSearchPlace={handleSelectSearchPlace}
         />
       )}
 
