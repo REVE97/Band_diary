@@ -34,6 +34,16 @@ function KakaoMap({ place }) {
     marker.setMap(map)
   }, [place])
 
+  const handleOpenKakaoRoute = () => {
+    if (!place) return
+
+    const routeUrl = `https://map.kakao.com/link/to/${encodeURIComponent(
+      place.name
+    )},${place.latitude},${place.longitude}`
+
+    window.location.href = routeUrl
+  }
+
   if (!place) {
     return (
       <div className="kakao-map-empty">
@@ -45,8 +55,18 @@ function KakaoMap({ place }) {
   return (
     <div className="kakao-map-wrap">
       <div className="kakao-map-header">
-        <strong>{place.name}</strong>
-        <span>{place.address}</span>
+        <div>
+          <strong>{place.name}</strong>
+          <span>{place.address}</span>
+        </div>
+
+        <button
+          type="button"
+          className="kakao-route-button"
+          onClick={handleOpenKakaoRoute}
+        >
+          길찾기
+        </button>
       </div>
 
       <div ref={mapRef} className="kakao-map" />

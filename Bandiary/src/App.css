@@ -647,6 +647,10 @@ a {
 }
 
 .kakao-map-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
   padding: 12px 14px;
   border-bottom: 1px solid #eeeef4;
   background: #ffffff;
@@ -678,6 +682,28 @@ a {
   color: #777586;
   font-size: 13px;
   font-weight: 800;
+}
+
+.kakao-map-header div {
+  flex: 1;
+  min-width: 0;
+}
+
+.kakao-map-wrap .kakao-route-button {
+  flex: 0 0 auto;
+  min-width: 62px;
+  height: 34px;
+  padding: 0 11px;
+  border-radius: 999px;
+  background: #6b4eff;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 900;
+  box-shadow: 0 6px 14px rgba(107, 78, 255, 0.22);
+}
+
+.kakao-route-button:active {
+  transform: scale(0.96);
 }
 
 /* 페이지네이션 */
