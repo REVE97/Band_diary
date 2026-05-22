@@ -11,7 +11,7 @@ function AppHeader() {
 
   return (
     <header className="app-header">
-      <Link to="/" className="logo">
+      <Link to="/home" className="logo">
         <img src={logo} alt="Bandiary 로고" aria-label="로고" />
       </Link>
 
