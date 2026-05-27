@@ -1219,3 +1219,63 @@ a {
 .profile-edit-button:active {
   transform: scale(0.96);
 }
+
+/* 프로필 미리보기 CSS */
+.profile-image-preview {
+  width: 92px;
+  height: 92px;
+  margin: 0 auto 8px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #f0edf9;
+  border: 1px solid #eeeef6;
+}
+
+.profile-image-preview img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.custom-file-row {
+  width: 100%;
+  height: 46px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #eeeef6;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.custom-file-button {
+  flex: 0 0 auto;
+  height: 28px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #f1edff;
+  color: #4f4d5d;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.custom-file-name {
+  flex: 1;
+  min-width: 0;
+  color: #151515;
+  font-size: 15px;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.custom-file-input {
+  display: none;
+}

@@ -1,17 +1,39 @@
+import { useState } from 'react'
+
 function ProfileEditModal({
   profileForm,
+  profileImagePreview,
   errorMessage,
   onClose,
   onSubmit,
   onInputChange,
+  onImageChange,
 }) {
+  const [selectedFileName, setSelectedFileName] = useState('선택된 파일 없음')
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0]
+
+    if (file) {
+      setSelectedFileName(file.name)
+    } else {
+      setSelectedFileName('선택된 파일 없음')
+    }
+
+    onImageChange(event)
+  }
+
   return (
     <div className="place-modal-overlay">
       <div className="place-modal-card">
         <div className="place-modal-header">
           <div>
             <h2>프로필 수정</h2>
-            <p>이름, 밴드명, 메인 세션, 서브 세션을 수정해주세요.</p>
+            <p>
+              이름, 밴드명, 메인 세션, 서브 세션, 이미지를
+              <br />
+              수정해주세요.
+            </p>
           </div>
 
           <button
@@ -24,6 +46,28 @@ function ProfileEditModal({
         </div>
 
         <div className="login-form place-form">
+          {profileImagePreview && (
+            <div className="profile-image-preview">
+              <img src={profileImagePreview} alt="프로필 이미지 미리보기" />
+            </div>
+          )}
+
+          <div className="custom-file-row">
+            <label htmlFor="profileImageFile" className="custom-file-button">
+              파일 선택
+            </label>
+
+            <span className="custom-file-name">{selectedFileName}</span>
+
+            <input
+              id="profileImageFile"
+              className="custom-file-input"
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
+          </div>
+
           <input
             type="text"
             name="name"
