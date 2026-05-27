@@ -1183,3 +1183,33 @@ a {
   font-size: 12px;
   line-height: 1.4;
 }
+
+/* 프로필 수정 버튼 */
+.profile-edit-section {
+  display: flex;
+  justify-content: flex-start;
+  margin: -4px 0 12px;
+}
+
+.profile-edit-button {
+  height: 36px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  background: #f1edff;
+  color: #6b4eff;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.profile-edit-button img {
+  width: 15px;
+  height: 15px;
+  display: block;
+}
+
+.profile-edit-button:active {
+  transform: scale(0.96);
+}
