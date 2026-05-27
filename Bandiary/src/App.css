@@ -404,6 +404,10 @@ a {
   font-size: 12px;
 }
 
+.primary-small-button.logout-button {
+  background: #ff4d4f;
+}
+
 .primary-button {
   width: 100%;
   height: 48px;

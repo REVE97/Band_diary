@@ -16,11 +16,11 @@ function AppHeader() {
       </Link>
 
       <button 
-        className="primary-small-button"
+        className="primary-small-button logout-button"
         type="button" 
         aria-label="로그아웃"
         onClick={logout}>
-        로그아웃
+        Logout
       </button>
     </header>
   )
