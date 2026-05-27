@@ -106,44 +106,17 @@ function HomePage() {
     setErrorMessage('')
   }
 
-  const validateProfileForm = () => {
-    if (!profileForm.name.trim()) {
-      return '이름을 입력해주세요.'
-    }
-
-    if (!profileForm.bandName.trim()) {
-      return '밴드명을 입력해주세요.'
-    }
-
-    if (!profileForm.mainSession.trim()) {
-      return '메인 세션을 입력해주세요.'
-    }
-
-    if (!profileForm.subSession.trim()) {
-      return '서브 세션을 입력해주세요.'
-    }
-
-    return ''
-  }
-
   const handleUpdateProfile = async () => {
-    const validationMessage = validateProfileForm()
-
-    if (validationMessage) {
-      setErrorMessage(validationMessage)
-      return
-    }
-
     if (!storageInfo?.userId) {
       setErrorMessage('로그인 사용자 정보를 찾을 수 없습니다.')
       return
     }
 
     const payload = {
-      name: profileForm.name.trim(),
-      bandName: profileForm.bandName.trim(),
-      mainSession: profileForm.mainSession.trim(),
-      subSession: profileForm.subSession.trim(),
+      name: profileForm.name.trim() || null,
+      bandName: profileForm.bandName.trim() || null,
+      mainSession: profileForm.mainSession.trim() || null,
+      subSession: profileForm.subSession.trim() || null,
     }
 
     const { error } = await supabase

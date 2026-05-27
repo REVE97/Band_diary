@@ -5,12 +5,6 @@ function ProfileEditModal({
   onSubmit,
   onInputChange,
 }) {
-  const isFormValid =
-    profileForm.name.trim() &&
-    profileForm.bandName.trim() &&
-    profileForm.mainSession.trim() &&
-    profileForm.subSession.trim()
-
   return (
     <div className="place-modal-overlay">
       <div className="place-modal-card">
@@ -38,13 +32,14 @@ function ProfileEditModal({
             onChange={onInputChange}
           />
 
-          <input
-            type="text"
+          <select
             name="bandName"
             value={profileForm.bandName}
-            placeholder="밴드명 예: 11f Band"
             onChange={onInputChange}
-          />
+          >
+            <option value="">밴드를 선택해주세요</option>
+            <option value="11F">11F</option>
+          </select>
 
           <input
             type="text"
@@ -78,7 +73,6 @@ function ProfileEditModal({
             type="button"
             className="primary-button"
             onClick={onSubmit}
-            disabled={!isFormValid}
           >
             수정하기
           </button>
