@@ -41,21 +41,33 @@ function ProfileEditModal({
             <option value="11F">11F</option>
           </select>
 
-          <input
-            type="text"
+          <select
             name="mainSession"
             value={profileForm.mainSession}
-            placeholder="메인 세션 예: Vocal, Guitar, Drum"
             onChange={onInputChange}
-          />
+          >
+            <option value="">메인 세션을 선택해주세요</option>
+            <option value="Vocal">Vocal</option>
+            <option value="Main Guitar">Guitar</option>
+            <option value="Sub Guitar">Sub Guitar</option>
+            <option value="Bass">Bass</option>
+            <option value="Keyboard">Keyboard</option>
+            <option value="Drum">Drum</option>
+          </select>
 
-          <input
-            type="text"
+          <select
             name="subSession"
             value={profileForm.subSession}
-            placeholder="서브 세션 예: Keyboard, Bass"
             onChange={onInputChange}
-          />
+          >
+            <option value="">서브 세션을 선택해주세요</option>
+            <option value="Vocal">Vocal</option>
+            <option value="Main Guitar">Guitar</option>
+            <option value="Sub Guitar">Sub Guitar</option>
+            <option value="Bass">Bass</option>
+            <option value="Keyboard">Keyboard</option>
+            <option value="Drum">Drum</option>
+          </select>
         </div>
 
         {errorMessage && <p className="login-error">{errorMessage}</p>}
