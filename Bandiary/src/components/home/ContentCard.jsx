@@ -10,7 +10,7 @@ function ContentCard({ item, isActive, onClick }) {
       onClick={() => onClick(item)}
     >
       <div className="content-card-top">
-        <p className="small-title">{item.type}</p>
+        <p className="small-title">{item.type} / {item.category}</p>
       </div>
 
       <strong>{item.title}</strong>
