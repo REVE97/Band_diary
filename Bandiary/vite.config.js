@@ -20,7 +20,7 @@ export default defineConfig({
         name: 'Bandiary',
         short_name: 'Bandiary',
         description: '밴드를 위한 다이어리 서비스',
-        theme_color: '#6b4eff',
+        theme_color: '#ffffff',
         background_color: '#ffffff',
         display: 'standalone',
         orientation: 'portrait',
