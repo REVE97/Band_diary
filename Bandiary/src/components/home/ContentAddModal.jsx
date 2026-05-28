@@ -27,8 +27,8 @@ function ContentAddModal({
     if (currentStep === 1) return '콘텐츠 정보를 입력해주세요.'
     if (currentStep === 2) {
       return isPicture
-        ? '업로드할 사진 파일을 선택해주세요.'
-        : '업로드할 영상 파일을 선택해주세요.'
+        ? '업로드할 사진 파일을 선택해주세요. (50MB 이하)'
+        : '업로드할 영상 파일을 선택해주세요. (50MB 이하)'
     }
     return '입력한 정보를 확인해주세요.'
   }

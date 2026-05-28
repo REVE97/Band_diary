@@ -63,14 +63,13 @@ function HomePage() {
     message: '',
   })
 
+  // 유저 데이터 호출
+  const storageInfo = JSON.parse(sessionStorage.getItem('bandiaryLoginUser'))
+
   // 비디오, 사진 개수 출력
   const videoCount = content.filter((item) => item.type === '비디오').length
   const pictureCount = content.filter((item) => item.type === '사진').length
 
-
-  // 유저 데이터 호출
-  const storageInfo = JSON.parse(sessionStorage.getItem('bandiaryLoginUser'))
-  
   const getUsers = async () => {
     if (!storageInfo?.userId) return
 
@@ -105,6 +104,91 @@ function HomePage() {
     getUsers()
     getContent()
   }, [])
+
+  // Storage public URL에서 bucket 내부 path만 추출
+  const getStorageFilePathFromUrl = (bucketName, fileUrl) => {
+    if (!fileUrl) return ''
+
+    const marker = `/storage/v1/object/public/${bucketName}/`
+    const markerIndex = fileUrl.indexOf(marker)
+
+    if (markerIndex === -1) return ''
+
+    return decodeURIComponent(fileUrl.slice(markerIndex + marker.length))
+  }
+
+  // Storage public URL을 기준으로 파일 삭제
+  const deleteStorageFileByUrl = async (bucketName, fileUrl) => {
+    const filePath = getStorageFilePathFromUrl(bucketName, fileUrl)
+
+    if (!filePath) return
+
+    const { error } = await supabase.storage
+      .from(bucketName)
+      .remove([filePath])
+
+    if (error) {
+      throw error
+    }
+  }
+
+  // 모바일 WebView 대응: file.type이 비어 있을 수 있으므로 확장자도 함께 검사
+  const isImageFile = (file) => {
+    const fileName = file.name?.toLowerCase() || ''
+    const fileType = file.type || ''
+
+    return (
+      fileType.startsWith('image/') ||
+      /\.(jpg|jpeg|png|webp|gif|heic|heif)$/.test(fileName)
+    )
+  }
+
+  const isVideoFile = (file) => {
+    const fileName = file.name?.toLowerCase() || ''
+    const fileType = file.type || ''
+
+    return (
+      fileType.startsWith('video/') ||
+      /\.(mp4|mov|webm|m4v|avi)$/.test(fileName)
+    )
+  }
+
+  const getFileExtension = (file, type) => {
+    const fileName = file?.name || ''
+    const extFromName = fileName.includes('.')
+      ? fileName.split('.').pop().toLowerCase()
+      : ''
+
+    if (extFromName) return extFromName
+
+    if (type === '사진' || type === 'profile') {
+      if (file.type === 'image/png') return 'png'
+      if (file.type === 'image/webp') return 'webp'
+      if (file.type === 'image/gif') return 'gif'
+      if (file.type === 'image/heic') return 'heic'
+      if (file.type === 'image/heif') return 'heif'
+
+      return 'jpg'
+    }
+
+    if (type === '비디오') {
+      if (file.type === 'video/quicktime') return 'mov'
+      if (file.type === 'video/webm') return 'webm'
+      if (file.type === 'video/x-m4v') return 'm4v'
+
+      return 'mp4'
+    }
+
+    return 'file'
+  }
+
+  const createSafeId = () => {
+    if (window.crypto?.randomUUID) {
+      return window.crypto.randomUUID()
+    }
+
+    return `${Date.now()}_${Math.random().toString(36).slice(2)}`
+  }
 
   // 프로필 수정 Modal 관련 메서드
   const handleOpenProfileModal = () => {
@@ -157,7 +241,7 @@ function HomePage() {
 
     if (!file) return
 
-    if (!file.type.startsWith('image/')) {
+    if (!isImageFile(file)) {
       setErrorMessage('이미지 파일만 업로드할 수 있습니다.')
       event.target.value = ''
       return
@@ -171,9 +255,14 @@ function HomePage() {
   const uploadProfileImage = async (file) => {
     if (!file) return null
 
-    const fileExt = file.name.split('.').pop()?.toLowerCase() || 'jpg'
-    const fileName = `${Date.now()}.${fileExt}`
-    const filePath = `${storageInfo.userId}/${fileName}`
+    const fileExt = getFileExtension(file, 'profile')
+    const safeUserId = String(storageInfo?.userId || 'guest').replace(
+      /[^a-zA-Z0-9_-]/g,
+      '_'
+    )
+
+    const fileName = `${Date.now()}_${createSafeId()}.${fileExt}`
+    const filePath = `${safeUserId}/${fileName}`
 
     const { error: uploadError } = await supabase.storage
       .from('profile-images')
@@ -191,7 +280,10 @@ function HomePage() {
       .from('profile-images')
       .getPublicUrl(filePath)
 
-    return data.publicUrl
+    return {
+      publicUrl: data.publicUrl,
+      filePath,
+    }
   }
 
   const handleUpdateProfile = async () => {
@@ -200,11 +292,17 @@ function HomePage() {
       return
     }
 
+    let uploadedProfileImagePath = ''
+
     try {
-      let profileImageUrl = profileInfo[0]?.profileImageUrl || null
+      const previousProfileImageUrl = profileInfo[0]?.profileImageUrl || null
+      let profileImageUrl = previousProfileImageUrl
 
       if (profileImageFile) {
-        profileImageUrl = await uploadProfileImage(profileImageFile)
+        const uploadedProfileImage = await uploadProfileImage(profileImageFile)
+
+        profileImageUrl = uploadedProfileImage.publicUrl
+        uploadedProfileImagePath = uploadedProfileImage.filePath
       }
 
       const payload = {
@@ -224,6 +322,15 @@ function HomePage() {
         throw error
       }
 
+      // 새 프로필 이미지로 정상 업데이트된 후에만 기존 프로필 이미지를 Storage에서 삭제
+      if (
+        profileImageFile &&
+        previousProfileImageUrl &&
+        previousProfileImageUrl !== profileImageUrl
+      ) {
+        await deleteStorageFileByUrl('profile-images', previousProfileImageUrl)
+      }
+
       await getUsers()
       handleCloseProfileModal()
 
@@ -234,7 +341,27 @@ function HomePage() {
         message: '프로필 정보가 성공적으로 수정되었습니다.',
       })
     } catch (error) {
-      console.error(error)
+      console.error('프로필 수정 실패:', {
+        message: error.message,
+        name: error.name,
+        statusCode: error.statusCode,
+        error,
+        fileName: profileImageFile?.name,
+        fileType: profileImageFile?.type,
+        fileSize: profileImageFile?.size,
+      })
+
+      // 새 이미지 업로드는 성공했지만 users 테이블 update가 실패한 경우,
+      // 새로 업로드된 이미지가 Storage에 남지 않도록 삭제
+      if (uploadedProfileImagePath) {
+        const { error: removeUploadedError } = await supabase.storage
+          .from('profile-images')
+          .remove([uploadedProfileImagePath])
+
+        if (removeUploadedError) {
+          console.error('업로드된 프로필 이미지 정리 실패:', removeUploadedError)
+        }
+      }
 
       setResultModal({
         isOpen: true,
@@ -301,27 +428,6 @@ function HomePage() {
     setErrorMessage('')
   }
 
-  // 모바일 WebView 대응: file.type이 비어 있을 수 있으므로 확장자도 함께 검사
-  const isImageFile = (file) => {
-    const fileName = file.name?.toLowerCase() || ''
-    const fileType = file.type || ''
-
-    return (
-      fileType.startsWith('image/') ||
-      /\.(jpg|jpeg|png|webp|gif|heic|heif)$/.test(fileName)
-    )
-  }
-
-  const isVideoFile = (file) => {
-    const fileName = file.name?.toLowerCase() || ''
-    const fileType = file.type || ''
-
-    return (
-      fileType.startsWith('video/') ||
-      /\.(mp4|mov|webm|m4v|avi)$/.test(fileName)
-    )
-  }
-
   const handleContentFileChange = (event) => {
     const file = event.target.files?.[0]
 
@@ -382,43 +488,6 @@ function HomePage() {
     setErrorMessage('')
   }
 
-  const getFileExtension = (file, type) => {
-    const fileName = file?.name || ''
-    const extFromName = fileName.includes('.')
-      ? fileName.split('.').pop().toLowerCase()
-      : ''
-
-    if (extFromName) return extFromName
-
-    if (type === '사진') {
-      if (file.type === 'image/png') return 'png'
-      if (file.type === 'image/webp') return 'webp'
-      if (file.type === 'image/gif') return 'gif'
-      if (file.type === 'image/heic') return 'heic'
-      if (file.type === 'image/heif') return 'heif'
-
-      return 'jpg'
-    }
-
-    if (type === '비디오') {
-      if (file.type === 'video/quicktime') return 'mov'
-      if (file.type === 'video/webm') return 'webm'
-      if (file.type === 'video/x-m4v') return 'm4v'
-
-      return 'mp4'
-    }
-
-    return 'file'
-  }
-
-  const createSafeId = () => {
-    if (window.crypto?.randomUUID) {
-      return window.crypto.randomUUID()
-    }
-
-    return `${Date.now()}_${Math.random().toString(36).slice(2)}`
-  }
-
   const uploadContentFile = async (file) => {
     if (!file) return null
 
@@ -430,8 +499,6 @@ function HomePage() {
       '_'
     )
 
-    // 모바일 WebView 대응:
-    // 원본 파일명은 한글, 공백, 특수문자, 빈 문자열일 수 있으므로 Storage path에 사용하지 않는다.
     const fileName = `${Date.now()}_${createSafeId()}.${fileExt}`
     const filePath = `${safeUserId}/${storageFolderName}/${fileName}`
 
@@ -552,18 +619,6 @@ function HomePage() {
     setDeleteContentTarget(null)
   }
 
-  // Storage public URL에서 content-files 내부 path만 추출
-  const getContentFilePathFromUrl = (fileUrl) => {
-    if (!fileUrl) return ''
-
-    const marker = '/storage/v1/object/public/content-files/'
-    const markerIndex = fileUrl.indexOf(marker)
-
-    if (markerIndex === -1) return ''
-
-    return decodeURIComponent(fileUrl.slice(markerIndex + marker.length))
-  }
-
   // 콘텐츠 삭제 API 호출
   const handleDeleteContent = async () => {
     if (!deleteContentTarget) return
@@ -574,16 +629,8 @@ function HomePage() {
           ? deleteContentTarget.contentImageUrl
           : deleteContentTarget.contentVideoUrl
 
-      const filePath = getContentFilePathFromUrl(fileUrl)
-
-      if (filePath) {
-        const { error: storageDeleteError } = await supabase.storage
-          .from('content-files')
-          .remove([filePath])
-
-        if (storageDeleteError) {
-          throw storageDeleteError
-        }
+      if (fileUrl) {
+        await deleteStorageFileByUrl('content-files', fileUrl)
       }
 
       const { error } = await supabase
