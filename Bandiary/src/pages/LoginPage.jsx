@@ -17,7 +17,7 @@ function LoginPage() {
   const [errorMessage, setErrorMessage] = useState('')
   const [users, setUsers] = useState([])
 
-  // 임시 로그인 사용자 데이터 API 호출
+  // users 테이블 데이터 조회
   const getUsers = async () => {
     const { data, error } = await supabase.from('users').select('*')
 
@@ -74,11 +74,16 @@ function LoginPage() {
       JSON.stringify({
         id: matchedUser.id,
         userId: matchedUser.userId,
+        name: matchedUser.name,
         isLoggedIn: true,
       })
     )
 
     navigate('/home')
+  }
+
+  const goSignup = () => {
+    navigate('/signup')
   }
 
   return (
@@ -113,6 +118,14 @@ function LoginPage() {
           onClick={handleLogin}
         >
           로그인
+        </button>
+
+        <button
+          type="button"
+          className="secondary-button signup-link-button"
+          onClick={goSignup}
+        >
+          회원가입
         </button>
       </div>
     </div>
