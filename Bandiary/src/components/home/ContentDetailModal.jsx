@@ -1,8 +1,80 @@
+import { useEffect, useState } from 'react'
+
 import { formatDate } from '../../features/common'
+import supabase from '../../api/supabase'
 
 function ContentDetailModal({ content, onClose }) {
   const isPicture = content.type === '사진'
   const isVideo = content.type === '비디오'
+
+  const [comments, setComments] = useState([])
+  const [commentText, setCommentText] = useState('')
+  const [commentErrorMessage, setCommentErrorMessage] = useState('')
+  const [isCommentLoading, setIsCommentLoading] = useState(false)
+
+  const storageInfo = JSON.parse(sessionStorage.getItem('bandiaryLoginUser'))
+
+  const getComments = async () => {
+    if (!content?.id) return
+
+    const { data, error } = await supabase
+      .from('comment')
+      .select('*')
+      .eq('content_id', content.id)
+      .order('created_at', { ascending: true })
+
+    if (error) {
+      console.error(error)
+      setCommentErrorMessage('댓글을 불러오지 못했습니다.')
+      return
+    }
+
+    setComments(data || [])
+  }
+
+  useEffect(() => {
+    getComments()
+  }, [content?.id])
+
+  const handleCommentInputChange = (event) => {
+    setCommentText(event.target.value)
+    setCommentErrorMessage('')
+  }
+
+  const handleAddComment = async () => {
+    if (!storageInfo?.userId) {
+      setCommentErrorMessage('로그인 사용자 정보를 찾을 수 없습니다.')
+      return
+    }
+
+    if (!commentText.trim()) {
+      setCommentErrorMessage('댓글 내용을 입력해주세요.')
+      return
+    }
+
+    setIsCommentLoading(true)
+
+    const { error } = await supabase.from('comment').insert([
+      {
+        content_id: content.id,
+        name: storageInfo.userId,
+        description: commentText.trim(),
+      },
+    ])
+
+    if (error) {
+      console.error(error)
+      setCommentErrorMessage('댓글 등록에 실패했습니다.')
+      setIsCommentLoading(false)
+      return
+    }
+
+    setCommentText('')
+    setCommentErrorMessage('')
+    setIsCommentLoading(false)
+
+    await getComments()
+  }
 
   return (
     <div className="place-modal-overlay">
@@ -46,6 +118,53 @@ function ContentDetailModal({ content, onClose }) {
               등록된 영상이 없습니다.
             </div>
           )}
+        </div>
+
+        <div className="comment-section">
+          <div className="comment-header">
+            <h3>댓글</h3>
+            <span>{comments.length}개</span>
+          </div>
+
+          <div className="comment-list">
+            {comments.length > 0 ? (
+              comments.map((comment) => (
+                <div key={comment.id} className="comment-item">
+                  <div className="comment-item-top">
+                    <strong>{comment.name}</strong>
+                    <span>{formatDate(comment.created_at)}</span>
+                  </div>
+
+                  <p>{comment.description}</p>
+                </div>
+              ))
+            ) : (
+              <div className="comment-empty">
+                아직 등록된 댓글이 없습니다.
+              </div>
+            )}
+          </div>
+
+          <div className="comment-form">
+            <textarea
+              value={commentText}
+              placeholder="댓글을 입력해주세요."
+              onChange={handleCommentInputChange}
+            />
+
+            {commentErrorMessage && (
+              <p className="login-error">{commentErrorMessage}</p>
+            )}
+
+            <button
+              type="button"
+              className="primary-button comment-submit-button"
+              onClick={handleAddComment}
+              disabled={isCommentLoading}
+            >
+              {isCommentLoading ? '등록 중...' : '댓글 등록'}
+            </button>
+          </div>
         </div>
       </div>
     </div>
