@@ -11,8 +11,6 @@ import picture from '../assets/images/picture_white.svg'
 import video from '../assets/images/video_white.svg'
 import editIcon from '../assets/images/edit.svg'
 
-import { contentMockList } from '../mocks/contentMock'
-
 const initialProfileForm = {
   name: '',
   bandName: '',
@@ -21,16 +19,19 @@ const initialProfileForm = {
 }
 
 function HomePage() {
-  const [selectedContent, setSelectedContent] = useState(contentMockList[0])
+  const [selectedContent, setSelectedContent] = useState(0)
 
-  // 프로필 데이터
+  // 프로필 데이터 상태값
   const [profileInfo, setProfileInfo] = useState([])
   const [profileForm, setProfileForm] = useState(initialProfileForm)
 
   const [profileImageFile, setProfileImageFile] = useState(null)
   const [profileImagePreview, setProfileImagePreview] = useState('')
 
-  // 모달 관련 데이터
+  // 콘텐츠 데이터 상태값
+  const [content, setContent] = useState([])
+
+  // 모달 관련 데이터 상태값
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
 
@@ -40,6 +41,15 @@ function HomePage() {
     title: '',
     message: '',
   })
+
+  // 비디오, 카드 개수 출력 
+  const videoCount = content.filter(
+    (content) => content.type === '비디오'
+  ).length
+
+  const pictureCount = content.filter(
+    (content) => content.type === '사진'
+  ).length
 
   // 유저 데이터 호출
   const storageInfo = JSON.parse(sessionStorage.getItem('bandiaryLoginUser'))
@@ -60,18 +70,21 @@ function HomePage() {
     setProfileInfo(data)
   }
 
+  // 콘텐츠 데이터 호출
+  const getContent = async () => {
+    const { data, error } = await supabase.from('content').select('*')
+    
+    if (error) {
+      console.error(error)
+    } else {
+      setContent(data)
+    }
+  }
+
   useEffect(() => {
     getUsers()
+    getContent()
   }, [])
-
-  // 비디오, 카드 개수 출력 -> 추후 수정 예정
-  const videoCount = contentMockList.filter(
-    (content) => content.title === '비디오'
-  ).length
-
-  const pictureCount = contentMockList.filter(
-    (content) => content.title === '사진'
-  ).length
 
   // Modal 관련 메서드
   const handleOpenProfileModal = () => {
@@ -266,7 +279,7 @@ function HomePage() {
 
       <section>
         <div className="home-card-grid">
-          {contentMockList.map((content) => (
+          {content.map((content) => (
             <ContentCard
               key={content.id}
               item={content}
