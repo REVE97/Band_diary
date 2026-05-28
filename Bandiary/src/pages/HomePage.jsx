@@ -4,6 +4,8 @@ import supabase from '../api/supabase'
 import StatCard from '../components/home/StatCard'
 import ContentCard from '../components/home/ContentCard'
 import ProfileEditModal from '../components/home/ProfileEditModal'
+import ContentAddModal from '../components/home/ContentAddModal'
+import ContentDetailModal from '../components/home/ContentDetailModal'
 import PlaceResultModal from '../components/place/PlaceResultModal'
 
 import profile from '../assets/images/profile.jpeg'
@@ -18,8 +20,13 @@ const initialProfileForm = {
   subSession: '',
 }
 
+const initialContentForm = {
+  category: '',
+  title: '',
+}
+
 function HomePage() {
-  const [selectedContent, setSelectedContent] = useState(0)
+  const [selectedContent, setSelectedContent] = useState(null)
 
   // 프로필 데이터 상태값
   const [profileInfo, setProfileInfo] = useState([])
@@ -30,6 +37,20 @@ function HomePage() {
 
   // 콘텐츠 데이터 상태값
   const [content, setContent] = useState([])
+
+  // 콘텐츠 추가 모달 상태값
+  const [isContentModalOpen, setIsContentModalOpen] = useState(false)
+  const [contentType, setContentType] = useState('사진')
+  const [contentForm, setContentForm] = useState(initialContentForm)
+  const [contentFile, setContentFile] = useState(null)
+  const [contentFileName, setContentFileName] = useState('선택된 파일 없음')
+  const [contentPreview, setContentPreview] = useState('')
+
+  // 콘텐츠 상세 모달 상태값
+  const [detailContent, setDetailContent] = useState(null)
+
+  // 콘텐츠 삭제 대상 상태값
+  const [deleteContentTarget, setDeleteContentTarget] = useState(null)
 
   // 모달 관련 데이터 상태값
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
@@ -42,18 +63,14 @@ function HomePage() {
     message: '',
   })
 
-  // 비디오, 카드 개수 출력 
-  const videoCount = content.filter(
-    (content) => content.type === '비디오'
-  ).length
+  // 비디오, 사진 개수 출력
+  const videoCount = content.filter((item) => item.type === '비디오').length
+  const pictureCount = content.filter((item) => item.type === '사진').length
 
-  const pictureCount = content.filter(
-    (content) => content.type === '사진'
-  ).length
 
   // 유저 데이터 호출
   const storageInfo = JSON.parse(sessionStorage.getItem('bandiaryLoginUser'))
-
+  
   const getUsers = async () => {
     if (!storageInfo?.userId) return
 
@@ -72,8 +89,11 @@ function HomePage() {
 
   // 콘텐츠 데이터 호출
   const getContent = async () => {
-    const { data, error } = await supabase.from('content').select('*')
-    
+    const { data, error } = await supabase
+      .from('content')
+      .select('*')
+      .order('created_at', { ascending: false })
+
     if (error) {
       console.error(error)
     } else {
@@ -86,7 +106,7 @@ function HomePage() {
     getContent()
   }, [])
 
-  // Modal 관련 메서드
+  // 프로필 수정 Modal 관련 메서드
   const handleOpenProfileModal = () => {
     const currentProfile = profileInfo[0]
 
@@ -133,12 +153,13 @@ function HomePage() {
 
   // 프로필 이미지 수정 메서드
   const handleProfileImageChange = (event) => {
-    const file = event.target.files[0]
+    const file = event.target.files?.[0]
 
     if (!file) return
 
     if (!file.type.startsWith('image/')) {
       setErrorMessage('이미지 파일만 업로드할 수 있습니다.')
+      event.target.value = ''
       return
     }
 
@@ -150,13 +171,17 @@ function HomePage() {
   const uploadProfileImage = async (file) => {
     if (!file) return null
 
-    const fileExt = file.name.split('.').pop()
+    const fileExt = file.name.split('.').pop()?.toLowerCase() || 'jpg'
     const fileName = `${Date.now()}.${fileExt}`
     const filePath = `${storageInfo.userId}/${fileName}`
 
     const { error: uploadError } = await supabase.storage
       .from('profile-images')
-      .upload(filePath, file)
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: false,
+        contentType: file.type || undefined,
+      })
 
     if (uploadError) {
       throw uploadError
@@ -221,6 +246,388 @@ function HomePage() {
     }
   }
 
+  // 콘텐츠 추가 Modal 관련 메서드
+  const handleOpenContentModal = () => {
+    setContentType('사진')
+    setContentForm(initialContentForm)
+    setContentFile(null)
+    setContentFileName('선택된 파일 없음')
+
+    if (contentPreview) {
+      URL.revokeObjectURL(contentPreview)
+    }
+
+    setContentPreview('')
+    setErrorMessage('')
+    setIsContentModalOpen(true)
+  }
+
+  const handleCloseContentModal = () => {
+    setIsContentModalOpen(false)
+    setContentType('사진')
+    setContentForm(initialContentForm)
+    setContentFile(null)
+    setContentFileName('선택된 파일 없음')
+
+    if (contentPreview) {
+      URL.revokeObjectURL(contentPreview)
+    }
+
+    setContentPreview('')
+    setErrorMessage('')
+  }
+
+  const handleContentTypeChange = (event) => {
+    setContentType(event.target.value)
+    setContentFile(null)
+    setContentFileName('선택된 파일 없음')
+
+    if (contentPreview) {
+      URL.revokeObjectURL(contentPreview)
+    }
+
+    setContentPreview('')
+    setErrorMessage('')
+  }
+
+  const handleContentInputChange = (event) => {
+    const { name, value } = event.target
+
+    setContentForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }))
+
+    setErrorMessage('')
+  }
+
+  // 모바일 WebView 대응: file.type이 비어 있을 수 있으므로 확장자도 함께 검사
+  const isImageFile = (file) => {
+    const fileName = file.name?.toLowerCase() || ''
+    const fileType = file.type || ''
+
+    return (
+      fileType.startsWith('image/') ||
+      /\.(jpg|jpeg|png|webp|gif|heic|heif)$/.test(fileName)
+    )
+  }
+
+  const isVideoFile = (file) => {
+    const fileName = file.name?.toLowerCase() || ''
+    const fileType = file.type || ''
+
+    return (
+      fileType.startsWith('video/') ||
+      /\.(mp4|mov|webm|m4v|avi)$/.test(fileName)
+    )
+  }
+
+  const handleContentFileChange = (event) => {
+    const file = event.target.files?.[0]
+
+    if (!file) {
+      setContentFile(null)
+      setContentFileName('선택된 파일 없음')
+
+      if (contentPreview) {
+        URL.revokeObjectURL(contentPreview)
+      }
+
+      setContentPreview('')
+      return
+    }
+
+    if (contentType === '사진' && !isImageFile(file)) {
+      setErrorMessage('사진 콘텐츠는 이미지 파일만 업로드할 수 있습니다.')
+      event.target.value = ''
+      return
+    }
+
+    if (contentType === '비디오' && !isVideoFile(file)) {
+      setErrorMessage('비디오 콘텐츠는 영상 파일만 업로드할 수 있습니다.')
+      event.target.value = ''
+      return
+    }
+
+    const maxImageSize = 10 * 1024 * 1024
+    const maxVideoSize = 50 * 1024 * 1024
+
+    if (contentType === '사진' && file.size > maxImageSize) {
+      setErrorMessage('이미지 파일은 10MB 이하만 업로드할 수 있습니다.')
+      event.target.value = ''
+      return
+    }
+
+    if (contentType === '비디오' && file.size > maxVideoSize) {
+      setErrorMessage('영상 파일은 50MB 이하만 업로드할 수 있습니다.')
+      event.target.value = ''
+      return
+    }
+
+    setContentFile(file)
+    setContentFileName(file.name || '선택한 파일')
+
+    if (contentPreview) {
+      URL.revokeObjectURL(contentPreview)
+    }
+
+    // 모바일 네이버앱 WebView에서는 대용량 영상 미리보기가 불안정할 수 있으므로
+    // 사진만 미리보기를 생성하고, 영상은 파일명만 보여준다.
+    if (contentType === '사진') {
+      setContentPreview(URL.createObjectURL(file))
+    } else {
+      setContentPreview('')
+    }
+
+    setErrorMessage('')
+  }
+
+  const getFileExtension = (file, type) => {
+    const fileName = file?.name || ''
+    const extFromName = fileName.includes('.')
+      ? fileName.split('.').pop().toLowerCase()
+      : ''
+
+    if (extFromName) return extFromName
+
+    if (type === '사진') {
+      if (file.type === 'image/png') return 'png'
+      if (file.type === 'image/webp') return 'webp'
+      if (file.type === 'image/gif') return 'gif'
+      if (file.type === 'image/heic') return 'heic'
+      if (file.type === 'image/heif') return 'heif'
+
+      return 'jpg'
+    }
+
+    if (type === '비디오') {
+      if (file.type === 'video/quicktime') return 'mov'
+      if (file.type === 'video/webm') return 'webm'
+      if (file.type === 'video/x-m4v') return 'm4v'
+
+      return 'mp4'
+    }
+
+    return 'file'
+  }
+
+  const createSafeId = () => {
+    if (window.crypto?.randomUUID) {
+      return window.crypto.randomUUID()
+    }
+
+    return `${Date.now()}_${Math.random().toString(36).slice(2)}`
+  }
+
+  const uploadContentFile = async (file) => {
+    if (!file) return null
+
+    const fileExt = getFileExtension(file, contentType)
+    const storageFolderName = contentType === '사진' ? 'image' : 'video'
+
+    const safeUserId = String(storageInfo?.userId || 'guest').replace(
+      /[^a-zA-Z0-9_-]/g,
+      '_'
+    )
+
+    // 모바일 WebView 대응:
+    // 원본 파일명은 한글, 공백, 특수문자, 빈 문자열일 수 있으므로 Storage path에 사용하지 않는다.
+    const fileName = `${Date.now()}_${createSafeId()}.${fileExt}`
+    const filePath = `${safeUserId}/${storageFolderName}/${fileName}`
+
+    const { error: uploadError } = await supabase.storage
+      .from('content-files')
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: false,
+        contentType: file.type || undefined,
+      })
+
+    if (uploadError) {
+      throw uploadError
+    }
+
+    const { data } = supabase.storage
+      .from('content-files')
+      .getPublicUrl(filePath)
+
+    return data.publicUrl
+  }
+
+  const validateContentForm = () => {
+    if (!contentForm.category.trim()) {
+      return '카테고리를 입력해주세요.'
+    }
+
+    if (!contentForm.title.trim()) {
+      return '제목을 입력해주세요.'
+    }
+
+    if (!contentFile) {
+      return contentType === '사진'
+        ? '이미지 파일을 첨부해주세요.'
+        : '영상 파일을 첨부해주세요.'
+    }
+
+    return ''
+  }
+
+  const handleAddContent = async () => {
+    const validationMessage = validateContentForm()
+
+    if (validationMessage) {
+      setErrorMessage(validationMessage)
+      return
+    }
+
+    try {
+      const contentFileUrl = await uploadContentFile(contentFile)
+
+      const payload = {
+        type: contentType,
+        category: contentForm.category.trim(),
+        title: contentForm.title.trim(),
+        contentImageUrl: contentType === '사진' ? contentFileUrl : null,
+        contentVideoUrl: contentType === '비디오' ? contentFileUrl : null,
+      }
+
+      const { error } = await supabase.from('content').insert([payload])
+
+      if (error) {
+        throw error
+      }
+
+      await getContent()
+      handleCloseContentModal()
+
+      setResultModal({
+        isOpen: true,
+        type: 'success',
+        title: '등록 완료',
+        message:
+          contentType === '사진'
+            ? '사진 콘텐츠가 성공적으로 등록되었습니다.'
+            : '비디오 콘텐츠가 성공적으로 등록되었습니다.',
+      })
+    } catch (error) {
+      console.error('콘텐츠 업로드 실패:', {
+        message: error.message,
+        name: error.name,
+        statusCode: error.statusCode,
+        error,
+        contentType,
+        fileName: contentFile?.name,
+        fileType: contentFile?.type,
+        fileSize: contentFile?.size,
+      })
+
+      setResultModal({
+        isOpen: true,
+        type: 'fail',
+        title: '등록 실패',
+        message:
+          '콘텐츠 등록 중 오류가 발생했습니다. 파일 용량, 형식, 네트워크 상태 또는 Supabase 설정을 확인해주세요.',
+      })
+    }
+  }
+
+  // 콘텐츠 카드 클릭
+  const handleContentCardClick = (item) => {
+    setSelectedContent(item)
+    setDetailContent(item)
+  }
+
+  const handleCloseDetailModal = () => {
+    setDetailContent(null)
+  }
+
+  // 콘텐츠 삭제 확인 모달 열기
+  const handleOpenContentDeleteModal = (event, item) => {
+    event.stopPropagation()
+    setDeleteContentTarget(item)
+  }
+
+  // 콘텐츠 삭제 확인 모달 닫기
+  const handleCloseContentDeleteModal = () => {
+    setDeleteContentTarget(null)
+  }
+
+  // Storage public URL에서 content-files 내부 path만 추출
+  const getContentFilePathFromUrl = (fileUrl) => {
+    if (!fileUrl) return ''
+
+    const marker = '/storage/v1/object/public/content-files/'
+    const markerIndex = fileUrl.indexOf(marker)
+
+    if (markerIndex === -1) return ''
+
+    return decodeURIComponent(fileUrl.slice(markerIndex + marker.length))
+  }
+
+  // 콘텐츠 삭제 API 호출
+  const handleDeleteContent = async () => {
+    if (!deleteContentTarget) return
+
+    try {
+      const fileUrl =
+        deleteContentTarget.type === '사진'
+          ? deleteContentTarget.contentImageUrl
+          : deleteContentTarget.contentVideoUrl
+
+      const filePath = getContentFilePathFromUrl(fileUrl)
+
+      if (filePath) {
+        const { error: storageDeleteError } = await supabase.storage
+          .from('content-files')
+          .remove([filePath])
+
+        if (storageDeleteError) {
+          throw storageDeleteError
+        }
+      }
+
+      const { error } = await supabase
+        .from('content')
+        .delete()
+        .eq('id', deleteContentTarget.id)
+
+      if (error) {
+        throw error
+      }
+
+      await getContent()
+
+      if (selectedContent?.id === deleteContentTarget.id) {
+        setSelectedContent(null)
+      }
+
+      if (detailContent?.id === deleteContentTarget.id) {
+        setDetailContent(null)
+      }
+
+      setResultModal({
+        isOpen: true,
+        type: 'success',
+        title: '삭제 완료',
+        message: `${deleteContentTarget.title} 콘텐츠가 삭제되었습니다.`,
+      })
+
+      setDeleteContentTarget(null)
+    } catch (error) {
+      console.error(error)
+
+      setResultModal({
+        isOpen: true,
+        type: 'fail',
+        title: '삭제 실패',
+        message:
+          '콘텐츠 삭제 중 오류가 발생했습니다. Supabase 또는 Storage 설정을 확인해주세요.',
+      })
+
+      setDeleteContentTarget(null)
+    }
+  }
+
   return (
     <div className="page home-page">
       <section className="user-greeting">
@@ -277,14 +684,24 @@ function HomePage() {
         <StatCard title="사진" value={pictureCount} icon={picture} />
       </section>
 
+      <button
+        type="button"
+        className="content-add-button"
+        onClick={handleOpenContentModal}
+        aria-label="사진 또는 비디오 추가"
+      >
+        +
+      </button>
+
       <section>
         <div className="home-card-grid">
-          {content.map((content) => (
+          {content.map((item) => (
             <ContentCard
-              key={content.id}
-              item={content}
-              isActive={selectedContent?.id === content.id}
-              onClick={setSelectedContent}
+              key={item.id}
+              item={item}
+              isActive={selectedContent?.id === item.id}
+              onClick={handleContentCardClick}
+              onDeleteClick={handleOpenContentDeleteModal}
             />
           ))}
         </div>
@@ -303,7 +720,44 @@ function HomePage() {
         />
       )}
 
-      {/* 프로필 수정 완료 Modal */}
+      {/* 콘텐츠 추가 Modal */}
+      {isContentModalOpen && (
+        <ContentAddModal
+          contentType={contentType}
+          contentForm={contentForm}
+          contentFileName={contentFileName}
+          contentPreview={contentPreview}
+          errorMessage={errorMessage}
+          onClose={handleCloseContentModal}
+          onSubmit={handleAddContent}
+          onContentTypeChange={handleContentTypeChange}
+          onInputChange={handleContentInputChange}
+          onFileChange={handleContentFileChange}
+        />
+      )}
+
+      {/* 콘텐츠 상세 Modal */}
+      {detailContent && (
+        <ContentDetailModal
+          content={detailContent}
+          onClose={handleCloseDetailModal}
+        />
+      )}
+
+      {/* 콘텐츠 삭제 확인 Modal */}
+      {deleteContentTarget && (
+        <PlaceResultModal
+          type="confirm"
+          title="삭제 확인"
+          message={`${deleteContentTarget.title} 콘텐츠를 삭제하시겠습니까?`}
+          confirmText="삭제"
+          cancelText="취소"
+          onClose={handleCloseContentDeleteModal}
+          onConfirm={handleDeleteContent}
+        />
+      )}
+
+      {/* 결과 Modal */}
       {resultModal.isOpen && (
         <PlaceResultModal
           type={resultModal.type}
