@@ -5,9 +5,9 @@ export const musicsheetMockList = [
     id: 1,
     type: 'pdf',
     title: '행운을 빌어요',
+    session: 'Guitar',
     description: '행운을 빌어요 기타 악보',
     fileName: 'lucky.pdf',
     pdfUrl: lucky,
-    tags: ['행운을 빌어요', '기타'],
   },
 ]

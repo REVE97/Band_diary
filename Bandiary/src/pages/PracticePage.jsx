@@ -28,12 +28,7 @@ function PracticePage() {
             <div className="studio-info">
               <strong>{pdf.title}</strong>
               <span>{pdf.description}</span>
-
-              <div className="tag-row">
-                {pdf.tags.map((tag) => (
-                  <span key={tag}>{tag}</span>
-                ))}
-              </div>
+              <p>{pdf.session}</p>
             </div>
           </button>
         ))}

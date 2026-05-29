@@ -124,6 +124,7 @@ function LoginPage() {
           type="button"
           className="secondary-button signup-link-button"
           onClick={goSignup}
+          disabled // 임시막기
         >
           회원가입
         </button>
