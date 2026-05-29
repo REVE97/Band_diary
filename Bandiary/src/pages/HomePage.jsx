@@ -3,6 +3,7 @@ import supabase from '../api/supabase'
 
 import StatCard from '../components/home/StatCard'
 import ContentCard from '../components/home/ContentCard'
+import ContentFilterTabs from '../components/home/ContentFilterTabs'
 import ProfileEditModal from '../components/home/ProfileEditModal'
 import ContentAddModal from '../components/home/ContentAddModal'
 import ContentDetailModal from '../components/home/ContentDetailModal'
@@ -38,6 +39,9 @@ function HomePage() {
   // 콘텐츠 데이터 상태값
   const [content, setContent] = useState([])
 
+  // 콘텐츠 필터 상태값
+  const [activeContentFilter, setActiveContentFilter] = useState('전체')
+
   // 콘텐츠 추가 모달 상태값
   const [isContentModalOpen, setIsContentModalOpen] = useState(false)
   const [contentType, setContentType] = useState('사진')
@@ -69,6 +73,12 @@ function HomePage() {
   // 비디오, 사진 개수 출력
   const videoCount = content.filter((item) => item.type === '비디오').length
   const pictureCount = content.filter((item) => item.type === '사진').length
+
+  // 필터링된 콘텐츠 목록
+  const filteredContent =
+    activeContentFilter === '전체'
+      ? content
+      : content.filter((item) => item.type === activeContentFilter)
 
   const getUsers = async () => {
     if (!storageInfo?.userId) return
@@ -598,6 +608,12 @@ function HomePage() {
     }
   }
 
+  // 콘텐츠 필터 변경
+  const handleContentFilterChange = (filterValue) => {
+    setActiveContentFilter(filterValue)
+    setSelectedContent(null)
+  }
+
   // 콘텐츠 카드 클릭
   const handleContentCardClick = (item) => {
     setSelectedContent(item)
@@ -731,6 +747,11 @@ function HomePage() {
         <StatCard title="사진" value={pictureCount} icon={picture} />
       </section>
 
+      <ContentFilterTabs
+        activeFilter={activeContentFilter}
+        onChange={handleContentFilterChange}
+      />
+
       <button
         type="button"
         className="content-add-button"
@@ -742,7 +763,7 @@ function HomePage() {
 
       <section>
         <div className="home-card-grid">
-          {content.map((item) => (
+          {filteredContent.map((item) => (
             <ContentCard
               key={item.id}
               item={item}
@@ -752,6 +773,14 @@ function HomePage() {
             />
           ))}
         </div>
+
+        {filteredContent.length === 0 && (
+          <div className="content-empty-box">
+            {activeContentFilter === '전체'
+              ? '등록된 콘텐츠가 없습니다.'
+              : `${activeContentFilter} 콘텐츠가 없습니다.`}
+          </div>
+        )}
       </section>
 
       {/* 프로필 수정 Modal */}

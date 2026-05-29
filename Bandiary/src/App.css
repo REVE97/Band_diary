@@ -1315,6 +1315,75 @@ a {
   background: #000000;
 }
 
+/* 콘텐츠 필터 */
+.content-filter-section {
+  margin-top: 18px;
+}
+
+.content-filter-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.content-filter-button {
+  min-width: 0;
+  height: 48px;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid #eeeef6;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #777586;
+  font-size: 13px;
+  font-weight: 900;
+  box-shadow: 0 6px 16px rgba(24, 20, 60, 0.04);
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.content-filter-button.active {
+  border-color: #6b4eff;
+  background: linear-gradient(135deg, #7857ff, #5f3de8);
+  color: #ffffff;
+  box-shadow: 0 10px 24px rgba(107, 78, 255, 0.24);
+}
+
+.content-filter-button:active {
+  transform: scale(0.96);
+}
+
+.content-filter-icon {
+  width: 18px;
+  height: 18px;
+  display: block;
+  flex: 0 0 auto;
+}
+
+.content-filter-button strong {
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.content-empty-box {
+  margin-top: 16px;
+  padding: 28px 16px;
+  border: 1px solid #eeeef6;
+  border-radius: 16px;
+  background: #ffffff;
+  color: #777586;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: center;
+}
+
 /* 빈 화면 중앙 정렬 공통 */
 .kakao-map-empty,
 .pdf-preview-empty,
