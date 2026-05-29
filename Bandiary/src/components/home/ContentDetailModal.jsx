@@ -11,9 +11,13 @@ function ContentDetailModal({ content, onClose }) {
   const [commentText, setCommentText] = useState('')
   const [commentErrorMessage, setCommentErrorMessage] = useState('')
   const [isCommentLoading, setIsCommentLoading] = useState(false)
+  const [deletingCommentId, setDeletingCommentId] = useState(null)
 
   const storageInfo = JSON.parse(sessionStorage.getItem('bandiaryLoginUser'))
 
+  const isAdmin = storageInfo?.userId === 'admin'
+
+  // 유저 데이터 불러오기
   const getComments = async () => {
     if (!content?.id) return
 
@@ -41,6 +45,7 @@ function ContentDetailModal({ content, onClose }) {
     setCommentErrorMessage('')
   }
 
+  // 댓글 추가 기능
   const handleAddComment = async () => {
     if (!storageInfo?.userId) {
       setCommentErrorMessage('로그인 사용자 정보를 찾을 수 없습니다.')
@@ -72,6 +77,37 @@ function ContentDetailModal({ content, onClose }) {
     setCommentText('')
     setCommentErrorMessage('')
     setIsCommentLoading(false)
+
+    await getComments()
+  }
+
+  // 댓글 삭제 기능 (관리자용)
+  const handleDeleteComment = async (commentId) => {
+    if (!isAdmin) {
+      setCommentErrorMessage('관리자만 댓글을 삭제할 수 있습니다.')
+      return
+    }
+
+    const isConfirmed = window.confirm('댓글을 삭제하시겠습니까?')
+
+    if (!isConfirmed) return
+
+    setDeletingCommentId(commentId)
+    setCommentErrorMessage('')
+
+    const { error } = await supabase
+      .from('comment')
+      .delete()
+      .eq('id', commentId)
+
+    if (error) {
+      console.error(error)
+      setCommentErrorMessage('댓글 삭제에 실패했습니다.')
+      setDeletingCommentId(null)
+      return
+    }
+
+    setDeletingCommentId(null)
 
     await getComments()
   }
@@ -131,8 +167,22 @@ function ContentDetailModal({ content, onClose }) {
               comments.map((comment) => (
                 <div key={comment.id} className="comment-item">
                   <div className="comment-item-top">
-                    <strong>{comment.name}</strong>
-                    <span>{formatDate(comment.created_at)}</span>
+                    <div className="comment-meta">
+                      <strong>{comment.name}</strong>
+                      <span>{formatDate(comment.created_at)}</span>
+                    </div>
+
+                    {isAdmin && (
+                      <button
+                        type="button"
+                        className="comment-delete-button"
+                        onClick={() => handleDeleteComment(comment.id)}
+                        disabled={deletingCommentId === comment.id}
+                        aria-label="댓글 삭제"
+                      >
+                        {deletingCommentId === comment.id ? '...' : '-'}
+                      </button>
+                    )}
                   </div>
 
                   <p>{comment.description}</p>
