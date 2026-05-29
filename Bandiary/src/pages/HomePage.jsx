@@ -70,6 +70,9 @@ function HomePage() {
   // 유저 데이터 호출
   const storageInfo = JSON.parse(sessionStorage.getItem('bandiaryLoginUser'))
 
+  // 관리자 여부 확인
+  const isAdmin = storageInfo?.userId === 'admin'
+
   // 비디오, 사진 개수 출력
   const videoCount = content.filter((item) => item.type === '비디오').length
   const pictureCount = content.filter((item) => item.type === '사진').length
@@ -627,6 +630,17 @@ function HomePage() {
   // 콘텐츠 삭제 확인 모달 열기
   const handleOpenContentDeleteModal = (event, item) => {
     event.stopPropagation()
+
+    if (!isAdmin) {
+      setResultModal({
+        isOpen: true,
+        type: 'fail',
+        title: '삭제 권한 없음',
+        message: '관리자만 콘텐츠를 삭제할 수 있습니다.',
+      })
+      return
+    }
+
     setDeleteContentTarget(item)
   }
 
@@ -638,6 +652,17 @@ function HomePage() {
   // 콘텐츠 삭제 API 호출
   const handleDeleteContent = async () => {
     if (!deleteContentTarget) return
+
+    if (!isAdmin) {
+      setDeleteContentTarget(null)
+      setResultModal({
+        isOpen: true,
+        type: 'fail',
+        title: '삭제 권한 없음',
+        message: '관리자만 콘텐츠를 삭제할 수 있습니다.',
+      })
+      return
+    }
 
     try {
       const fileUrl =
@@ -768,6 +793,7 @@ function HomePage() {
               key={item.id}
               item={item}
               isActive={selectedContent?.id === item.id}
+              isAdmin={isAdmin}
               onClick={handleContentCardClick}
               onDeleteClick={handleOpenContentDeleteModal}
             />

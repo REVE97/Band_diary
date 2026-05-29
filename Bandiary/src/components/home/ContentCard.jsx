@@ -1,10 +1,19 @@
 import { formatDate } from '../../features/common'
 
-function ContentCard({ item, isActive, onClick, onDeleteClick }) {
+function ContentCard({ item, isActive, isAdmin, onClick, onDeleteClick }) {
   const isPicture = item.type === '사진'
   const isVideo = item.type === '비디오'
 
   const thumbnailUrl = isPicture ? item.contentImageUrl : item.contentVideoUrl
+
+  const handleDeleteClick = (event) => {
+    event.stopPropagation()
+
+    if (!isAdmin) return
+    if (!onDeleteClick) return
+
+    onDeleteClick(event, item)
+  }
 
   return (
     <div
@@ -18,14 +27,16 @@ function ContentCard({ item, isActive, onClick, onDeleteClick }) {
         }
       }}
     >
-      <button
-        type="button"
-        className="content-delete-button"
-        onClick={(event) => onDeleteClick(event, item)}
-        aria-label={`${item.title} 삭제`}
-      >
-        -
-      </button>
+      {isAdmin && (
+        <button
+          type="button"
+          className="content-delete-button"
+          onClick={handleDeleteClick}
+          aria-label={`${item.title} 삭제`}
+        >
+          -
+        </button>
+      )}
 
       <div className="content-card-top">
         <p className="small-title">
@@ -44,7 +55,6 @@ function ContentCard({ item, isActive, onClick, onDeleteClick }) {
         {isVideo && thumbnailUrl && (
           <video src={thumbnailUrl} muted />
         )}
-
       </div>
     </div>
   )
