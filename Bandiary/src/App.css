@@ -1566,3 +1566,67 @@ a {
   cursor: not-allowed;
   opacity: 0.45;
 }
+
+.musicsheet-file-help {
+  margin: 0;
+  color: #777586;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+/* 악보 세션 필터 */
+.practice-filter-section {
+  margin: 10px 0 16px;
+}
+
+.practice-filter-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 0 2px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.practice-filter-row::-webkit-scrollbar {
+  display: none;
+}
+
+.practice-filter-button {
+  flex: 0 0 auto;
+  height: 40px;
+  padding: 0 14px;
+  border: 1px solid #eeeef6;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #777586;
+  font-size: 13px;
+  font-weight: 900;
+  box-shadow: 0 6px 16px rgba(24, 20, 60, 0.04);
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.practice-filter-button.active {
+  border-color: #6b4eff;
+  background: linear-gradient(135deg, #7857ff, #5f3de8);
+  color: #ffffff;
+  box-shadow: 0 10px 24px rgba(107, 78, 255, 0.24);
+}
+
+.practice-filter-button:active {
+  transform: scale(0.96);
+}
+
+/* 악보 카드 삭제 버튼 보정 */
+.pdf-page .studio-card {
+  position: relative;
+}
+
+.pdf-page .studio-delete-button {
+  z-index: 2;
+}
