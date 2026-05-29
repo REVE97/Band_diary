@@ -1,4 +1,89 @@
-# Band_diary
-React 라이브러리 기반 밴드 활동 다이어리 개인 프로젝트
+APP : <a href="https://band-diary.vercel.app">Bandiary</a> 
 
-APP : <a href="https://band-diary.vercel.app">Bandiary</a>
+# 🎸 Bandiary
+
+밴드 활동을 기록하고 관리할 수 있는 모바일 중심 웹앱입니다.
+사용자는 자신의 밴드 프로필을 설정하고, 사진과 영상을 업로드하여 활동 기록을 남길 수 있습니다.<br />
+또한 합주실, 식당 등의 장소 정보를 관리하고, 세션별 PDF 악보를 등록해 연습 자료로 활용할 수 있습니다.
+
+## 📌 프로젝트 소개
+
+`Bandiary`는 Band + Diary의 의미를 담은 밴드 활동 기록 서비스입니다.
+밴드 멤버가 공연 사진, 합주 영상, 악보 PDF, 연습 장소 정보를 한 곳에서 관리할 수 있도록 제작했습니다.
+
+모바일 환경에서 앱처럼 사용할 수 있도록 PWA 적용을 고려했으며, Supabase를 활용해 별도의 백엔드 서버 없이 데이터베이스와 파일 스토리지를 연동했습니다.
+
+## ✨ 주요 기능
+
+### 1. 로그인 / 회원가입
+
+* Supabase `users` 테이블 기반 로그인
+* 회원가입 시 `userId`, `password`, `name` 저장
+* `userId` unique 제약조건을 통한 중복 가입 방지
+
+### 2. 프로필 관리
+
+* 사용자 이름, 밴드명, 메인 세션, 서브 세션 수정
+* 프로필 이미지 업로드
+* 기존 프로필 이미지 변경 시 Supabase Storage 파일 정리
+
+### 3. 콘텐츠 관리
+
+* 사진 / 비디오 콘텐츠 업로드
+* Supabase Storage에 이미지, 영상 파일 저장
+* 전체보기 / 비디오 / 사진 필터링
+* 최신 등록순 카드 정렬
+* 상세 모달에서 이미지 또는 영상 확인
+* 댓글 등록 가능
+
+### 4. 장소 관리
+
+* 스튜디오 / 식당 장소 정보 등록
+* 카카오맵 API를 이용한 지도 표시
+* 장소명 기반 위도 / 경도 입력
+* 카카오맵 길찾기 연결
+
+### 5. 악보 관리
+
+* PDF 악보 업로드
+* Vocal, Guitar, Bass, Keyboard, Drum 세션별 필터링
+* PDF 미리보기 및 다운로드
+
+### 6. 관리자 기능
+
+* 콘텐츠 삭제
+* 댓글 삭제
+* 악보 삭제
+
+## 🛠 기술 스택
+
+### Frontend
+
+* React
+* JavaScript
+* React Router
+* Vite
+
+### Backend / Database
+
+* Supabase Database
+* Supabase Storage
+
+### Library
+
+* react-pdf
+* pdfjs-dist
+* Kakao Map API
+
+### Deploy
+
+* Vercel
+
+## ✅ 향후 개선 사항
+
+* Supabase Auth 기반 로그인 구조로 변경
+* 비밀번호 암호화 또는 인증 시스템 개선
+* 관리자 권한을 프론트엔드가 아닌 Supabase RLS 정책으로 관리
+* 콘텐츠 및 악보 수정 기능 추가
+* 오프라인 PWA 캐싱 고도화
+* 사용자별 콘텐츠 분리 조회 기능 추가
