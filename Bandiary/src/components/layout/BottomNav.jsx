@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom'
 import StudioIcon from '../../assets/images/bandroom.svg'
 import DiaryIcon from '../../assets/images/diary.svg'
 import SongIcon from '../../assets/images/song.svg'
+import ScheduleIcon from '../../assets/images/calendar.svg'
 
 const navItems = [
   {
@@ -10,7 +11,7 @@ const navItems = [
     label: 'Place',
     icon: StudioIcon
   },
-   {
+  {
     path: '/home',
     label: 'Home',
     icon: DiaryIcon
@@ -19,6 +20,11 @@ const navItems = [
     path: '/practice',
     label: 'Practice',
     icon: SongIcon
+  },
+  {
+    path: '/schedule',
+    label: 'Schedule',
+    icon: ScheduleIcon
   }
 ]
 

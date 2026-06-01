@@ -1,0 +1,37 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none"
+  xmlns="http://www.w3.org/2000/svg" role="img" aria-label="logout">
+  <path
+    d="M214 92H126C108.327 92 94 106.327 94 124V388C94 405.673 108.327 420 126 420H214"
+    stroke="currentColor"
+    stroke-width="18"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M214 92L278 124V388L214 420V92Z"
+    stroke="currentColor"
+    stroke-width="18"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M238 262H239"
+    stroke="currentColor"
+    stroke-width="22"
+    stroke-linecap="round"
+  />
+  <path
+    d="M214 256H390"
+    stroke="currentColor"
+    stroke-width="18"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M334 200L390 256L334 312"
+    stroke="currentColor"
+    stroke-width="18"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none" role="img" aria-label="calendar icon">
+  <title>Calendar Icon</title>
+  <g fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M154 74v54"/>
+    <path d="M358 74v54"/>
+    <rect x="74" y="104" width="364" height="334" rx="46"/>
+    <path d="M74 178h364"/>
+    <path d="M138 242h36"/>
+    <path d="M238 242h36"/>
+    <path d="M338 242h36"/>
+    <path d="M138 318h36"/>
+    <path d="M238 318h36"/>
+    <path d="M338 318h36"/>
+    <path d="M138 394h36"/>
+    <path d="M238 394h36"/>
+  </g>
+</svg>
