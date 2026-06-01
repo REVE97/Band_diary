@@ -1649,3 +1649,304 @@ a {
 .pdf-page .studio-delete-button {
   z-index: 2;
 }
+
+/* 일정 페이지 */
+.schedule-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0 14px;
+}
+
+.schedule-page-header h2 {
+  margin: 0;
+  color: #151515;
+  font-size: 21px;
+  font-weight: 900;
+  letter-spacing: -0.7px;
+}
+
+.schedule-page-header p {
+  margin: 7px 0 0;
+  color: #777586;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.schedule-calendar-card {
+  padding: 12px;
+  border: 1px solid #eeeef6;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(24, 20, 60, 0.05);
+}
+
+/* FullCalendar 모바일 커스텀 */
+.schedule-calendar-card .fc {
+  color: #151515;
+  font-family: inherit;
+  font-size: 12px;
+}
+
+.schedule-calendar-card .fc .fc-toolbar {
+  margin-bottom: 14px;
+}
+
+.schedule-calendar-card .fc .fc-toolbar-title {
+  color: #151515;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.schedule-calendar-card .fc .fc-button {
+  border: 1px solid #eeeef6;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #6b4eff;
+  font-size: 12px;
+  font-weight: 900;
+  box-shadow: none;
+}
+
+.schedule-calendar-card .fc .fc-button:focus {
+  box-shadow: none;
+}
+
+.schedule-calendar-card .fc .fc-button:active {
+  transform: scale(0.96);
+}
+
+.schedule-calendar-card .fc-theme-standard td,
+.schedule-calendar-card .fc-theme-standard th,
+.schedule-calendar-card .fc-theme-standard .fc-scrollgrid {
+  border-color: #eeeef4;
+}
+
+.schedule-calendar-card .fc .fc-col-header-cell {
+  height: 32px;
+  vertical-align: middle;
+}
+
+.schedule-calendar-card .fc .fc-col-header-cell-cushion {
+  color: #4f4d5d;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.schedule-calendar-card .fc .fc-daygrid-day {
+  min-height: 74px;
+}
+
+.schedule-calendar-card .fc .fc-daygrid-day-number {
+  padding: 6px;
+  color: #151515;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.schedule-calendar-card .fc .fc-day-today {
+  background: #f8f5ff;
+}
+
+.schedule-calendar-card .fc .fc-day-today .fc-daygrid-day-number {
+  min-width: 24px;
+  height: 24px;
+  margin: 4px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #6b4eff;
+  color: #ffffff;
+}
+
+.schedule-calendar-card .fc .fc-daygrid-event {
+  margin: 2px 4px;
+  padding: 3px 5px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.schedule-calendar-card .fc .fc-event-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.schedule-calendar-card .fc .fc-daygrid-more-link {
+  color: #6b4eff;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+/* 일정 추가 모달 */
+.schedule-modal-card {
+  max-width: 390px;
+}
+
+.schedule-form textarea {
+  width: 100%;
+  min-height: 92px;
+  padding: 12px 14px;
+  border: 1px solid #eeeef6;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #151515;
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 1.4;
+  outline: none;
+  resize: none;
+}
+
+.schedule-form textarea:focus {
+  border-color: #6b4eff;
+  box-shadow: 0 0 0 3px rgba(107, 78, 255, 0.12);
+}
+
+.schedule-time-row {
+  display: grid;
+  grid-template-columns: 1fr 20px 1fr;
+  gap: 8px;
+  align-items: center;
+}
+
+.schedule-time-row span {
+  color: #777586;
+  font-size: 14px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.schedule-color-section {
+  padding: 12px;
+  border: 1px solid #eeeef6;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.schedule-color-section > span {
+  display: block;
+  margin-bottom: 10px;
+  color: #777586;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.schedule-color-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.schedule-color-chip {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.schedule-color-chip input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.schedule-color-chip.active {
+  outline: 3px solid rgba(107, 78, 255, 0.22);
+  outline-offset: 3px;
+}
+
+.schedule-color-chip.active::after {
+  content: "✓";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+/* 일정 상세 모달 */
+.schedule-detail-card {
+  max-width: 390px;
+}
+
+.schedule-detail-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.schedule-detail-type {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.schedule-detail-type span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.schedule-detail-type strong {
+  color: #4f4d5d;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.schedule-detail-title-box,
+.schedule-detail-info-card {
+  padding: 14px;
+  border: 1px solid #eeeef6;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.schedule-detail-title-box strong {
+  color: #151515;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.schedule-detail-info-card span {
+  display: block;
+  margin-bottom: 7px;
+  color: #777586;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.schedule-detail-info-card strong {
+  color: #151515;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.schedule-detail-info-card p {
+  margin: 0;
+  color: #4f4d5d;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.schedule-delete-button {
+  width: 100%;
+  height: 48px;
+  margin-top: 18px;
+  border-radius: 14px;
+  background: #ff4d4f;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 900;
+  box-shadow: 0 8px 18px rgba(255, 77, 79, 0.22);
+}
+
+.schedule-delete-button:active {
+  transform: scale(0.98);
+}
