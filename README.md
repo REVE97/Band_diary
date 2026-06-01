@@ -49,7 +49,12 @@ APP : <a href="https://band-diary.vercel.app">Bandiary</a>
 * Vocal, Guitar, Bass, Keyboard, Drum 세션별 필터링
 * PDF 미리보기 및 다운로드
 
-### 6. 관리자 기능
+### 6. 일정 관리
+
+* FullCalendar 라이브러리 사용하여 일정 관리
+* 밴드 일정 · 공연 일정 · 회의 일정 등을 추가·삭제
+
+### 7. 관리자 기능
 
 * 콘텐츠 삭제
 * 댓글 삭제
