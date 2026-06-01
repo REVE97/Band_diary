@@ -84,7 +84,7 @@ function ScheduleAddModal({
             type="text"
             name="location"
             value={scheduleForm.location}
-            placeholder="장소 예: 홍대 연습실 A"
+            placeholder="장소 예: 사운드시티 합정본점 A ROOM"
             onChange={onInputChange}
           />
 
