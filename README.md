@@ -30,7 +30,7 @@ APP : <a href="https://band-diary.vercel.app">Bandiary</a>
 ### 3. 콘텐츠 관리
 
 * 사진 / 비디오 / 오디오 콘텐츠 업로드
-* Supabase Storage에 이미지, 영상, 오디오 파일 저장
+* Supabase Storage에 이미지, 영상, 오디오 파일 저장 (영상 30MB 제한 설정)
 * 전체보기 / 비디오 / 사진 / 오디오 필터링
 * 최신 등록순 카드 정렬
 * 상세 모달에서 이미지, 영상, 오디오 확인
