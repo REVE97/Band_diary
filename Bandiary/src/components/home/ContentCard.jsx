@@ -1,5 +1,7 @@
 import { formatDate } from '../../features/common'
 import audioIcon from '../../assets/images/audio_white.svg'
+import videoIcon from '../../assets/images/video_white.svg'
+import pictureIcon from '../../assets/images/picture_white.svg'
 
 function ContentCard({ item, isActive, isAdmin, onClick, onDeleteClick }) {
   const isPicture = item.type === '사진'
@@ -49,19 +51,40 @@ function ContentCard({ item, isActive, isAdmin, onClick, onDeleteClick }) {
 
       <div className="content-image">
         {isPicture && item.contentImageUrl && (
+          <div className="content-preview-placeholder">
+            <img 
+              src={pictureIcon} 
+              alt="사진 콘텐츠"
+              className="content-preview-icon" 
+            />
+          </div>
+        )}
+
+        {isVideo && item.contentVideoUrl && (
+          <div className="content-preview-placeholder">
+            <img 
+              src={videoIcon} 
+              alt="비디오 콘텐츠"
+              className="content-preview-icon" 
+            />
+          </div>
+        )}
+
+        {/* 캐싱 효율성 테스트 중 */}
+        {/* {isPicture && item.contentImageUrl && (
           <img src={item.contentImageUrl} alt={item.title} />
         )}
 
         {isVideo && item.contentVideoUrl && (
           <video src={item.contentVideoUrl} muted />
-        )}
+        )} */}
 
         {isAudio && (
-          <div className="content-audio-placeholder">
+          <div className="content-preview-placeholder">
             <img
               src={audioIcon}
               alt="오디오 콘텐츠"
-              className="content-audio-icon"
+              className="content-preview-icon"
             />
           </div>
         )}
