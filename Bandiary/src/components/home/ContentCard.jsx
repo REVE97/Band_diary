@@ -1,4 +1,5 @@
 import { formatDate } from '../../features/common'
+import audioIcon from '../../assets/images/audio_white.svg'
 
 function ContentCard({ item, isActive, isAdmin, onClick, onDeleteClick }) {
   const isPicture = item.type === '사진'
@@ -57,8 +58,11 @@ function ContentCard({ item, isActive, isAdmin, onClick, onDeleteClick }) {
 
         {isAudio && (
           <div className="content-audio-placeholder">
-            <strong>AUDIO</strong>
-            <span>오디오 콘텐츠</span>
+            <img
+              src={audioIcon}
+              alt="오디오 콘텐츠"
+              className="content-audio-icon"
+            />
           </div>
         )}
       </div>

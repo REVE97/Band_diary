@@ -8,6 +8,7 @@ const contentFilterOptions = [
     label: '전체보기',
     value: '전체',
     icon: allView_icon,
+    iconOnly: true,
   },
   {
     label: '비디오',
@@ -30,21 +31,30 @@ function ContentFilterTabs({ activeFilter, onChange }) {
   return (
     <section className="content-filter-section">
       <div className="content-filter-row">
-        {contentFilterOptions.map((option) => (
-          <button
-            key={option.value}
-            type="button"
-            className={
-              activeFilter === option.value
-                ? 'content-filter-button active'
-                : 'content-filter-button'
-            }
-            onClick={() => onChange(option.value)}
-          >
-            <img src={option.icon} alt="" className="content-filter-icon" />
-            <span>{option.label}</span>
-          </button>
-        ))}
+        {contentFilterOptions.map((option) => {
+          const isActive = activeFilter === option.value
+
+          return (
+            <button
+              key={option.value}
+              type="button"
+              className={[
+                'content-filter-button',
+                option.iconOnly ? 'icon-only' : '',
+                isActive ? 'active' : '',
+              ]
+                .filter(Boolean)
+                .join(' ')}
+              onClick={() => onChange(option.value)}
+              aria-label={option.label}
+              title={option.label}
+            >
+              <img src={option.icon} alt="" className="content-filter-icon" />
+
+              {!option.iconOnly && <span>{option.label}</span>}
+            </button>
+          )
+        })}
       </div>
     </section>
   )
