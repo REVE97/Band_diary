@@ -3,8 +3,7 @@ import { formatDate } from '../../features/common'
 function ContentCard({ item, isActive, isAdmin, onClick, onDeleteClick }) {
   const isPicture = item.type === '사진'
   const isVideo = item.type === '비디오'
-
-  const thumbnailUrl = isPicture ? item.contentImageUrl : item.contentVideoUrl
+  const isAudio = item.type === '오디오'
 
   const handleDeleteClick = (event) => {
     event.stopPropagation()
@@ -48,12 +47,19 @@ function ContentCard({ item, isActive, isAdmin, onClick, onDeleteClick }) {
       <span>{formatDate(item.created_at)}</span>
 
       <div className="content-image">
-        {isPicture && thumbnailUrl && (
-          <img src={thumbnailUrl} alt={item.title} />
+        {isPicture && item.contentImageUrl && (
+          <img src={item.contentImageUrl} alt={item.title} />
         )}
 
-        {isVideo && thumbnailUrl && (
-          <video src={thumbnailUrl} muted />
+        {isVideo && item.contentVideoUrl && (
+          <video src={item.contentVideoUrl} muted />
+        )}
+
+        {isAudio && (
+          <div className="content-audio-placeholder">
+            <strong>AUDIO</strong>
+            <span>오디오 콘텐츠</span>
+          </div>
         )}
       </div>
     </div>

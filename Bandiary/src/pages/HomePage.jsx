@@ -1,4 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useRef, useState, useEffect } from 'react'
+import { FFmpeg } from '@ffmpeg/ffmpeg'
+import { fetchFile, toBlobURL } from '@ffmpeg/util'
 import supabase from '../api/supabase'
 
 import StatCard from '../components/home/StatCard'
@@ -13,6 +15,7 @@ import profile from '../assets/images/profile.jpeg'
 import picture from '../assets/images/picture_white.svg'
 import video from '../assets/images/video_white.svg'
 import editIcon from '../assets/images/edit.svg'
+import audio from '../assets/images/audio_white.svg'
 
 const initialProfileForm = {
   name: '',
@@ -49,6 +52,8 @@ function HomePage() {
   const [contentFile, setContentFile] = useState(null)
   const [contentFileName, setContentFileName] = useState('선택된 파일 없음')
   const [contentPreview, setContentPreview] = useState('')
+  const [isContentUploading, setIsContentUploading] = useState(false)
+  const [convertMessage, setConvertMessage] = useState('')
 
   // 콘텐츠 상세 모달 상태값
   const [detailContent, setDetailContent] = useState(null)
@@ -67,15 +72,20 @@ function HomePage() {
     message: '',
   })
 
+  // ffmpeg.wasm 인스턴스
+  const ffmpegRef = useRef(new FFmpeg())
+  const isFfmpegLoadedRef = useRef(false)
+
   // 유저 데이터 호출
   const storageInfo = JSON.parse(sessionStorage.getItem('bandiaryLoginUser'))
 
   // 관리자 여부 확인
   const isAdmin = storageInfo?.userId === 'admin'
 
-  // 비디오, 사진 개수 출력
+  // 비디오, 사진, 오디오 개수 출력
   const videoCount = content.filter((item) => item.type === '비디오').length
   const pictureCount = content.filter((item) => item.type === '사진').length
+  const audioCount = content.filter((item) => item.type === '오디오').length
 
   // 필터링된 콘텐츠 목록
   const filteredContent =
@@ -136,9 +146,7 @@ function HomePage() {
 
     if (!filePath) return
 
-    const { error } = await supabase.storage
-      .from(bucketName)
-      .remove([filePath])
+    const { error } = await supabase.storage.from(bucketName).remove([filePath])
 
     if (error) {
       throw error
@@ -163,6 +171,16 @@ function HomePage() {
     return (
       fileType.startsWith('video/') ||
       /\.(mp4|mov|webm|m4v|avi)$/.test(fileName)
+    )
+  }
+
+  const isAudioFile = (file) => {
+    const fileName = file.name?.toLowerCase() || ''
+    const fileType = file.type || ''
+
+    return (
+      fileType.startsWith('audio/') ||
+      /\.(mp3|m4a|aac|wav|webm|ogg)$/.test(fileName)
     )
   }
 
@@ -192,6 +210,17 @@ function HomePage() {
       return 'mp4'
     }
 
+    if (type === '오디오') {
+      if (file.type === 'audio/mpeg') return 'mp3'
+      if (file.type === 'audio/mp4') return 'm4a'
+      if (file.type === 'audio/aac') return 'aac'
+      if (file.type === 'audio/wav') return 'wav'
+      if (file.type === 'audio/webm') return 'webm'
+      if (file.type === 'audio/ogg') return 'ogg'
+
+      return 'm4a'
+    }
+
     return 'file'
   }
 
@@ -201,6 +230,91 @@ function HomePage() {
     }
 
     return `${Date.now()}_${Math.random().toString(36).slice(2)}`
+  }
+
+  const getSafeUserId = () => {
+    return String(storageInfo?.userId || 'guest').replace(
+      /[^a-zA-Z0-9_-]/g,
+      '_'
+    )
+  }
+
+  // ffmpeg.wasm 로드
+  const loadFfmpeg = async () => {
+    if (isFfmpegLoadedRef.current) return
+
+    setConvertMessage('오디오 변환 엔진을 불러오는 중입니다.')
+
+    const ffmpeg = ffmpegRef.current
+
+    ffmpeg.on('log', ({ message }) => {
+      console.log('[ffmpeg]', message)
+    })
+
+    // Vite에서는 공식 문서 기준 esm 경로를 사용
+    const baseURL = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm'
+
+    await ffmpeg.load({
+      coreURL: await toBlobURL(
+        `${baseURL}/ffmpeg-core.js`,
+        'text/javascript'
+      ),
+      wasmURL: await toBlobURL(
+        `${baseURL}/ffmpeg-core.wasm`,
+        'application/wasm'
+      ),
+    })
+
+    isFfmpegLoadedRef.current = true
+  }
+
+  // 영상 파일을 m4a 194k 오디오 파일로 변환
+  const convertVideoToM4a = async (file) => {
+    await loadFfmpeg()
+
+    setConvertMessage('영상에서 오디오를 추출하는 중입니다.')
+
+    const ffmpeg = ffmpegRef.current
+
+    const inputExt = getFileExtension(file, '비디오')
+    const inputName = `input_${Date.now()}.${inputExt}`
+    const outputName = `output_${Date.now()}.m4a`
+
+    await ffmpeg.writeFile(inputName, await fetchFile(file))
+
+    const resultCode = await ffmpeg.exec([
+      '-i',
+      inputName,
+      '-vn',
+      '-c:a',
+      'aac',
+      '-b:a',
+      '194k',
+      outputName,
+    ])
+
+    if (resultCode !== 0) {
+      throw new Error('영상 파일을 m4a 오디오로 변환하지 못했습니다.')
+    }
+
+    const data = await ffmpeg.readFile(outputName)
+
+    try {
+      await ffmpeg.deleteFile(inputName)
+      await ffmpeg.deleteFile(outputName)
+    } catch (error) {
+      console.warn('ffmpeg 임시 파일 삭제 실패:', error)
+    }
+
+    const audioBlob = new Blob([data.buffer], {
+      type: 'audio/mp4',
+    })
+
+    const originalName = file.name?.replace(/\.[^/.]+$/, '') || 'converted'
+
+    return new File([audioBlob], `${originalName}.m4a`, {
+      type: 'audio/mp4',
+    })
   }
 
   // 프로필 수정 Modal 관련 메서드
@@ -269,10 +383,7 @@ function HomePage() {
     if (!file) return null
 
     const fileExt = getFileExtension(file, 'profile')
-    const safeUserId = String(storageInfo?.userId || 'guest').replace(
-      /[^a-zA-Z0-9_-]/g,
-      '_'
-    )
+    const safeUserId = getSafeUserId()
 
     const fileName = `${Date.now()}_${createSafeId()}.${fileExt}`
     const filePath = `${safeUserId}/${fileName}`
@@ -335,7 +446,6 @@ function HomePage() {
         throw error
       }
 
-      // 새 프로필 이미지로 정상 업데이트된 후에만 기존 프로필 이미지를 Storage에서 삭제
       if (
         profileImageFile &&
         previousProfileImageUrl &&
@@ -364,8 +474,6 @@ function HomePage() {
         fileSize: profileImageFile?.size,
       })
 
-      // 새 이미지 업로드는 성공했지만 users 테이블 update가 실패한 경우,
-      // 새로 업로드된 이미지가 Storage에 남지 않도록 삭제
       if (uploadedProfileImagePath) {
         const { error: removeUploadedError } = await supabase.storage
           .from('profile-images')
@@ -392,6 +500,7 @@ function HomePage() {
     setContentForm(initialContentForm)
     setContentFile(null)
     setContentFileName('선택된 파일 없음')
+    setConvertMessage('')
 
     if (contentPreview) {
       URL.revokeObjectURL(contentPreview)
@@ -403,11 +512,14 @@ function HomePage() {
   }
 
   const handleCloseContentModal = () => {
+    if (isContentUploading) return
+
     setIsContentModalOpen(false)
     setContentType('사진')
     setContentForm(initialContentForm)
     setContentFile(null)
     setContentFileName('선택된 파일 없음')
+    setConvertMessage('')
 
     if (contentPreview) {
       URL.revokeObjectURL(contentPreview)
@@ -421,6 +533,7 @@ function HomePage() {
     setContentType(event.target.value)
     setContentFile(null)
     setContentFileName('선택된 파일 없음')
+    setConvertMessage('')
 
     if (contentPreview) {
       URL.revokeObjectURL(contentPreview)
@@ -456,20 +569,38 @@ function HomePage() {
       return
     }
 
-    if (contentType === '사진' && !isImageFile(file)) {
+    const isSelectedFileImage = isImageFile(file)
+    const isSelectedFileVideo = isVideoFile(file)
+    const isSelectedFileAudio = isAudioFile(file)
+
+    if (contentType === '사진' && !isSelectedFileImage) {
       setErrorMessage('사진 콘텐츠는 이미지 파일만 업로드할 수 있습니다.')
       event.target.value = ''
       return
     }
 
-    if (contentType === '비디오' && !isVideoFile(file)) {
+    if (contentType === '비디오' && !isSelectedFileVideo) {
       setErrorMessage('비디오 콘텐츠는 영상 파일만 업로드할 수 있습니다.')
       event.target.value = ''
       return
     }
 
+    if (
+      contentType === '오디오' &&
+      !isSelectedFileAudio &&
+      !isSelectedFileVideo
+    ) {
+      setErrorMessage(
+        '오디오 콘텐츠는 오디오 파일 또는 변환할 영상 파일만 업로드할 수 있습니다.'
+      )
+      event.target.value = ''
+      return
+    }
+
     const maxImageSize = 10 * 1024 * 1024
-    const maxVideoSize = 50 * 1024 * 1024
+    const maxVideoUploadSize = 30 * 1024 * 1024
+    const maxVideoConvertSourceSize = 200 * 1024 * 1024
+    const maxAudioSize = 20 * 1024 * 1024
 
     if (contentType === '사진' && file.size > maxImageSize) {
       setErrorMessage('이미지 파일은 10MB 이하만 업로드할 수 있습니다.')
@@ -477,22 +608,43 @@ function HomePage() {
       return
     }
 
-    if (contentType === '비디오' && file.size > maxVideoSize) {
-      setErrorMessage('영상 파일은 50MB 이하만 업로드할 수 있습니다.')
+    if (contentType === '비디오' && file.size > maxVideoUploadSize) {
+      setErrorMessage('비디오 파일은 30MB 이하만 업로드할 수 있습니다.')
+      event.target.value = ''
+      return
+    }
+
+    if (
+      contentType === '오디오' &&
+      isSelectedFileVideo &&
+      file.size > maxVideoConvertSourceSize
+    ) {
+      setErrorMessage(
+        '오디오 변환용 영상 파일은 200MB 이하만 선택할 수 있습니다.'
+      )
+      event.target.value = ''
+      return
+    }
+
+    if (
+      contentType === '오디오' &&
+      isSelectedFileAudio &&
+      file.size > maxAudioSize
+    ) {
+      setErrorMessage('오디오 파일은 20MB 이하만 업로드할 수 있습니다.')
       event.target.value = ''
       return
     }
 
     setContentFile(file)
     setContentFileName(file.name || '선택한 파일')
+    setConvertMessage('')
 
     if (contentPreview) {
       URL.revokeObjectURL(contentPreview)
     }
 
-    // 모바일 네이버앱 WebView에서는 대용량 영상 미리보기가 불안정할 수 있으므로
-    // 사진만 미리보기를 생성하고, 영상은 파일명만 보여준다.
-    if (contentType === '사진') {
+    if (contentType === '사진' || contentType === '비디오') {
       setContentPreview(URL.createObjectURL(file))
     } else {
       setContentPreview('')
@@ -501,17 +653,18 @@ function HomePage() {
     setErrorMessage('')
   }
 
-  const uploadContentFile = async (file) => {
+  const uploadContentFile = async (file, uploadType) => {
     if (!file) return null
 
-    const fileExt = getFileExtension(file, contentType)
-    const storageFolderName = contentType === '사진' ? 'image' : 'video'
+    const fileExt = getFileExtension(file, uploadType)
 
-    const safeUserId = String(storageInfo?.userId || 'guest').replace(
-      /[^a-zA-Z0-9_-]/g,
-      '_'
-    )
+    let storageFolderName = 'files'
 
+    if (uploadType === '사진') storageFolderName = 'image'
+    if (uploadType === '비디오') storageFolderName = 'video'
+    if (uploadType === '오디오') storageFolderName = 'audio'
+
+    const safeUserId = getSafeUserId()
     const fileName = `${Date.now()}_${createSafeId()}.${fileExt}`
     const filePath = `${safeUserId}/${storageFolderName}/${fileName}`
 
@@ -544,9 +697,9 @@ function HomePage() {
     }
 
     if (!contentFile) {
-      return contentType === '사진'
-        ? '이미지 파일을 첨부해주세요.'
-        : '영상 파일을 첨부해주세요.'
+      if (contentType === '사진') return '이미지 파일을 첨부해주세요.'
+      if (contentType === '비디오') return '영상 파일을 첨부해주세요.'
+      if (contentType === '오디오') return '오디오 파일을 첨부해주세요.'
     }
 
     return ''
@@ -560,8 +713,29 @@ function HomePage() {
       return
     }
 
+    setIsContentUploading(true)
+    setErrorMessage('')
+    setConvertMessage('')
+
     try {
-      const contentFileUrl = await uploadContentFile(contentFile)
+      let uploadFile = contentFile
+      let uploadType = contentType
+      const isAudioSourceVideo =
+        contentType === '오디오' && isVideoFile(contentFile)
+
+      if (contentType === '오디오' && isAudioSourceVideo) {
+        uploadFile = await convertVideoToM4a(contentFile)
+        uploadType = '오디오'
+        setConvertMessage('변환된 오디오 파일을 업로드하는 중입니다.')
+      } else if (contentType === '오디오') {
+        setConvertMessage('오디오 파일을 업로드하는 중입니다.')
+      } else if (contentType === '비디오') {
+        setConvertMessage('비디오 파일을 업로드하는 중입니다.')
+      } else if (contentType === '사진') {
+        setConvertMessage('이미지 파일을 업로드하는 중입니다.')
+      }
+
+      const contentFileUrl = await uploadContentFile(uploadFile, uploadType)
 
       const payload = {
         type: contentType,
@@ -569,6 +743,7 @@ function HomePage() {
         title: contentForm.title.trim(),
         contentImageUrl: contentType === '사진' ? contentFileUrl : null,
         contentVideoUrl: contentType === '비디오' ? contentFileUrl : null,
+        contentAudioUrl: contentType === '오디오' ? contentFileUrl : null,
       }
 
       const { error } = await supabase.from('content').insert([payload])
@@ -587,7 +762,11 @@ function HomePage() {
         message:
           contentType === '사진'
             ? '사진 콘텐츠가 성공적으로 등록되었습니다.'
-            : '비디오 콘텐츠가 성공적으로 등록되었습니다.',
+            : contentType === '비디오'
+              ? '비디오 콘텐츠가 성공적으로 등록되었습니다.'
+              : isVideoFile(contentFile)
+                ? '영상에서 오디오를 추출해 오디오 콘텐츠로 등록했습니다.'
+                : '오디오 콘텐츠가 성공적으로 등록되었습니다.',
       })
     } catch (error) {
       console.error('콘텐츠 업로드 실패:', {
@@ -606,8 +785,11 @@ function HomePage() {
         type: 'fail',
         title: '등록 실패',
         message:
-          '콘텐츠 등록 중 오류가 발생했습니다. 파일 용량, 형식, 네트워크 상태 또는 Supabase 설정을 확인해주세요.',
+          '콘텐츠 등록 중 오류가 발생했습니다. 파일 용량, 형식, 네트워크 상태, 변환 가능 여부 또는 Supabase 설정을 확인해주세요.',
       })
+    } finally {
+      setIsContentUploading(false)
+      setConvertMessage('')
     }
   }
 
@@ -665,10 +847,19 @@ function HomePage() {
     }
 
     try {
-      const fileUrl =
-        deleteContentTarget.type === '사진'
-          ? deleteContentTarget.contentImageUrl
-          : deleteContentTarget.contentVideoUrl
+      let fileUrl = ''
+
+      if (deleteContentTarget.type === '사진') {
+        fileUrl = deleteContentTarget.contentImageUrl
+      }
+
+      if (deleteContentTarget.type === '비디오') {
+        fileUrl = deleteContentTarget.contentVideoUrl
+      }
+
+      if (deleteContentTarget.type === '오디오') {
+        fileUrl = deleteContentTarget.contentAudioUrl
+      }
 
       if (fileUrl) {
         await deleteStorageFileByUrl('content-files', fileUrl)
@@ -770,6 +961,7 @@ function HomePage() {
       <section className="stats-grid">
         <StatCard title="비디오" value={videoCount} icon={video} />
         <StatCard title="사진" value={pictureCount} icon={picture} />
+        <StatCard title="오디오" value={audioCount} icon={audio} />
       </section>
 
       <ContentFilterTabs
@@ -781,7 +973,7 @@ function HomePage() {
         type="button"
         className="content-add-button"
         onClick={handleOpenContentModal}
-        aria-label="사진 또는 비디오 추가"
+        aria-label="사진, 비디오 또는 오디오 추가"
       >
         +
       </button>
@@ -809,7 +1001,6 @@ function HomePage() {
         )}
       </section>
 
-      {/* 프로필 수정 Modal */}
       {isProfileModalOpen && (
         <ProfileEditModal
           profileForm={profileForm}
@@ -822,7 +1013,6 @@ function HomePage() {
         />
       )}
 
-      {/* 콘텐츠 추가 Modal */}
       {isContentModalOpen && (
         <ContentAddModal
           contentType={contentType}
@@ -830,6 +1020,8 @@ function HomePage() {
           contentFileName={contentFileName}
           contentPreview={contentPreview}
           errorMessage={errorMessage}
+          convertMessage={convertMessage}
+          isContentUploading={isContentUploading}
           onClose={handleCloseContentModal}
           onSubmit={handleAddContent}
           onContentTypeChange={handleContentTypeChange}
@@ -838,7 +1030,6 @@ function HomePage() {
         />
       )}
 
-      {/* 콘텐츠 상세 Modal */}
       {detailContent && (
         <ContentDetailModal
           content={detailContent}
@@ -846,7 +1037,6 @@ function HomePage() {
         />
       )}
 
-      {/* 콘텐츠 삭제 확인 Modal */}
       {deleteContentTarget && (
         <PlaceResultModal
           type="confirm"
@@ -859,7 +1049,6 @@ function HomePage() {
         />
       )}
 
-      {/* 결과 Modal */}
       {resultModal.isOpen && (
         <PlaceResultModal
           type={resultModal.type}

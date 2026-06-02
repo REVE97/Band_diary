@@ -6,6 +6,7 @@ import supabase from '../../api/supabase'
 function ContentDetailModal({ content, onClose }) {
   const isPicture = content.type === '사진'
   const isVideo = content.type === '비디오'
+  const isAudio = content.type === '오디오'
 
   const [comments, setComments] = useState([])
   const [commentText, setCommentText] = useState('')
@@ -143,6 +144,15 @@ function ContentDetailModal({ content, onClose }) {
             <video src={content.contentVideoUrl} controls />
           )}
 
+          {isAudio && content.contentAudioUrl && (
+            <div className="content-detail-audio">
+              <p>오디오 콘텐츠입니다.</p>
+              <audio controls src={content.contentAudioUrl}>
+                브라우저가 오디오 재생을 지원하지 않습니다.
+              </audio>
+            </div>
+          )}
+
           {isPicture && !content.contentImageUrl && (
             <div className="content-detail-empty">
               등록된 이미지가 없습니다.
@@ -152,6 +162,12 @@ function ContentDetailModal({ content, onClose }) {
           {isVideo && !content.contentVideoUrl && (
             <div className="content-detail-empty">
               등록된 영상이 없습니다.
+            </div>
+          )}
+
+          {isAudio && !content.contentAudioUrl && (
+            <div className="content-detail-empty">
+              등록된 오디오가 없습니다.
             </div>
           )}
         </div>

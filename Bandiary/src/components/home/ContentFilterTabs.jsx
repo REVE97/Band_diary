@@ -1,6 +1,7 @@
 import picture_icon from '../../assets/images/picture.svg'
 import video_icon from '../../assets/images/video.svg'
 import allView_icon from '../../assets/images/allView.svg'
+import audio_icon from '../../assets/images/audio.svg'
 
 const contentFilterOptions = [
   {
@@ -18,12 +19,14 @@ const contentFilterOptions = [
     value: '사진',
     icon: picture_icon,
   },
+  {
+    label: '오디오',
+    value: '오디오',
+    icon: audio_icon,
+  },
 ]
 
-function ContentFilterTabs({
-  activeFilter,
-  onChange,
-}) {
+function ContentFilterTabs({ activeFilter, onChange }) {
   return (
     <section className="content-filter-section">
       <div className="content-filter-row">
