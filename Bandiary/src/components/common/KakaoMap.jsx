@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import mapIcon from '../../assets/images/map_purple.svg'
 
 function KakaoMap({ place }) {
   const mapRef = useRef(null)
@@ -47,7 +48,8 @@ function KakaoMap({ place }) {
   if (!place) {
     return (
       <div className="kakao-map-empty">
-        장소를 선택하면 지도가 표시됩니다.
+        <img src={mapIcon} alt="" className="empty-preview-icon" />
+        <p>장소를 선택하면 지도가 표시됩니다.</p>
       </div>
     )
   }

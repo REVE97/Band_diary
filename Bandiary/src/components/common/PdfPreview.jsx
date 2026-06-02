@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Document, Page, pdfjs } from 'react-pdf'
 import pdfWorker from 'pdfjs-dist/build/pdf.worker?url'
+import pdfIcon from '../../assets/images/pdf_purple.svg'
 
 pdfjs.GlobalWorkerOptions.workerSrc = pdfWorker
 
@@ -10,7 +11,8 @@ function PdfPreview({ pdf }) {
   if (!pdf) {
     return (
       <div className="pdf-preview-empty">
-        PDF 카드를 선택하면 미리보기가 표시됩니다.
+        <img src={pdfIcon} alt="" className="empty-preview-icon" />
+        <p>PDF 카드를 선택하면 미리보기가 표시됩니다.</p>
       </div>
     )
   }

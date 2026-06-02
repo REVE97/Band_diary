@@ -1,0 +1,12 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M18 9.5H37L50.5 23V46.5C50.5 50.0899 47.5899 53 44 53H18C14.4101 53 11.5 50.0899 11.5 46.5V16C11.5 12.4101 14.4101 9.5 18 9.5Z"/>
+    <path d="M37 9.5V19C37 21.2091 38.7909 23 41 23H50.5" opacity="0.9"/>
+    <path d="M19 31.5C20.3537 28.9273 21.7429 26.8705 23.5 25.5C24.5509 24.6803 25.9252 25.5998 25.6371 26.8976C24.7942 30.6955 23.1667 34.7472 21.5714 37.5714C19.4959 41.245 17.9132 43.3966 16.5 45" opacity="0.9"/>
+    <path d="M22 37C24.9548 37.1034 28.7298 36.6596 32 35.5C36.5517 33.8868 39.7366 31.4492 41.5 29.5" opacity="0.9"/>
+    <path d="M29.5 30C31.2501 33.1649 33.9642 36.5492 36.7574 39.1901C39.887 42.149 42.8627 44 45.5 44.5" opacity="0.9"/>
+    <rect x="30.5" y="39" width="22" height="13.5" rx="6.75" fill="white"/>
+    <rect x="30.5" y="39" width="22" height="13.5" rx="6.75"/>
+  </g>
+  <text x="41.5" y="47.6" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="9.5" font-weight="700" fill="currentColor">PDF</text>
+</svg>
