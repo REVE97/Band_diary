@@ -1,4 +1,7 @@
-APP : <a href="https://band-diary.vercel.app">Bandiary</a> 
+APP : <a href="https://band-diary.vercel.app">Bandiary</a> / TEST ID : test · TEST PW : 1234
+
+<img width="800" height="450" alt="인트로" src="https://github.com/user-attachments/assets/b2a8f441-3a84-4422-bda7-d83d2db18117" />
+
 
 # 🎸 Bandiary
 
