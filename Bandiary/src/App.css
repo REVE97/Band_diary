@@ -607,6 +607,57 @@ a {
   font-weight: 800;
 }
 
+.login-input-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.login-input-wrap input {
+  position: relative;
+  z-index: 1;
+  padding-right: 46px;
+  background: #ffffff;
+}
+
+.login-input-placeholder {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  z-index: 2;
+  color: #9a93bd;
+  font-size: 16px;
+  line-height: 1;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.login-clear-button {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  z-index: 3;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  transform: translateY(-50%);
+  touch-action: manipulation;
+}
+
+.login-clear-button img {
+  width: 20px;
+  height: 20px;
+  display: block;
+  pointer-events: none;
+}
+
+.login-clear-button:active {
+  transform: translateY(-50%) scale(0.92);
+}
+
 .secondary-button {
   width: 100%;
   height: 48px;
@@ -1432,7 +1483,6 @@ a {
   text-align: center;
 }
 
-/* 빈 화면 중앙 정렬 공통 */
 /* 빈 화면 중앙 정렬 공통 */
 .kakao-map-empty,
 .pdf-preview-empty,

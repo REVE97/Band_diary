@@ -1,17 +1,21 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import logo from '../assets/images/logo.svg'
+import clearIcon from '../assets/images/clear_input.svg'
 
 import supabase from '../api/supabase'
 
 function LoginPage() {
   const navigate = useNavigate()
 
+  const userIdInputRef = useRef(null)
+  const passwordInputRef = useRef(null)
+
   // 사용자 입력 데이터 상태값
   const [loginForm, setLoginForm] = useState({
-    userId: '',
-    password: '',
+    loginUserId: '',
+    loginPassword: '',
   })
 
   const [errorMessage, setErrorMessage] = useState('')
@@ -45,23 +49,46 @@ function LoginPage() {
     setErrorMessage('')
   }
 
-  const handleLogin = () => {
-    const { userId, password } = loginForm
+  // 입력값 초기화
+  const handleClearInput = (name, inputRef) => {
+    setLoginForm((prev) => ({
+      ...prev,
+      [name]: '',
+    }))
 
-    if (!userId.trim() || !password.trim()) {
+    setErrorMessage('')
+
+    // X 버튼 클릭 후에도 input 포커스를 유지
+    // 미러링 환경에서 placeholder/입력 이벤트가 섞이는 현상을 줄이기 위함
+    requestAnimationFrame(() => {
+      if (!inputRef.current) return
+
+      inputRef.current.focus()
+
+      try {
+        inputRef.current.setSelectionRange(0, 0)
+      } catch {
+      }
+    })
+  }
+
+  const handleLogin = () => {
+    const { loginUserId, loginPassword } = loginForm
+
+    if (!loginUserId.trim() || !loginPassword.trim()) {
       setErrorMessage('아이디와 비밀번호를 모두 입력해주세요.')
       return
     }
 
-    if (Number.isNaN(Number(password))) {
+    if (Number.isNaN(Number(loginPassword))) {
       setErrorMessage('비밀번호는 숫자로 입력해주세요.')
       return
     }
 
     const matchedUser = users.find(
       (user) =>
-        user.userId === userId.trim() &&
-        user.password === Number(password)
+        user.userId === loginUserId.trim() &&
+        user.password === Number(loginPassword)
     )
 
     if (!matchedUser) {
@@ -93,21 +120,73 @@ function LoginPage() {
         <p>밴드를 위한 다이어리 서비스</p>
 
         <div className="login-form">
-          <input
-            type="text"
-            name="userId"
-            value={loginForm.userId}
-            placeholder="아이디"
-            onChange={handleInputChange}
-          />
+          <div className="login-input-wrap">
+            <input
+              ref={userIdInputRef}
+              type="text"
+              name="loginUserId"
+              value={loginForm.loginUserId}
+              onChange={handleInputChange}
+              aria-label="아이디"
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="none"
+              spellCheck={false}
+            />
 
-          <input
-            type="password"
-            name="password"
-            value={loginForm.password}
-            placeholder="비밀번호"
-            onChange={handleInputChange}
-          />
+            {!loginForm.loginUserId && (
+              <span className="login-input-placeholder">아이디</span>
+            )}
+
+            {loginForm.loginUserId && (
+              <button
+                type="button"
+                className="login-clear-button"
+                tabIndex={-1}
+                onPointerDown={(event) => {
+                  event.preventDefault()
+                  handleClearInput('loginUserId', userIdInputRef)
+                }}
+                aria-label="아이디 입력값 지우기"
+              >
+                <img src={clearIcon} alt="" />
+              </button>
+            )}
+          </div>
+
+          <div className="login-input-wrap">
+            <input
+              ref={passwordInputRef}
+              type="password"
+              name="loginPassword"
+              value={loginForm.loginPassword}
+              onChange={handleInputChange}
+              aria-label="비밀번호"
+              autoComplete="new-password"
+              autoCorrect="off"
+              autoCapitalize="none"
+              spellCheck={false}
+            />
+
+            {!loginForm.loginPassword && (
+              <span className="login-input-placeholder">비밀번호</span>
+            )}
+
+            {loginForm.loginPassword && (
+              <button
+                type="button"
+                className="login-clear-button"
+                tabIndex={-1}
+                onPointerDown={(event) => {
+                  event.preventDefault()
+                  handleClearInput('loginPassword', passwordInputRef)
+                }}
+                aria-label="비밀번호 입력값 지우기"
+              >
+                <img src={clearIcon} alt="" />
+              </button>
+            )}
+          </div>
         </div>
 
         {errorMessage && <p className="login-error">{errorMessage}</p>}
