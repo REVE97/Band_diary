@@ -11,7 +11,7 @@ import ContentAddModal from '../components/home/ContentAddModal'
 import ContentDetailModal from '../components/home/ContentDetailModal'
 import PlaceResultModal from '../components/place/PlaceResultModal'
 
-import profile from '../assets/images/profile.jpeg'
+import profile from '../assets/images/default_profile.svg'
 import picture from '../assets/images/picture_white.svg'
 import video from '../assets/images/video_white.svg'
 import editIcon from '../assets/images/edit.svg'
