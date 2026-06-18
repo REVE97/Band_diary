@@ -113,6 +113,10 @@ function LoginPage() {
     navigate('/signup')
   }
 
+  const naviBlock = () => {
+    alert('관리자에게 문의해주세요.')
+  }
+
   return (
     <div className="page login-page">
       <div className="login-card">
@@ -202,8 +206,7 @@ function LoginPage() {
         <button
           type="button"
           className="secondary-button signup-link-button"
-          onClick={goSignup}
-          disabled // 임시막기
+          onClick={naviBlock}
         >
           회원가입
         </button>
