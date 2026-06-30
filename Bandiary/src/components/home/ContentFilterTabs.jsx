@@ -58,7 +58,7 @@ function ContentFilterTabs({ activeFilter, counts, onChange }) {
 
               {!option.iconOnly && (
                 <span className="content-filter-text">
-                  {option.label}
+                  {/* {option.label} */}
                   <strong className="content-filter-count">{count}</strong>
                 </span>
               )}
