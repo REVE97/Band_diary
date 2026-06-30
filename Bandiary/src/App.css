@@ -226,37 +226,6 @@ a {
   margin-top: 16px;
 }
 
-.stat-card {
-  min-height: 76px;
-  padding: 13px 10px;
-  display: flex;
-  justify-content: space-between;
-  gap: 6px;
-  color: #ffffff;
-  border-right: 1px solid rgba(255, 255, 255, 0.24);
-}
-
-.stat-card:last-child {
-  border-right: 0;
-}
-
-.stat-card p {
-  margin: 0 0 7px;
-  font-size: 11px;
-  opacity: 0.9;
-}
-
-.stat-card strong {
-  font-size: 22px;
-  line-height: 1;
-}
-
-.stat-card img {
-  align-self: flex-end;
-  width: 23px;
-  height: 23px;
-}
-
 .section {
   margin-top: 26px;
 }

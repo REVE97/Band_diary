@@ -3,7 +3,6 @@ import { FFmpeg } from '@ffmpeg/ffmpeg'
 import { fetchFile, toBlobURL } from '@ffmpeg/util'
 import supabase from '../api/supabase'
 
-import StatCard from '../components/home/StatCard'
 import ContentCard from '../components/home/ContentCard'
 import ContentFilterTabs from '../components/home/ContentFilterTabs'
 import ProfileEditModal from '../components/home/ProfileEditModal'
@@ -12,10 +11,7 @@ import ContentDetailModal from '../components/home/ContentDetailModal'
 import PlaceResultModal from '../components/place/PlaceResultModal'
 
 import profile from '../assets/images/default_profile.svg'
-import picture from '../assets/images/picture_white.svg'
-import video from '../assets/images/video_white.svg'
 import editIcon from '../assets/images/edit.svg'
-import audio from '../assets/images/audio_white.svg'
 
 const initialProfileForm = {
   name: '',
@@ -82,10 +78,17 @@ function HomePage() {
   // 관리자 여부 확인
   const isAdmin = storageInfo?.userId === 'admin'
 
-  // 비디오, 사진, 오디오 개수 출력
+  // 비디오, 사진, 오디오 개수
   const videoCount = content.filter((item) => item.type === '비디오').length
   const pictureCount = content.filter((item) => item.type === '사진').length
   const audioCount = content.filter((item) => item.type === '오디오').length
+
+  const contentCounts = {
+    전체: content.length,
+    비디오: videoCount,
+    사진: pictureCount,
+    오디오: audioCount,
+  }
 
   // 필터링된 콘텐츠 목록
   const filteredContent =
@@ -251,7 +254,6 @@ function HomePage() {
       console.log('[ffmpeg]', message)
     })
 
-    // Vite에서는 공식 문서 기준 esm 경로를 사용
     const baseURL = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm'
 
     await ffmpeg.load({
@@ -958,14 +960,9 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="stats-grid">
-        <StatCard title="비디오" value={videoCount} icon={video} />
-        <StatCard title="사진" value={pictureCount} icon={picture} />
-        <StatCard title="오디오" value={audioCount} icon={audio} />
-      </section>
-
       <ContentFilterTabs
         activeFilter={activeContentFilter}
+        counts={contentCounts}
         onChange={handleContentFilterChange}
       />
 

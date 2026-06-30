@@ -27,12 +27,17 @@ const contentFilterOptions = [
   },
 ]
 
-function ContentFilterTabs({ activeFilter, onChange }) {
+function ContentFilterTabs({ activeFilter, counts, onChange }) {
+  const getCount = (value) => {
+    return counts?.[value] ?? 0
+  }
+
   return (
     <section className="content-filter-section">
       <div className="content-filter-row">
         {contentFilterOptions.map((option) => {
           const isActive = activeFilter === option.value
+          const count = getCount(option.value)
 
           return (
             <button
@@ -51,7 +56,12 @@ function ContentFilterTabs({ activeFilter, onChange }) {
             >
               <img src={option.icon} alt="" className="content-filter-icon" />
 
-              {!option.iconOnly && <span>{option.label}</span>}
+              {!option.iconOnly && (
+                <span className="content-filter-text">
+                  {option.label}
+                  <strong className="content-filter-count">{count}</strong>
+                </span>
+              )}
             </button>
           )
         })}
