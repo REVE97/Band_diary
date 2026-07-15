@@ -1260,6 +1260,27 @@ a {
   transform: scale(0.96);
 }
 
+/* SNS LIST CSS */
+.sns-list {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: -4px 0 12px;
+}
+
+.sns-list a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sns-list img {
+  width: 24px;
+  height: 24px;
+  display: block;
+  cursor: pointer;
+}
+
 /* 프로필 미리보기 CSS */
 .profile-image-preview {
   width: 92px;

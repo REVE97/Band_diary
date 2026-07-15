@@ -12,6 +12,8 @@ import PlaceResultModal from '../components/place/PlaceResultModal'
 
 import profile from '../assets/images/default_profile.svg'
 import editIcon from '../assets/images/edit.svg'
+import instagramIcon from '../assets/images/instagram.svg'
+import discordIcon from '../assets/images/discord.svg'
 
 const initialProfileForm = {
   name: '',
@@ -923,6 +925,26 @@ function HomePage() {
             alt={`${profileInfo[0]?.name || 'Guest'} 프로필`}
           />
         </div>
+      </section>
+
+      <section className="sns-list">
+        <a
+          href="https://www.instagram.com/계정명"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Instagram으로 이동"
+        >
+          <img src={instagramIcon} alt="Instagram" />
+        </a>
+
+        <a
+          href="https://discord.gg/초대코드"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Discord로 이동"
+        >
+          <img src={discordIcon} alt="Discord" />
+        </a>
       </section>
 
       <section className="profile-edit-section">
