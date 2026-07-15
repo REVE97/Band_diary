@@ -929,7 +929,7 @@ function HomePage() {
 
       <section className="sns-list">
         <a
-          href="https://www.instagram.com/계정명"
+          href="https://www.instagram.com/11f_band"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Instagram으로 이동"
@@ -938,7 +938,7 @@ function HomePage() {
         </a>
 
         <a
-          href="https://discord.gg/초대코드"
+          href="https://discord.gg/"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Discord로 이동"
