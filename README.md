@@ -1,11 +1,11 @@
 APP : <a href="https://band-diary.vercel.app">Bandiary</a>  
-TEST ID : test · PW : 1234
+TEST ID : test ·TEST PW : 1234 
 
 <img width="800" height="450" alt="인트로" src="https://github.com/user-attachments/assets/b2a8f441-3a84-4422-bda7-d83d2db18117" />
 
 # 🎸 Bandiary
 
-밴드 활동을 기록하고 관리할 수 있는 모바일 중심 웹앱입니다.
+밴드 활동을 기록하고 관리할 수 있는 모바일 중심 웹앱입니다. ( 테스트 시 모바일 환경을 권장합니다. )
 사용자는 자신의 밴드 프로필을 설정하고, 사진과 영상을 업로드하여 활동 기록을 남길 수 있습니다.<br />
 또한 합주실, 식당 등의 장소 정보를 관리하고, 세션별 PDF 악보를 등록해 연습 자료로 활용할 수 있습니다.
 
@@ -20,9 +20,9 @@ TEST ID : test · PW : 1234
 
 ### 1. 로그인 / 회원가입
 
-* Supabase `users` 테이블 기반 로그인
-* 회원가입 시 `userId`, `password`, `name` 저장
-* `userId` unique 제약조건을 통한 중복 가입 방지
+* Supabase 기반 로그인
+* 회원가입 시 아이디, 패스워드, 사용자 이름 저장
+* unique 제약조건을 통한 중복 가입 방지
 
 ### 2. 프로필 관리
 
