@@ -46,7 +46,7 @@ function AppHeader() {
         <button
           className="logout-icon-button"
           type="button"
-          aria-label="로그아웃"
+          aria-label="로그아웃 기능"
           onClick={openLogoutModal}
         >
           <img src={logoutIcon} alt="" />
