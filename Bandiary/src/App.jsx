@@ -7,6 +7,7 @@ import PracticePage from './pages/PracticePage'
 import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
 import SchedulePage from './pages/SchedulePage'
+import NoticePage from './pages/NoticePage'
 
 import ProtectedRoute from './components/common/ProtectedRoute'
 
@@ -38,6 +39,11 @@ function App() {
           <Route path="/schedule" element={
             <ProtectedRoute>
               <SchedulePage />
+            </ProtectedRoute>
+            } />
+            <Route path="/notice" element={
+            <ProtectedRoute>
+              <NoticePage />
             </ProtectedRoute>
             } />
         </Routes>

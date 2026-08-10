@@ -4,6 +4,7 @@ import StudioIcon from '../../assets/images/bandroom.svg'
 import DiaryIcon from '../../assets/images/diary.svg'
 import SongIcon from '../../assets/images/song.svg'
 import ScheduleIcon from '../../assets/images/calendar.svg'
+import NoticeIcon from '../../assets/images/notice.svg'
 
 const navItems = [
   {
@@ -12,19 +13,24 @@ const navItems = [
     icon: StudioIcon
   },
   {
-    path: '/home',
-    label: 'Home',
-    icon: DiaryIcon
-  },
-  {
     path: '/practice',
     label: 'Practice',
     icon: SongIcon
   },
   {
+    path: '/home',
+    label: 'Home',
+    icon: DiaryIcon
+  },
+  {
     path: '/schedule',
     label: 'Schedule',
     icon: ScheduleIcon
+  },
+  {
+    path: '/notice',
+    label: 'Notice',
+    icon: NoticeIcon
   }
 ]
 
