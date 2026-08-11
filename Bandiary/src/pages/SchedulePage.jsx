@@ -271,13 +271,6 @@ function SchedulePage() {
 
   return (
     <div className="page schedule-page">
-      <section className="schedule-page-header">
-        <div>
-          <h2>일정 / 합주 스케줄</h2>
-          <p>밴드 일정을 확인하고 추가할 수 있습니다.</p>
-        </div>
-      </section>
-
       <button
         type="button"
         className="content-add-button"

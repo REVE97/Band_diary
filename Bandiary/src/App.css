@@ -1742,28 +1742,6 @@ a {
 }
 
 /* 일정 페이지 */
-.schedule-page-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 0 14px;
-}
-
-.schedule-page-header h2 {
-  margin: 0;
-  color: #151515;
-  font-size: 21px;
-  font-weight: 900;
-  letter-spacing: -0.7px;
-}
-
-.schedule-page-header p {
-  margin: 7px 0 0;
-  color: #777586;
-  font-size: 13px;
-  line-height: 1.4;
-}
-
 .schedule-calendar-card {
   padding: 12px;
   border: 1px solid #eeeef6;
@@ -2114,25 +2092,6 @@ a {
 /* MARK: 공지사항 및 메모 페이지 */
 .notice-page {
   position: relative;
-}
-
-.notice-page-header {
-  padding: 10px 0 16px;
-}
-
-.notice-page-header h2 {
-  margin: 0;
-  color: #151515;
-  font-size: 21px;
-  font-weight: 900;
-  letter-spacing: -0.7px;
-}
-
-.notice-page-header p {
-  margin: 7px 0 0;
-  color: #777586;
-  font-size: 13px;
-  line-height: 1.4;
 }
 
 .notice-section {

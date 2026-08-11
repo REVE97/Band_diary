@@ -133,18 +133,6 @@ function NoticePage() {
 
   return (
     <div className="page notice-page">
-
-      {/* 페이지 헤더 */}
-      <header className="notice-page-header">
-        <div>
-          <h2>밴드 공지사항 & 메모</h2>
-
-          <p>
-            밴드원과 공유할 공지와 메모를 확인해보세요.
-          </p>
-        </div>
-      </header>
-
       {/* 로딩 */}
       {loading && (
         <div className="notice-state-box">
