@@ -3,6 +3,10 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import NoticeAddModal from '../components/notice/NoticeAddModal'
 import NoticeDetailModal from '../components/notice/NoticeDetailModal'
 
+import importantIcon from '../assets/images/notice-important.svg'
+import noticeIcon from '../assets/images/notice-announcement.svg'
+import memoIcon from '../assets/images/notice-memo.svg'
+
 import supabase from '../api/supabase'
 
 function NoticePage() {
@@ -94,6 +98,19 @@ function NoticePage() {
     )
   }, [normalNotices])
 
+  // 공지, 메모 아이콘 판별
+  const getNoticeTypeIcon = (type) => {
+    if (type === '공지') {
+      return noticeIcon
+    }
+
+    if (type === '메모') {
+      return memoIcon
+    }
+
+    return noticeIcon
+  }
+
   // 날짜 표시
   const formatDate = (createdAt) => {
     if (!createdAt) {
@@ -133,7 +150,7 @@ function NoticePage() {
 
   return (
     <div className="page notice-page">
-      {/* 로딩 */}
+      {/* 로딩중 */}
       {loading && (
         <div className="notice-state-box">
           공지사항을 불러오는 중입니다.
@@ -151,7 +168,7 @@ function NoticePage() {
             type="button"
             onClick={fetchNotices}
           >
-            다시 불러오기
+            재시도
           </button>
         </div>
       )}
@@ -165,13 +182,7 @@ function NoticePage() {
             <section className="notice-section">
 
               <div className="notice-section-header">
-                <h3>
-                  중요 공지
-                </h3>
-
-                <span>
-                  {importantNotices.length}
-                </span>
+                <h3>중요 공지</h3>
               </div>
 
               <div className="notice-important-list">
@@ -188,36 +199,20 @@ function NoticePage() {
 
                     {/* 중요 표시 */}
                     <div className="notice-important-icon">
-                      ★
+                      <img
+                        src={importantIcon}
+                        aria-hidden="true"
+                      />
                     </div>
 
                     <div className="notice-card-content">
-
                       <div className="notice-card-title-row">
-
                         <strong>
                           {notice.title}
                         </strong>
-
-                        <span className="notice-important-label">
-                          중요
-                        </span>
-
                       </div>
 
                       <div className="notice-card-meta">
-
-                        {/* 공지 / 메모 Badge */}
-                        <span
-                          className={`notice-type-badge ${
-                            notice.type === '공지'
-                              ? 'notice'
-                              : 'memo'
-                          }`}
-                        >
-                          {notice.type}
-                        </span>
-
                         {/* 작성자 */}
                         <span>
                           {notice.name}
@@ -232,46 +227,24 @@ function NoticePage() {
 
                       </div>
                     </div>
-
-                    <span className="notice-card-arrow">
-                      ›
-                    </span>
-
                   </button>
                 ))}
-
               </div>
             </section>
           )}
 
           {/* 전체 목록 */}
           <section className="notice-section">
-
             <div className="notice-section-header">
-
-              <h3>
-                전체 목록
-              </h3>
-
-              <span>
-                {normalNotices.length}
-              </span>
-
+              <h3>전체 목록</h3>
             </div>
 
             {/* 데이터가 없는 경우 */}
             {normalNotices.length === 0 ? (
               <div className="notice-empty-box">
-
                 <strong>
                   등록된 공지나 메모가 없습니다.
                 </strong>
-
-                <p>
-                  오른쪽 아래 + 버튼을 눌러
-                  첫 내용을 등록해보세요.
-                </p>
-
               </div>
             ) : (
 
@@ -315,38 +288,24 @@ function NoticePage() {
                                     : 'memo'
                                 }`}
                               >
-                                {notice.type === '공지'
-                                  ? '📢'
-                                  : '📝'}
+                                <img
+                                  src={getNoticeTypeIcon(notice.type)}
+                                  aria-hidden="true"
+                                />
                               </div>
 
                               {/* 내용 */}
                               <div className="notice-list-content">
-
                                 <strong>
                                   {notice.title}
                                 </strong>
 
                                 <div className="notice-list-meta">
-
-                                  {/* 유형 */}
-                                  <span
-                                    className={`notice-type-badge ${
-                                      notice.type === '공지'
-                                        ? 'notice'
-                                        : 'memo'
-                                    }`}
-                                  >
-                                    {notice.type}
-                                  </span>
-
                                   {/* 작성자 */}
                                   <span>
                                     {notice.name}
                                   </span>
-
                                 </div>
-
                               </div>
 
                               {/* 등록일 */}

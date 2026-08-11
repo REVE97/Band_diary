@@ -36,8 +36,6 @@ function NoticeDetailModal({
         year: 'numeric',
         month: '2-digit',
         day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit'
       }
     ).format(date)
   }
@@ -126,31 +124,9 @@ function NoticeDetailModal({
           <header className="place-modal-header">
 
             <div>
-
-              <div className="notice-detail-badge-row">
-
-                <span
-                  className={`notice-type-badge ${
-                    notice.type === '공지'
-                      ? 'notice'
-                      : 'memo'
-                  }`}
-                >
-                  {notice.type}
-                </span>
-
-                {notice.important && (
-                  <span className="notice-detail-important">
-                    ★ 중요
-                  </span>
-                )}
-
-              </div>
-
               <h2 className="notice-detail-title">
                 {notice.title}
               </h2>
-
             </div>
 
             <button

@@ -291,12 +291,7 @@ function NoticeAddModal({
 
           {/* 등록 Modal 헤더 */}
           <header className="place-modal-header">
-
             <div>
-              <h2>
-                새 글 등록
-              </h2>
-
               <p>
                 밴드원과 공유할 공지 또는 메모를 작성해주세요.
               </p>
@@ -431,10 +426,6 @@ function NoticeAddModal({
                     handleImageButtonClick
                   }
                 >
-                  <span aria-hidden="true">
-                    📷
-                  </span>
-
                   사진 추가
                 </button>
 
