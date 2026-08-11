@@ -5,7 +5,7 @@ TEST ID : test ·TEST PW : 1234
 
 # 🎸 Bandiary
 
-> Current Version: 'v.0.3.0'
+> Current Version: 'v.0.3.2'
 
 밴드 활동을 기록하고 관리할 수 있는 모바일 중심 웹앱입니다. ( 테스트 시 모바일 환경을 권장합니다. )
 사용자는 자신의 밴드 프로필을 설정하고, 사진과 영상을 업로드하여 활동 기록을 남길 수 있습니다.<br />
@@ -59,7 +59,7 @@ TEST ID : test ·TEST PW : 1234
 * FullCalendar 라이브러리 사용하여 일정 관리
 * 밴드 일정 · 공연 일정 · 회의 일정 등을 추가·삭제
 
-### 7. 공지 관리 ( 개발중 )
+### 7. 공지 관리 ( 업데이트중 )
 
 * 밴드 공지사항 및 메모 관리
 
@@ -88,10 +88,16 @@ TEST ID : test ·TEST PW : 1234
 * react-pdf
 * pdfjs-dist
 * Kakao Map API
+* FullCalendar
+* FFmpeg
 
 ### Deploy
 
 * Vercel
+
+### Function Test
+
+* Microsoft Clarity
 
 ## 📦 Version History
 
