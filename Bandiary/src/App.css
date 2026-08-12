@@ -1381,6 +1381,147 @@ a {
   cursor: pointer;
 }
 
+/* 프로필 수정 Modal */
+.profile-edit-modal-card {
+  max-width: 360px;
+  padding: 22px 20px 20px;
+  background: var(--color-white);
+}
+
+.profile-edit-modal-header {
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.profile-edit-modal-header h2 {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: -0.4px;
+}
+
+.profile-edit-modal-header .place-modal-close {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+}
+
+.profile-edit-image-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 22px;
+}
+
+.profile-edit-image-wrap {
+  position: relative;
+  width: 100px;
+  height: 100px;
+}
+
+.profile-edit-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-surface-muted);
+}
+
+.profile-edit-image-button {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-white);
+  box-shadow: 0 6px 16px var(--color-primary-alpha-18);
+}
+
+.profile-edit-image-button img {
+  width: 15px;
+  height: 15px;
+  display: block;
+}
+
+.profile-edit-image-button:active {
+  transform: scale(0.94);
+}
+
+.profile-edit-image-help {
+  max-width: 100%;
+  margin: 12px 0 0;
+  color: var(--color-text-muted);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.4;
+  text-align: center;
+  word-break: break-all;
+}
+
+.profile-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.profile-edit-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.profile-edit-field label {
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.profile-edit-field input,
+.profile-edit-field select {
+  width: 100%;
+  height: 46px;
+  padding: 0 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-white);
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-size: 15px;
+  outline: none;
+}
+
+.profile-edit-field input::placeholder {
+  color: var(--color-placeholder);
+}
+
+.profile-edit-field input:focus,
+.profile-edit-field select:focus {
+  border-color: var(--color-primary);
+  box-shadow:
+    0 0 0 3px var(--color-primary-alpha-12);
+}
+
+.profile-edit-error {
+  margin-top: 14px;
+  margin-bottom: 0;
+}
+
+.profile-edit-submit-button {
+  margin-top: 20px;
+}
+
 /* 프로필 미리보기 CSS */
 .profile-image-preview {
   width: 92px;
@@ -2520,7 +2661,7 @@ a {
   background: var(--color-primary);
   color: var(--color-white);
   font-size: 30px;
-  font-weight: 500;
+  font-weight: 700;
   line-height: 1;
   box-shadow:
     0 12px 28px var(--color-primary-alpha-32);
