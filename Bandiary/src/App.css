@@ -2112,6 +2112,135 @@ a {
   font-weight: 900;
 }
 
+/* 공지 및 메모 필터 */
+.notice-filter-section {
+  width: 100%;
+  margin-top: 22px;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 유형 필터 */
+.notice-type-filter-row {
+  flex: 0 0 auto;
+
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.notice-type-filter-button {
+  flex: 0 0 auto;
+
+  height: 40px;
+  min-width: 46px;
+  padding: 0 10px;
+
+  border: 1px solid #eeeef6;
+  border-radius: 999px;
+
+  background: #ffffff;
+  color: #777586;
+
+  font-size: 12px;
+  font-weight: 900;
+
+  white-space: nowrap;
+
+  box-shadow:
+    0 6px 16px rgba(24, 20, 60, 0.04);
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.notice-type-filter-button.active {
+  border-color: #6b4eff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #7857ff,
+      #5f3de8
+    );
+
+  color: #ffffff;
+
+  box-shadow:
+    0 8px 18px rgba(107, 78, 255, 0.18);
+}
+
+.notice-type-filter-button:active {
+  transform: scale(0.96);
+}
+
+/* 제목 검색 */
+.notice-search-row {
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.notice-search-row input {
+  flex: 1;
+  min-width: 0;
+
+  height: 40px;
+  padding: 0 10px;
+
+  border: 1px solid #eeeef6;
+  border-radius: 12px;
+
+  background: #ffffff;
+  color: #151515;
+
+  font-size: 13px;
+
+  outline: none;
+}
+
+.notice-search-row input::placeholder {
+  color: #aaa4bd;
+}
+
+.notice-search-row input:focus {
+  border-color: #6b4eff;
+
+  box-shadow:
+    0 0 0 3px rgba(107, 78, 255, 0.12);
+}
+
+.notice-search-button {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #eeeef6;
+  border-radius: 12px;
+
+  background: #ffffff;
+}
+
+.notice-search-button img {
+  display: block;
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
 /* 중요 공지 */
 .notice-important-list {
   display: flex;

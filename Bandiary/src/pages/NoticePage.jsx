@@ -6,6 +6,7 @@ import NoticeDetailModal from '../components/notice/NoticeDetailModal'
 import importantIcon from '../assets/images/notice-important.svg'
 import noticeIcon from '../assets/images/notice-announcement.svg'
 import memoIcon from '../assets/images/notice-memo.svg'
+import searchIcon from '../assets/images/search.svg'
 
 import supabase from '../api/supabase'
 
@@ -30,6 +31,15 @@ function NoticePage() {
 
   // 수정 Modal
   const [editingNotice, setEditingNotice] = useState(null)
+
+  // 공지 및 메모 유형 필터
+  const [selectedType, setSelectedType] = useState('전체')
+
+  // 제목 검색 입력값
+  const [searchInput, setSearchInput] = useState('')
+
+  // 검색 버튼으로 적용된 제목 검색어
+  const [searchKeyword, setSearchKeyword] = useState('')
 
   // notice 테이블 전체 조회 -> created_at 최신순으로 조회
   const fetchNotices = useCallback(async () => {
@@ -79,9 +89,31 @@ function NoticePage() {
     )
   }, [notices])
 
+  // 전체 목록 유형 및 제목 검색 조건 적용
+  const filteredNormalNotices = useMemo(() => {
+    const normalizedKeyword =
+      searchKeyword.trim().toLocaleLowerCase()
+
+    return normalNotices.filter((notice) => {
+      const matchesType =
+        selectedType === '전체' ||
+        notice.type === selectedType
+
+      const normalizedTitle =
+        (notice.title ?? '')
+          .toLocaleLowerCase()
+
+      const matchesTitle =
+        !normalizedKeyword ||
+        normalizedTitle.includes(normalizedKeyword)
+
+      return matchesType && matchesTitle
+    })
+  }, [normalNotices, selectedType, searchKeyword])
+
   // 일반 공지사항 월별 그룹화
   const groupedNotices = useMemo(() => {
-    return normalNotices.reduce(
+    return filteredNormalNotices.reduce(
       (groups, notice) => {
         const date = new Date(notice.created_at)
 
@@ -99,7 +131,7 @@ function NoticePage() {
       },
       {}
     )
-  }, [normalNotices])
+  }, [filteredNormalNotices])
 
   // 공지, 메모 아이콘 판별
   const getNoticeTypeIcon = (type) => {
@@ -134,6 +166,15 @@ function NoticePage() {
         day: '2-digit'
       }
     ).format(date)
+  }
+
+  // 제목 검색 실행
+  const handleSearch = (event) => {
+    event.preventDefault()
+
+    setSearchKeyword(
+      searchInput.trim()
+    )
   }
 
   // 상세 모달 열기
@@ -247,6 +288,59 @@ function NoticePage() {
             </section>
           )}
 
+          {/* 유형 및 제목 검색 */}
+          <section className="notice-filter-section">
+
+            <div className="notice-type-filter-row">
+              {['전체', '공지', '메모'].map((type) => (
+                <button
+                  key={type}
+                  type="button"
+                  className={
+                    selectedType === type
+                      ? 'notice-type-filter-button active'
+                      : 'notice-type-filter-button'
+                  }
+                  onClick={() =>
+                    setSelectedType(type)
+                  }
+                >
+                  {type}
+                </button>
+              ))}
+            </div>
+
+            <form
+              className="notice-search-row"
+              onSubmit={handleSearch}
+            >
+              <input
+                type="text"
+                value={searchInput}
+                placeholder="제목을 검색해주세요"
+                aria-label="공지사항 제목 검색"
+                onChange={(event) =>
+                  setSearchInput(
+                    event.target.value
+                  )
+                }
+              />
+
+              <button
+                type="submit"
+                className="notice-search-button"
+                aria-label="검색"
+              >
+                <img
+                  src={searchIcon}
+                  alt=""
+                  aria-hidden="true"
+                />
+              </button>
+            </form>
+
+          </section>
+
           {/* 전체 목록 */}
           <section className="notice-section">
             <div className="notice-section-header">
@@ -254,10 +348,12 @@ function NoticePage() {
             </div>
 
             {/* 데이터가 없는 경우 */}
-            {normalNotices.length === 0 ? (
+            {filteredNormalNotices.length === 0 ? (
               <div className="notice-empty-box">
                 <strong>
-                  등록된 공지나 메모가 없습니다.
+                  {selectedType !== '전체' || searchKeyword
+                    ? '검색 조건에 맞는 공지나 메모가 없습니다.'
+                    : '등록된 공지나 메모가 없습니다.'}
                 </strong>
               </div>
             ) : (
