@@ -114,7 +114,7 @@ function LoginPage() {
   }
 
   const naviBlock = () => {
-    alert('관리자에게 문의해주세요.')
+    alert('관리자에게 문의해주세요.\nzxcv9675@naver.com')
   }
 
   return (
