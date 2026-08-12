@@ -2267,20 +2267,6 @@ a {
   text-align: left;
   box-shadow:
     0 8px 24px rgba(107, 78, 255, 0.08);
-  transition:
-    transform 0.2s ease,
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.notice-important-card:active {
-  transform: scale(0.98);
-}
-
-.notice-important-card:hover {
-  border-color: #cfc1ff;
-  box-shadow:
-    0 10px 26px rgba(107, 78, 255, 0.13);
 }
 
 .notice-important-icon {
