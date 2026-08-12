@@ -9,27 +9,56 @@ import supabase from '../../api/supabase'
 function NoticeAddModal({
   userName,
   onClose,
-  onAdded
+  onAdded,
+  mode = 'add',
+  notice = null,
+  onUpdated
 }) {
   const fileInputRef = useRef(null)
 
+  // 수정 모드 여부
+  const isEditMode = mode === 'edit'
+
   // 공지 / 메모
-  const [type, setType] = useState('공지')
+  const [type, setType] = useState(
+    isEditMode
+      ? notice?.type ?? '공지'
+      : '공지'
+  )
 
   // 제목
-  const [title, setTitle] = useState('')
+  const [title, setTitle] = useState(
+    isEditMode
+      ? notice?.title ?? ''
+      : ''
+  )
 
   // 내용
-  const [content, setContent] = useState('')
+  const [content, setContent] = useState(
+    isEditMode
+      ? notice?.content ?? ''
+      : ''
+  )
 
   // 중요 공지 여부
-  const [important, setImportant] = useState(false)
+  const [important, setImportant] = useState(
+    isEditMode
+      ? Boolean(notice?.important)
+      : false
+  )
 
   // 이미지 파일
   const [imageFile, setImageFile] = useState(null)
 
   // 이미지 미리보기 URL
-  const [imagePreview, setImagePreview] = useState('')
+  const [imagePreview, setImagePreview] = useState(
+    isEditMode
+      ? notice?.imageUrl ?? ''
+      : ''
+  )
+
+  // 수정 시 기존 이미지 제거 여부
+  const [imageRemoved, setImageRemoved] = useState(false)
 
   // 등록 진행 여부
   const [submitting, setSubmitting] = useState(false)
@@ -40,7 +69,10 @@ function NoticeAddModal({
   // 이미지 미리보기 URL 메모리 해제
   useEffect(() => {
     return () => {
-      if (imagePreview) {
+      if (
+        imagePreview &&
+        imagePreview.startsWith('blob:')
+      ) {
         URL.revokeObjectURL(imagePreview)
       }
     }
@@ -73,12 +105,18 @@ function NoticeAddModal({
     }
 
     // 기존 preview URL 제거
-    if (imagePreview) {
+    if (
+      imagePreview &&
+      imagePreview.startsWith('blob:')
+    ) {
       URL.revokeObjectURL(imagePreview)
     }
 
     // 실제 파일 설정
     setImageFile(file)
+
+    // 수정 시 새 이미지 선택
+    setImageRemoved(false)
 
     // 미리보기 URL 생성
     setImagePreview(
@@ -88,12 +126,18 @@ function NoticeAddModal({
 
   // 선택한 이미지 제거
   const removeImage = () => {
-    if (imagePreview) {
+    if (
+      imagePreview &&
+      imagePreview.startsWith('blob:')
+    ) {
       URL.revokeObjectURL(imagePreview)
     }
 
     setImageFile(null)
     setImagePreview('')
+
+    // 수정 시 기존 이미지 제거 처리
+    setImageRemoved(true)
 
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
@@ -202,16 +246,75 @@ function NoticeAddModal({
       return
     }
 
+    // 수정 데이터 id 확인
+    if (
+      isEditMode &&
+      !notice?.id
+    ) {
+      setResultModal({
+        type: 'fail',
+        title: '수정할 수 없습니다',
+        message:
+          '수정할 게시글 정보를 찾을 수 없습니다.'
+      })
+
+      return
+    }
+
     try {
       setSubmitting(true)
 
       // 이미지 없는 경우
       let imageUrl = null
 
+      // 수정 시 기존 이미지 URL 유지
+      if (isEditMode) {
+        imageUrl =
+          notice?.imageUrl ?? null
+      }
+
+      // 수정 시 기존 이미지 제거
+      if (imageRemoved) {
+        imageUrl = null
+      }
+
       // 이미지 존재 시 Storage 먼저 업로드
       if (imageFile) {
         imageUrl =
           await uploadImage()
+      }
+
+      // 수정 모드일 경우 notice 테이블 데이터 수정
+      if (isEditMode) {
+        const {
+          error
+        } = await supabase
+          .from('notice')
+          .update({
+            type,
+            title: trimmedTitle,
+            content: trimmedContent,
+            imageUrl,
+            important
+          })
+          .eq(
+            'id',
+            notice.id
+          )
+
+        if (error) {
+          throw error
+        }
+
+        // 수정 성공
+        setResultModal({
+          type: 'success',
+          title: '수정 완료',
+          message:
+            '공지사항 및 메모가 수정되었습니다.'
+        })
+
+        return
       }
 
       // notice 테이블에 데이터 추가
@@ -245,15 +348,22 @@ function NoticeAddModal({
       })
     } catch (error) { // 등록 실패
       console.error(
-        '공지 등록 실패:',
+        isEditMode
+          ? '공지 수정 실패:'
+          : '공지 등록 실패:',
         error
       )
 
       setResultModal({
         type: 'fail',
-        title: '등록 실패',
+        title:
+          isEditMode
+            ? '수정 실패'
+            : '등록 실패',
         message:
-          '등록 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.'
+          isEditMode
+            ? '수정 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.'
+            : '등록 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.'
       })
     } finally {
       setSubmitting(false)
@@ -266,6 +376,18 @@ function NoticeAddModal({
       resultModal?.type === 'success'
 
     setResultModal(null)
+
+    // 수정 성공일 경우 1. NoticePage 목록 재조회 2. NoticeAddModal 닫기
+    if (
+      isSuccess &&
+      isEditMode
+    ) {
+      await onUpdated?.()
+
+      onClose()
+
+      return
+    }
 
     // 등록 성공일 경우 1. NoticePage 목록 재조회 2. NoticeAddModal 닫기
     if (isSuccess) {
@@ -295,7 +417,9 @@ function NoticeAddModal({
           <header className="place-modal-header">
             <div>
               <p>
-                밴드원과 공유할 공지 또는 메모를 작성해주세요.
+                {isEditMode
+                  ? '등록된 공지 또는 메모 내용을 수정해주세요.'
+                  : '밴드원과 공유할 공지 또는 메모를 작성해주세요.'}
               </p>
             </div>
 
@@ -435,7 +559,7 @@ function NoticeAddModal({
                   />
                 </button>
 
-                {imageFile && (
+                {(imageFile || imagePreview) && (
                   <button
                     type="button"
                     className="notice-image-remove-button"
@@ -520,8 +644,16 @@ function NoticeAddModal({
               disabled={submitting}
             >
               {submitting
-                ? '등록 중...'
-                : '등록'}
+                ? (
+                  isEditMode
+                    ? '수정 중...'
+                    : '등록 중...'
+                )
+                : (
+                  isEditMode
+                    ? '수정'
+                    : '등록'
+                )}
             </button>
 
           </form>

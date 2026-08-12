@@ -28,6 +28,9 @@ function NoticePage() {
   // 상세 Modal
   const [selectedNotice, setSelectedNotice] = useState(null)
 
+  // 수정 Modal
+  const [editingNotice, setEditingNotice] = useState(null)
+
   // notice 테이블 전체 조회 -> created_at 최신순으로 조회
   const fetchNotices = useCallback(async () => {
     try {
@@ -143,8 +146,19 @@ function NoticePage() {
     setSelectedNotice(null)
   }
 
+  // 수정 모달 열기
+  const openEditModal = (notice) => {
+    setSelectedNotice(null)
+    setEditingNotice(notice)
+  }
+
   // 공지 등록 / 삭제 후 notice 테이블 다시 조회
   const handleNoticeChanged = async () => {
+    await fetchNotices()
+  }
+
+  // 공지 수정 후 notice 테이블 다시 조회
+  const handleNoticeUpdated = async () => {
     await fetchNotices()
   }
 
@@ -360,6 +374,20 @@ function NoticePage() {
           notice={selectedNotice}
           onClose={closeDetailModal}
           onDeleted={handleNoticeChanged}
+          onEdit={openEditModal}
+        />
+      )}
+
+      {/* 수정 모달 */}
+      {editingNotice && (
+        <NoticeAddModal
+          mode="edit"
+          notice={editingNotice}
+          userName={storageInfo?.name ?? ''}
+          onClose={() =>
+            setEditingNotice(null)
+          }
+          onUpdated={handleNoticeUpdated}
         />
       )}
 

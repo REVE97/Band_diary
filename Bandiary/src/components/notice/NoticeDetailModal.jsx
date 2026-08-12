@@ -7,7 +7,8 @@ import supabase from '../../api/supabase'
 function NoticeDetailModal({
   notice,
   onClose,
-  onDeleted
+  onDeleted,
+  onEdit
 }) {
   const [deleting, setDeleting] =
     useState(false)
@@ -38,6 +39,11 @@ function NoticeDetailModal({
         day: '2-digit',
       }
     ).format(date)
+  }
+
+  // 수정 Modal 열기
+  const openEditModal = () => {
+    onEdit?.(notice)
   }
 
   // 삭제 확인 Modal
@@ -199,17 +205,32 @@ function NoticeDetailModal({
               </div>
             </div>
 
-            {/* 삭제 */}
-            <button
-              type="button"
-              className="notice-delete-button"
-              disabled={deleting}
-              onClick={openDeleteConfirm}
-            >
-              {deleting
-                ? '삭제 중...'
-                : '삭제'}
-            </button>
+            {/* 수정 및 삭제 버튼 */}
+            <div className="notice-detail-action-row">
+
+              {/* 수정 */}
+              <button
+                type="button"
+                className="notice-edit-button"
+                disabled={deleting}
+                onClick={openEditModal}
+              >
+                수정
+              </button>
+
+              {/* 삭제 */}
+              <button
+                type="button"
+                className="notice-delete-button"
+                disabled={deleting}
+                onClick={openDeleteConfirm}
+              >
+                {deleting
+                  ? '삭제 중...'
+                  : '삭제'}
+              </button>
+
+            </div>
 
           </div>
 
