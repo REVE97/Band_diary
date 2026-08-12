@@ -12,7 +12,8 @@ function NoticeAddModal({
   onAdded,
   mode = 'add',
   notice = null,
-  onUpdated
+  onUpdated,
+  onCancelEdit
 }) {
   const fileInputRef = useRef(null)
 
@@ -397,6 +398,17 @@ function NoticeAddModal({
     }
   }
 
+  // 수정 취소
+  const handleModalClose = () => {
+    if (isEditMode) {
+      onCancelEdit?.(notice)
+
+      return
+    }
+
+    onClose()
+  }
+
   return (
     <>
       <div
@@ -407,7 +419,7 @@ function NoticeAddModal({
             event.target === event.currentTarget &&
             !submitting
           ) {
-            onClose()
+            handleModalClose()
           }
         }}
       >
@@ -428,7 +440,7 @@ function NoticeAddModal({
               className="place-modal-close"
               aria-label="닫기"
               disabled={submitting}
-              onClick={onClose}
+              onClick={handleModalClose}
             >
               ×
             </button>
@@ -565,7 +577,7 @@ function NoticeAddModal({
                     className="notice-image-remove-button"
                     onClick={removeImage}
                   >
-                    제거
+                    이미지 제거
                   </button>
                 )}
 
@@ -638,23 +650,41 @@ function NoticeAddModal({
             </section>
 
             {/* 등록 */}
-            <button
-              type="submit"
-              className="primary-button notice-submit-button"
-              disabled={submitting}
-            >
-              {submitting
-                ? (
-                  isEditMode
+            {isEditMode ? (
+              <div className="notice-edit-submit-row">
+
+                {/* 수정 취소 */}
+                <button
+                  type="button"
+                  className="notice-edit-cancel-button"
+                  disabled={submitting}
+                  onClick={handleModalClose}
+                >
+                  취소
+                </button>
+
+                <button
+                  type="submit"
+                  className="primary-button notice-submit-button"
+                  disabled={submitting}
+                >
+                  {submitting
                     ? '수정 중...'
-                    : '등록 중...'
-                )
-                : (
-                  isEditMode
-                    ? '수정'
-                    : '등록'
-                )}
-            </button>
+                    : '수정'}
+                </button>
+
+              </div>
+            ) : (
+              <button
+                type="submit"
+                className="primary-button notice-submit-button"
+                disabled={submitting}
+              >
+                {submitting
+                  ? '등록 중...'
+                  : '등록'}
+              </button>
+            )}
 
           </form>
 

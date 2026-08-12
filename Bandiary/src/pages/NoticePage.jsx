@@ -193,6 +193,12 @@ function NoticePage() {
     setEditingNotice(notice)
   }
 
+  // 수정 취소 후 상세 모달 열기
+  const cancelEditModal = (notice) => {
+    setEditingNotice(null)
+    setSelectedNotice(notice)
+  }
+
   // 공지 등록 / 삭제 후 notice 테이블 다시 조회
   const handleNoticeChanged = async () => {
     await fetchNotices()
@@ -317,7 +323,7 @@ function NoticePage() {
               <input
                 type="text"
                 value={searchInput}
-                placeholder="제목을 검색해주세요"
+                placeholder="제목 검색"
                 aria-label="공지사항 제목 검색"
                 onChange={(event) =>
                   setSearchInput(
@@ -484,6 +490,7 @@ function NoticePage() {
             setEditingNotice(null)
           }
           onUpdated={handleNoticeUpdated}
+          onCancelEdit={cancelEditModal}
         />
       )}
 
