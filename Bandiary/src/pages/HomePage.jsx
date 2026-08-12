@@ -910,52 +910,66 @@ function HomePage() {
 
   return (
     <div className="page home-page">
+      {/* 프로필 정보 */}
       <section className="user-greeting">
-        <div>
-          <h2>안녕하세요, {profileInfo[0]?.name || 'Guest'}님</h2>
+
+        {/* 프로필 이미지 */}
+        <div className="profile-avatar-wrap">
+          <div className="profile-avatar">
+            <img
+              src={profileInfo[0]?.profileImageUrl || profile}
+              alt={`${profileInfo[0]?.name || 'Guest'} 프로필`}
+            />
+          </div>
+
+          {/* 프로필 수정 */}
+          <button
+            type="button"
+            className="profile-edit-button"
+            aria-label="프로필 수정"
+            title="프로필 수정"
+            onClick={handleOpenProfileModal}
+          >
+            <img
+              src={editIcon}
+              alt=""
+              aria-hidden="true"
+            />
+          </button>
+        </div>
+
+        {/* 프로필 상세 정보 */}
+        <div className="profile-summary">
+          <h2>
+            {profileInfo[0]?.name || 'Guest'}
+          </h2>
+
           <p>
             {profileInfo[0]?.bandName || '밴드를 설정해주세요'} {'/\t'}
             {profileInfo[0]?.mainSession || '세션을 설정해주세요'}
           </p>
+
+          {/* SNS */}
+          <section className="sns-list">
+            <a
+              href="https://www.instagram.com/11f_band"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram으로 이동"
+            >
+              <img src={instagramIcon} alt="Instagram" />
+            </a>
+
+            <a
+              href="https://discord.gg/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Discord로 이동"
+            >
+              <img src={discordIcon} alt="Discord" />
+            </a>
+          </section>
         </div>
-
-        <div className="profile-avatar">
-          <img
-            src={profileInfo[0]?.profileImageUrl || profile}
-            alt={`${profileInfo[0]?.name || 'Guest'} 프로필`}
-          />
-        </div>
-      </section>
-
-      <section className="sns-list">
-        <a
-          href="https://www.instagram.com/11f_band"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Instagram으로 이동"
-        >
-          <img src={instagramIcon} alt="Instagram" />
-        </a>
-
-        <a
-          href="https://discord.gg/"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Discord로 이동"
-        >
-          <img src={discordIcon} alt="Discord" />
-        </a>
-      </section>
-
-      <section className="profile-edit-section">
-        <button
-          type="button"
-          className="profile-edit-button"
-          onClick={handleOpenProfileModal}
-        >
-          <img src={editIcon} alt="edit" />
-          프로필 수정
-        </button>
       </section>
 
       <ContentFilterTabs

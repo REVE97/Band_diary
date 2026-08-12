@@ -257,38 +257,61 @@ a {
 
 /* 홈페이지 */
 .user-greeting {
+  width: 100%;
+  margin-top: 10px;
+  padding: 18px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 10px 0 16px;
+  gap: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  background: var(--color-white);
+  box-shadow: 0 8px 24px var(--color-dark-alpha-05);
 }
 
 .user-greeting h2 {
   margin: 0;
-  font-size: 21px;
+  color: var(--color-text-primary);
+  font-size: 20px;
   font-weight: 900;
   letter-spacing: -0.7px;
 }
 
 .user-greeting p {
   margin: 7px 0 0;
-  font-size: 13px;
   color: var(--color-text-description);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.profile-avatar-wrap {
+  position: relative;
+  flex: 0 0 auto;
 }
 
 .profile-avatar {
+  width: 82px;
+  height: 82px;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-surface-muted);
+  border: 1px solid var(--color-border);
   border-radius: 50%;
+  background: var(--color-surface-muted);
 }
 
 .profile-avatar img {
-  width: 58px;
-  height: 58px;
-  font-size: 28px;
-  border-radius: 999px;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.profile-summary {
+  flex: 1;
+  min-width: 0;
 }
 
 .stats-grid {
@@ -1299,16 +1322,20 @@ a {
 }
 
 .profile-edit-button {
-  height: 36px;
-  padding: 0 12px;
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 32px;
+  height: 32px;
+  padding: 0;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  border-radius: 999px;
-  background: var(--color-primary-soft);
+  justify-content: center;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-white);
   color: var(--color-primary);
-  font-size: 12px;
-  font-weight: 900;
+  box-shadow: 0 6px 16px var(--color-primary-alpha-18);
 }
 
 .profile-edit-button img {
@@ -1318,27 +1345,39 @@ a {
 }
 
 .profile-edit-button:active {
-  transform: scale(0.96);
+  transform: scale(0.94);
 }
 
 /* SNS LIST CSS */
 .sns-list {
+  margin-top: 13px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin: -4px 0 12px;
+  gap: 10px;
 }
 
 .sns-list a {
+  width: 34px;
+  height: 34px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-white);
+}
+
+.sns-list a:active {
+  transform: scale(0.94);
+  background: var(--color-primary-background);
+  border-color: var(--color-primary-border-soft);
 }
 
 .sns-list img {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   display: block;
+  object-fit: contain;
   cursor: pointer;
 }
 
@@ -2582,7 +2621,6 @@ a {
   resize: none;
 }
 
-
 .notice-input-count {
   position: absolute;
   right: 12px;
@@ -2608,8 +2646,6 @@ a {
   font-size: 13px;
   font-weight: 900;
 }
-
-
 
 /* 이미지 */
 .notice-image-action-row {
@@ -2888,7 +2924,6 @@ a {
   transform: scale(0.98);
 }
 
-
 /* 수정 및 삭제 버튼 */
 .notice-detail-action-row {
   width: 100%;
@@ -2896,10 +2931,6 @@ a {
   display: flex;
   gap: 10px;
 }
-
-/* 수정 버튼 */
-
-
 
 /* 삭제 버튼 가로 배치 */
 .notice-detail-action-row .notice-delete-button {
