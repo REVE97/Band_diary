@@ -30,7 +30,7 @@ function ProfileEditModal({
           <div>
             <h2>프로필 수정</h2>
             <p>
-              이름, 밴드명, 메인 세션, 서브 세션, 이미지를
+              이름, 밴드명, 메인 세션, 프로필 이미지를
               <br />
               수정해주세요.
             </p>
@@ -92,21 +92,7 @@ function ProfileEditModal({
           >
             <option value="">메인 세션을 선택해주세요</option>
             <option value="Vocal">Vocal</option>
-            <option value="Main Guitar">Guitar</option>
-            <option value="Sub Guitar">Sub Guitar</option>
-            <option value="Bass">Bass</option>
-            <option value="Keyboard">Keyboard</option>
-            <option value="Drum">Drum</option>
-          </select>
-
-          <select
-            name="subSession"
-            value={profileForm.subSession}
-            onChange={onInputChange}
-          >
-            <option value="">서브 세션을 선택해주세요</option>
-            <option value="Vocal">Vocal</option>
-            <option value="Main Guitar">Guitar</option>
+            <option value="Main Guitar">Main Guitar</option>
             <option value="Sub Guitar">Sub Guitar</option>
             <option value="Bass">Bass</option>
             <option value="Keyboard">Keyboard</option>

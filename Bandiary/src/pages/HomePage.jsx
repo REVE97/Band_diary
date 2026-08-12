@@ -19,7 +19,6 @@ const initialProfileForm = {
   name: '',
   bandName: '',
   mainSession: '',
-  subSession: '',
 }
 
 const initialContentForm = {
@@ -329,7 +328,6 @@ function HomePage() {
       name: currentProfile?.name || '',
       bandName: currentProfile?.bandName || '',
       mainSession: currentProfile?.mainSession || '',
-      subSession: currentProfile?.subSession || '',
     })
 
     setProfileImageFile(null)
@@ -437,7 +435,6 @@ function HomePage() {
         name: profileForm.name.trim() || null,
         bandName: profileForm.bandName.trim() || null,
         mainSession: profileForm.mainSession.trim() || null,
-        subSession: profileForm.subSession.trim() || null,
         profileImageUrl,
       }
 
@@ -916,7 +913,10 @@ function HomePage() {
       <section className="user-greeting">
         <div>
           <h2>안녕하세요, {profileInfo[0]?.name || 'Guest'}님</h2>
-          <p>{profileInfo[0]?.bandName || '밴드를 설정해주세요'}</p>
+          <p>
+            {profileInfo[0]?.bandName || '밴드를 설정해주세요'} {'/\t'}
+            {profileInfo[0]?.mainSession || '세션을 설정해주세요'}
+          </p>
         </div>
 
         <div className="profile-avatar">
@@ -956,30 +956,6 @@ function HomePage() {
           <img src={editIcon} alt="edit" />
           프로필 수정
         </button>
-      </section>
-
-      <section className="instrument-grid">
-        <div className="instrument-card">
-          <p>메인 세션</p>
-          <strong>
-            {profileInfo[0]?.mainSession || (
-              <>
-                메인 세션을 <br /> 설정해주세요
-              </>
-            )}
-          </strong>
-        </div>
-
-        <div className="instrument-card">
-          <p>서브 세션</p>
-          <strong>
-            {profileInfo[0]?.subSession || (
-              <>
-                서브 세션을 <br /> 설정해주세요
-              </>
-            )}
-          </strong>
-        </div>
       </section>
 
       <ContentFilterTabs

@@ -484,26 +484,6 @@ a {
   box-shadow: none;
 }
 
-.instrument-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.instrument-card {
-  padding: 14px;
-}
-
-.instrument-card p {
-  margin: 0 0 7px;
-  color: var(--color-text-muted);
-  font-size: 12px;
-}
-
-.instrument-card strong {
-  font-size: 15px;
-}
-
 .video-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
