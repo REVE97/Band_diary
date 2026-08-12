@@ -122,7 +122,6 @@ function NoticeDetailModal({
 
           {/* 헤더 */}
           <header className="place-modal-header">
-
             <div>
               <h2 className="notice-detail-title">
                 {notice.title}
@@ -137,96 +136,67 @@ function NoticeDetailModal({
             >
               ×
             </button>
-
           </header>
 
           <div className="notice-detail-body">
 
             {/* 작성 정보 */}
             <div className="notice-detail-meta">
-
               <div>
-                <span>
-                  작성자
-                </span>
-
+                <span>작성자</span>
                 <strong>
                   {notice.name || '-'}
                 </strong>
               </div>
 
               <div>
-                <span>
-                  등록 날짜
-                </span>
-
+                <span>등록 날짜</span>
                 <strong>
                   {formatDateTime(
                     notice.created_at
                   )}
                 </strong>
               </div>
-
             </div>
 
             {/* 내용 */}
             <section className="notice-detail-content-section">
-
-              <span>
-                내용
-              </span>
-
+              <span>내용</span>
               <p>
                 {notice.content}
               </p>
-
             </section>
 
             {/* 이미지 */}
             {notice.imageUrl && (
               <section className="notice-detail-image-section">
-
-                <span>
-                  첨부 이미지
-                </span>
-
+                <span>첨부 이미지</span>
                 <div className="notice-detail-image">
-
                   <img
                     src={notice.imageUrl}
                     alt={`${notice.title} 첨부 이미지`}
                   />
-
                 </div>
-
               </section>
             )}
 
             {/* 세부 속성 */}
             <div className="notice-detail-properties">
-
               <div>
-                <span>
-                  유형
-                </span>
-
+                <span>유형</span>
                 <strong>
                   {notice.type}
                 </strong>
               </div>
 
               <div>
-                <span>
-                  중요 공지
-                </span>
-
+                <span>중요 공지</span>
                 <strong>
                   {notice.important
                     ? '설정'
                     : '미설정'}
                 </strong>
               </div>
-
             </div>
 
             {/* 삭제 */}

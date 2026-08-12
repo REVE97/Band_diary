@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 
 import PlaceResultModal from '../place/PlaceResultModal'
 
+import cameraIcon from '../../assets/images/notice-camera-black.svg'
+
 import supabase from '../../api/supabase'
 
 function NoticeAddModal({
@@ -426,7 +428,11 @@ function NoticeAddModal({
                     handleImageButtonClick
                   }
                 >
-                  사진 추가
+                  <img
+                    src={cameraIcon}
+                    alt=""
+                    aria-hidden="true"
+                  />
                 </button>
 
                 {imageFile && (

@@ -2490,16 +2490,32 @@ a {
 }
 
 .notice-camera-button {
-  height: 38px;
-  padding: 0 13px;
-  display: inline-flex;
+  flex: 0 0 auto;
+
+  width: 42px;
+  height: 42px;
+  padding: 0;
+
+  display: flex;
   align-items: center;
-  gap: 6px;
-  border-radius: 11px;
-  background: #f1edff;
-  color: #6b4eff;
-  font-size: 12px;
-  font-weight: 900;
+  justify-content: center;
+
+  background-color: white;
+
+  border-radius: 12px;
+}
+
+.notice-camera-button img {
+  display: block;
+
+  width: 22px;
+  height: 22px;
+
+  object-fit: contain;
+}
+
+.notice-camera-button:active {
+  transform: scale(0.95);
 }
 
 .notice-image-remove-button {
