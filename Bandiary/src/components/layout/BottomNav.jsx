@@ -4,7 +4,7 @@ import StudioIcon from '../../assets/images/bandroom.svg'
 import DiaryIcon from '../../assets/images/diary.svg'
 import SongIcon from '../../assets/images/song.svg'
 import ScheduleIcon from '../../assets/images/calendar.svg'
-import NoticeIcon from '../../assets/images/notice.svg'
+import NoticeIcon from '../../assets/images/notice-renewal.svg'
 
 const navItems = [
   {
