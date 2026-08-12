@@ -24,14 +24,6 @@ function ScheduleAddModal({
             <h2>일정 추가</h2>
             <p>합주, 공연, 개인 연습 일정을 등록해주세요.</p>
           </div>
-
-          <button
-            type="button"
-            className="place-modal-close"
-            onClick={onClose}
-          >
-            ×
-          </button>
         </div>
 
         <div className="login-form place-form schedule-form">
