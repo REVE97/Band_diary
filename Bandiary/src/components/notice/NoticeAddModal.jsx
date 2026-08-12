@@ -428,6 +428,11 @@ function NoticeAddModal({
           {/* 등록 Modal 헤더 */}
           <header className="place-modal-header">
             <div>
+              <h2>
+                {isEditMode
+                  ? '공지사항 or 메모 수정'
+                  : '공지사항 or 메모 추가'}
+              </h2>
               <p>
                 {isEditMode
                   ? '등록된 공지 또는 메모 내용을 수정해주세요.'
