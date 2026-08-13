@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react'
 
+import pictureTypeIcon from '../../assets/images/content-type-picture.svg'
+import videoTypeIcon from '../../assets/images/content-type-video.svg'
+import audioTypeIcon from '../../assets/images/content-type-audio.svg'
+
 function ContentAddModal({
   contentType,
   contentForm,
@@ -159,7 +163,13 @@ function ContentAddModal({
               onChange={onContentTypeChange}
               disabled={isContentUploading}
             />
-            <span className="content-type-symbol">▣</span>
+            <span className="content-type-symbol">
+              <img
+                src={pictureTypeIcon}
+                alt=""
+                aria-hidden="true"
+              />
+            </span>
             <strong>사진</strong>
           </label>
 
@@ -172,7 +182,13 @@ function ContentAddModal({
               onChange={onContentTypeChange}
               disabled={isContentUploading}
             />
-            <span className="content-type-symbol">▶</span>
+            <span className="content-type-symbol">
+              <img
+                src={videoTypeIcon}
+                alt=""
+                aria-hidden="true"
+              />
+            </span>
             <strong>비디오</strong>
           </label>
 
@@ -185,7 +201,13 @@ function ContentAddModal({
               onChange={onContentTypeChange}
               disabled={isContentUploading}
             />
-            <span className="content-type-symbol">♪</span>
+            <span className="content-type-symbol">
+              <img
+                src={audioTypeIcon}
+                alt=""
+                aria-hidden="true"
+              />
+            </span>
             <strong>오디오</strong>
           </label>
         </div>

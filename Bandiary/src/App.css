@@ -1774,9 +1774,27 @@ a {
 }
 
 .content-type-symbol {
-  font-size: 20px;
-  font-weight: 900;
-  line-height: 1;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.content-type-symbol img {
+  width: 20px;
+  height: 20px;
+  display: block;
+  object-fit: contain;
+  opacity: 0.62;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.content-type-row label.active .content-type-symbol img {
+  opacity: 1;
+  transform: scale(1.04);
 }
 
 .content-type-row strong {
