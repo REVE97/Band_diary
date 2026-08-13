@@ -22,7 +22,6 @@ const initialProfileForm = {
 }
 
 const initialContentForm = {
-  category: '',
   title: '',
 }
 
@@ -689,10 +688,6 @@ function HomePage() {
   }
 
   const validateContentForm = () => {
-    if (!contentForm.category.trim()) {
-      return '카테고리를 입력해주세요.'
-    }
-
     if (!contentForm.title.trim()) {
       return '제목을 입력해주세요.'
     }
@@ -740,7 +735,6 @@ function HomePage() {
 
       const payload = {
         type: contentType,
-        category: contentForm.category.trim(),
         title: contentForm.title.trim(),
         contentImageUrl: contentType === '사진' ? contentFileUrl : null,
         contentVideoUrl: contentType === '비디오' ? contentFileUrl : null,
@@ -987,7 +981,8 @@ function HomePage() {
         +
       </button>
 
-      <section>
+      {/* 콘텐츠 목록 */}
+      <section className="content-list-section">
         <div className="home-card-grid">
           {filteredContent.map((item) => (
             <ContentCard

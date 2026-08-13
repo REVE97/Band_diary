@@ -116,25 +116,28 @@ function ContentDetailModal({ content, onClose }) {
   return (
     <div className="place-modal-overlay">
       <div className="place-modal-card content-detail-card">
-        <div className="place-modal-header">
-          <div>
+        {/* 콘텐츠 상세 헤더 */}
+        <div className="content-detail-header">
+          <div className="content-detail-heading">
+            <span className={`content-detail-type ${content.type}`}>
+              {content.type}
+            </span>
+
             <h2>{content.title}</h2>
-            <p>
-              {content.type} / {content.category}
-              <br />
-              {formatDate(content.created_at)}
-            </p>
+            <time>{formatDate(content.created_at)}</time>
           </div>
 
           <button
             type="button"
             className="place-modal-close"
             onClick={onClose}
+            aria-label="콘텐츠 상세 모달 닫기"
           >
             ×
           </button>
         </div>
 
+        {/* 콘텐츠 미디어 */}
         <div className="content-detail-media">
           {isPicture && content.contentImageUrl && (
             <img src={content.contentImageUrl} alt={content.title} />
@@ -212,24 +215,27 @@ function ContentDetailModal({ content, onClose }) {
           </div>
 
           <div className="comment-form">
-            <textarea
-              value={commentText}
-              placeholder="댓글을 입력해주세요."
-              onChange={handleCommentInputChange}
-            />
+            <div className="comment-input-row">
+              <textarea
+                value={commentText}
+                placeholder="댓글을 입력해주세요."
+                onChange={handleCommentInputChange}
+              />
+
+              <button
+                type="button"
+                className="comment-send-button"
+                onClick={handleAddComment}
+                disabled={isCommentLoading}
+                aria-label="댓글 등록"
+              >
+                {isCommentLoading ? '...' : '›'}
+              </button>
+            </div>
 
             {commentErrorMessage && (
               <p className="login-error">{commentErrorMessage}</p>
             )}
-
-            <button
-              type="button"
-              className="primary-button comment-submit-button"
-              onClick={handleAddComment}
-              disabled={isCommentLoading}
-            >
-              {isCommentLoading ? '등록 중...' : '댓글 등록'}
-            </button>
           </div>
         </div>
       </div>

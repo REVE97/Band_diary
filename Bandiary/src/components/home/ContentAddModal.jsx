@@ -43,10 +43,6 @@ function ContentAddModal({
 
   const getStepErrorMessage = () => {
     if (currentStep === 1) {
-      if (!contentForm.category.trim()) {
-        return '카테고리를 입력해주세요.'
-      }
-
       if (!contentForm.title.trim()) {
         return '제목을 입력해주세요.'
       }
@@ -66,7 +62,7 @@ function ContentAddModal({
 
   const isCurrentStepValid = () => {
     if (currentStep === 1) {
-      return Boolean(contentForm.category.trim() && contentForm.title.trim())
+      return Boolean(contentForm.title.trim())
     }
 
     if (currentStep === 2) {
@@ -119,8 +115,8 @@ function ContentAddModal({
 
   return (
     <div className="place-modal-overlay">
-      <div className="place-modal-card">
-        <div className="place-modal-header">
+      <div className="place-modal-card content-add-modal-card">
+        <div className="place-modal-header content-add-modal-header">
           <div>
             <h2>콘텐츠 추가</h2>
             <p>{getStepTitle()}</p>
@@ -136,8 +132,25 @@ function ContentAddModal({
           </button>
         </div>
 
-        <div className="place-type-row">
-          <label>
+        {/* 콘텐츠 등록 단계 */}
+        <div className="content-step-row">
+          <span className={currentStep === 1 ? 'active' : ''}>
+            <strong>1</strong>
+            <small>정보</small>
+          </span>
+          <span className={currentStep === 2 ? 'active' : ''}>
+            <strong>2</strong>
+            <small>파일</small>
+          </span>
+          <span className={currentStep === 3 ? 'active' : ''}>
+            <strong>3</strong>
+            <small>확인</small>
+          </span>
+        </div>
+
+        {/* 콘텐츠 타입 */}
+        <div className="place-type-row content-type-row">
+          <label className={isPicture ? 'active' : ''}>
             <input
               type="radio"
               name="contentType"
@@ -146,10 +159,11 @@ function ContentAddModal({
               onChange={onContentTypeChange}
               disabled={isContentUploading}
             />
-            사진
+            <span className="content-type-symbol">▣</span>
+            <strong>사진</strong>
           </label>
 
-          <label>
+          <label className={isVideo ? 'active' : ''}>
             <input
               type="radio"
               name="contentType"
@@ -158,10 +172,11 @@ function ContentAddModal({
               onChange={onContentTypeChange}
               disabled={isContentUploading}
             />
-            비디오
+            <span className="content-type-symbol">▶</span>
+            <strong>비디오</strong>
           </label>
 
-          <label>
+          <label className={isAudio ? 'active' : ''}>
             <input
               type="radio"
               name="contentType"
@@ -170,47 +185,34 @@ function ContentAddModal({
               onChange={onContentTypeChange}
               disabled={isContentUploading}
             />
-            오디오
+            <span className="content-type-symbol">♪</span>
+            <strong>오디오</strong>
           </label>
         </div>
 
-        <div className="content-step-row">
-          <span className={currentStep === 1 ? 'active' : ''}>1</span>
-          <span className={currentStep === 2 ? 'active' : ''}>2</span>
-          <span className={currentStep === 3 ? 'active' : ''}>완료</span>
-        </div>
-
-        <div className="login-form place-form">
+        <div className="login-form place-form content-add-form">
           {currentStep === 1 && (
             <>
-              <input
-                type="text"
-                name="category"
-                value={contentForm.category}
-                placeholder={
-                  isPicture
-                    ? '카테고리 예: 공연 사진, 합주 사진'
-                    : isVideo
-                      ? '카테고리 예: 공연 영상, 연습 영상'
-                      : '카테고리 예: 합주 녹음, 공연 음원'
-                }
-                onChange={handleChangeInput}
-                disabled={isContentUploading}
-              />
+              {/* 제목 */}
+              <div className="content-add-field">
+                <label htmlFor="contentTitle">제목</label>
 
-              <input
-                type="text"
-                name="title"
-                value={contentForm.title}
-                placeholder="제목을 입력해주세요"
-                onChange={handleChangeInput}
-                disabled={isContentUploading}
-              />
+                <input
+                  id="contentTitle"
+                  type="text"
+                  name="title"
+                  value={contentForm.title}
+                  placeholder="제목을 입력해주세요"
+                  onChange={handleChangeInput}
+                  disabled={isContentUploading}
+                />
+              </div>
             </>
           )}
 
           {currentStep === 2 && (
             <>
+              {/* 파일 미리보기 */}
               {contentPreview && isPicture && (
                 <div className="content-upload-preview">
                   <img src={contentPreview} alt="콘텐츠 이미지 미리보기" />
@@ -244,7 +246,8 @@ function ContentAddModal({
                 </div>
               )}
 
-              <div className="custom-file-row">
+              {/* 파일 선택 */}
+              <div className="content-file-select-box">
                 <label htmlFor="contentFile" className="custom-file-button">
                   파일 선택
                 </label>
@@ -264,10 +267,12 @@ function ContentAddModal({
           )}
 
           {currentStep === 3 && (
-            <div className="place-submit-summary">
-              <strong>{contentForm.title}</strong>
-              <span>타입: {contentType}</span>
-              <span>카테고리: {contentForm.category}</span>
+            <div className="place-submit-summary content-submit-summary">
+              <div className="content-submit-summary-title">
+                <span>{contentType}</span>
+                <strong>{contentForm.title}</strong>
+              </div>
+
               <span>파일명: {contentFileName}</span>
 
               {isVideo && <span>저장 방식: 비디오 파일 그대로 저장</span>}
@@ -283,12 +288,12 @@ function ContentAddModal({
         </div>
 
         {(stepErrorMessage || errorMessage || convertMessage) && (
-          <p className="login-error">
+          <p className="login-error content-add-error">
             {convertMessage || stepErrorMessage || errorMessage}
           </p>
         )}
 
-        <div className="place-modal-button-row">
+        <div className="place-modal-button-row content-add-button-row">
           {currentStep > 1 && (
             <button
               type="button"

@@ -5,7 +5,7 @@ import audio_icon from '../../assets/images/audio.svg'
 
 const contentFilterOptions = [
   {
-    label: '전체보기',
+    label: '전체',
     value: '전체',
     icon: allView_icon,
     iconOnly: true,
@@ -34,6 +34,7 @@ function ContentFilterTabs({ activeFilter, counts, onChange }) {
 
   return (
     <section className="content-filter-section">
+      {/* 콘텐츠 필터 */}
       <div className="content-filter-row">
         {contentFilterOptions.map((option) => {
           const isActive = activeFilter === option.value
@@ -56,12 +57,11 @@ function ContentFilterTabs({ activeFilter, counts, onChange }) {
             >
               <img src={option.icon} alt="" className="content-filter-icon" />
 
-              {!option.iconOnly && (
-                <span className="content-filter-text">
-                  {/* {option.label} */}
-                  <strong className="content-filter-count">{count}</strong>
-                </span>
-              )}
+              <span className="content-filter-text">
+                <span>{option.label}</span>
+                {/* {option.label} */}
+                <strong className="content-filter-count">{count}</strong>
+              </span>
             </button>
           )
         })}
