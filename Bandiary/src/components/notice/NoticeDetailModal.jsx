@@ -6,6 +6,7 @@ import supabase from '../../api/supabase'
 
 function NoticeDetailModal({
   notice,
+  isAdmin,
   onClose,
   onDeleted,
   onEdit
@@ -48,6 +49,9 @@ function NoticeDetailModal({
 
   // 삭제 확인 Modal
   const openDeleteConfirm = () => {
+    // 관리자만 삭제 가능
+    if (!isAdmin) return
+
     setResultModal({
       type: 'confirm',
       title: '게시글 삭제',
@@ -58,6 +62,9 @@ function NoticeDetailModal({
 
   // 실제 삭제
   const deleteNotice = async () => {
+    // 관리자만 삭제 가능
+    if (!isAdmin) return
+
     try {
       setDeleting(true)
 
@@ -177,6 +184,7 @@ function NoticeDetailModal({
             {notice.imageUrl && (
               <section className="notice-detail-image-section">
                 <span>첨부 이미지</span>
+
                 <div className="notice-detail-image">
                   <img
                     src={notice.imageUrl}
@@ -190,6 +198,7 @@ function NoticeDetailModal({
             <div className="notice-detail-properties">
               <div>
                 <span>유형</span>
+
                 <strong>
                   {notice.type}
                 </strong>
@@ -197,6 +206,7 @@ function NoticeDetailModal({
 
               <div>
                 <span>중요 공지</span>
+
                 <strong>
                   {notice.important
                     ? '설정'
@@ -219,16 +229,18 @@ function NoticeDetailModal({
               </button>
 
               {/* 삭제 */}
-              <button
-                type="button"
-                className="notice-delete-button"
-                disabled={deleting}
-                onClick={openDeleteConfirm}
-              >
-                {deleting
-                  ? '삭제 중...'
-                  : '삭제'}
-              </button>
+              {isAdmin && (
+                <button
+                  type="button"
+                  className="notice-delete-button"
+                  disabled={deleting}
+                  onClick={openDeleteConfirm}
+                >
+                  {deleting
+                    ? '삭제 중...'
+                    : '삭제'}
+                </button>
+              )}
 
             </div>
 
@@ -238,7 +250,7 @@ function NoticeDetailModal({
       </div>
 
       {/* 삭제 확인 / 결과 */}
-      {resultModal && (
+      {isAdmin && resultModal && (
         <PlaceResultModal
           type={resultModal.type}
           title={resultModal.title}

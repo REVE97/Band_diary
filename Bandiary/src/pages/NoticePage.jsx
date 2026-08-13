@@ -16,6 +16,9 @@ function NoticePage() {
     sessionStorage.getItem('bandiaryLoginUser')
   )
 
+  // 관리자 여부 확인
+  const isAdmin = storageInfo?.userId === 'admin'
+
   // 공지사항 전체 데이터
   const [notices, setNotices] = useState([])
 
@@ -474,6 +477,7 @@ function NoticePage() {
       {selectedNotice && (
         <NoticeDetailModal
           notice={selectedNotice}
+          isAdmin={isAdmin}
           onClose={closeDetailModal}
           onDeleted={handleNoticeChanged}
           onEdit={openEditModal}
