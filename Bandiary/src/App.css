@@ -2295,18 +2295,37 @@ a {
 
 .comment-send-button {
   flex: 0 0 auto;
+  align-self: center;
+
   width: 40px;
   height: 40px;
   padding: 0;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   border-radius: 50%;
+
   background: var(--color-primary);
   color: var(--color-white);
-  font-size: 24px;
-  font-weight: 700;
-  box-shadow: 0 6px 16px var(--color-primary-alpha-22);
+}
+
+.comment-send-button img {
+  width: 18px;
+  height: 18px;
+
+  display: block;
+
+  object-fit: contain;
+}
+
+.comment-send-loading {
+  color: var(--color-white);
+
+  font-size: 14px;
+  font-weight: 900;
+  line-height: 1;
 }
 
 .comment-send-button:disabled {

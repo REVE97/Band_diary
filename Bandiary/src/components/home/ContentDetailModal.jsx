@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react'
 import { formatDate } from '../../features/common'
 import supabase from '../../api/supabase'
 
+import commentSendIcon from '../../assets/images/comment-send.svg'
+
 function ContentDetailModal({ content, onClose }) {
   const isPicture = content.type === '사진'
   const isVideo = content.type === '비디오'
@@ -229,7 +231,17 @@ function ContentDetailModal({ content, onClose }) {
                 disabled={isCommentLoading}
                 aria-label="댓글 등록"
               >
-                {isCommentLoading ? '...' : '›'}
+                {isCommentLoading ? (
+                  <span className="comment-send-loading">
+                    ...
+                  </span>
+                ) : (
+                  <img
+                    src={commentSendIcon}
+                    alt=""
+                    aria-hidden="true"
+                  />
+                )}
               </button>
             </div>
 
