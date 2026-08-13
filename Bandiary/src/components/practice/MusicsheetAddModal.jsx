@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 
+
 const sessionOptions = ['Vocal', 'Guitar', 'Bass', 'Keyboard', 'Drum']
+
 
 function MusicsheetAddModal({
   musicsheetForm,
@@ -15,10 +17,12 @@ function MusicsheetAddModal({
   const [currentStep, setCurrentStep] = useState(1)
   const [stepErrorMessage, setStepErrorMessage] = useState('')
 
+
   useEffect(() => {
     setCurrentStep(1)
     setStepErrorMessage('')
   }, [])
+
 
   const getStepTitle = () => {
     if (currentStep === 1) return '악보 정보를 입력해주세요.'
@@ -26,20 +30,24 @@ function MusicsheetAddModal({
     return '입력한 정보를 확인해주세요.'
   }
 
+
   const getStepErrorMessage = () => {
     if (currentStep === 1) {
       if (!musicsheetForm.session.trim()) {
         return '세션을 선택해주세요.'
       }
 
+
       if (!musicsheetForm.title.trim()) {
         return '제목을 입력해주세요.'
       }
+
 
       if (!musicsheetForm.description.trim()) {
         return '설명을 입력해주세요.'
       }
     }
+
 
     if (currentStep === 2) {
       if (musicsheetFileName === '선택된 파일 없음') {
@@ -47,8 +55,10 @@ function MusicsheetAddModal({
       }
     }
 
+
     return ''
   }
+
 
   const isCurrentStepValid = () => {
     if (currentStep === 1) {
@@ -59,22 +69,28 @@ function MusicsheetAddModal({
       )
     }
 
+
     if (currentStep === 2) {
       return musicsheetFileName !== '선택된 파일 없음'
     }
 
+
     return true
   }
 
+
   const handleNextStep = () => {
     const validationMessage = getStepErrorMessage()
+
 
     if (validationMessage) {
       setStepErrorMessage(validationMessage)
       return
     }
 
+
     setStepErrorMessage('')
+
 
     setCurrentStep((prev) => {
       if (prev >= 3) return prev
@@ -82,8 +98,10 @@ function MusicsheetAddModal({
     })
   }
 
+
   const handlePrevStep = () => {
     setStepErrorMessage('')
+
 
     setCurrentStep((prev) => {
       if (prev <= 1) return prev
@@ -91,29 +109,34 @@ function MusicsheetAddModal({
     })
   }
 
+
   const handleChangeSession = (event) => {
     onSessionChange(event)
     setStepErrorMessage('')
   }
+
 
   const handleChangeInput = (event) => {
     onInputChange(event)
     setStepErrorMessage('')
   }
 
+
   const handleChangeFile = (event) => {
     onFileChange(event)
     setStepErrorMessage('')
   }
 
+
   return (
     <div className="place-modal-overlay">
-      <div className="place-modal-card">
-        <div className="place-modal-header">
+      <div className="place-modal-card musicsheet-add-modal-card">
+        <div className="place-modal-header musicsheet-add-modal-header">
           <div>
             <h2>악보 추가</h2>
             <p>{getStepTitle()}</p>
           </div>
+
 
           <button
             type="button"
@@ -124,13 +147,16 @@ function MusicsheetAddModal({
           </button>
         </div>
 
-        <div className="content-step-row">
+
+        {/* 악보 등록 단계 */}
+        <div className="musicsheet-step-row">
           <span className={currentStep === 1 ? 'active' : ''}>1</span>
           <span className={currentStep === 2 ? 'active' : ''}>2</span>
           <span className={currentStep === 3 ? 'active' : ''}>완료</span>
         </div>
 
-        <div className="login-form place-form">
+
+        <div className="login-form place-form musicsheet-add-form">
           {currentStep === 1 && (
             <>
               <select
@@ -145,6 +171,7 @@ function MusicsheetAddModal({
                 ))}
               </select>
 
+
               <input
                 type="text"
                 name="title"
@@ -152,6 +179,7 @@ function MusicsheetAddModal({
                 placeholder="제목을 입력해주세요"
                 onChange={handleChangeInput}
               />
+
 
               <input
                 type="text"
@@ -163,9 +191,10 @@ function MusicsheetAddModal({
             </>
           )}
 
+
           {currentStep === 2 && (
             <>
-              <div className="custom-file-row">
+              <div className="custom-file-row musicsheet-file-row">
                 <label
                   htmlFor="musicsheetFile"
                   className="custom-file-button"
@@ -173,9 +202,11 @@ function MusicsheetAddModal({
                   파일 선택
                 </label>
 
+
                 <span className="custom-file-name">
                   {musicsheetFileName}
                 </span>
+
 
                 <input
                   id="musicsheetFile"
@@ -186,14 +217,16 @@ function MusicsheetAddModal({
                 />
               </div>
 
+
               <p className="musicsheet-file-help">
                 PDF 파일을 선택하면 파일명이 자동으로 저장됩니다.
               </p>
             </>
           )}
 
+
           {currentStep === 3 && (
-            <div className="place-submit-summary">
+            <div className="place-submit-summary musicsheet-submit-summary">
               <strong>{musicsheetForm.title}</strong>
               <span>세션: {musicsheetForm.session}</span>
               <span>설명: {musicsheetForm.description}</span>
@@ -202,20 +235,25 @@ function MusicsheetAddModal({
           )}
         </div>
 
+
         {(stepErrorMessage || errorMessage) && (
-          <p className="login-error">{stepErrorMessage || errorMessage}</p>
+          <p className="login-error musicsheet-add-error">
+            {stepErrorMessage || errorMessage}
+          </p>
         )}
 
-        <div className="place-modal-button-row">
+
+        <div className="place-modal-button-row musicsheet-modal-button-row">
           {currentStep > 1 && (
             <button
               type="button"
-              className="place-prev-button"
+              className="place-prev-button musicsheet-prev-button"
               onClick={handlePrevStep}
             >
               이전
             </button>
           )}
+
 
           {currentStep < 3 && (
             <button
@@ -227,6 +265,7 @@ function MusicsheetAddModal({
               다음
             </button>
           )}
+
 
           {currentStep === 3 && (
             <button
@@ -242,5 +281,6 @@ function MusicsheetAddModal({
     </div>
   )
 }
+
 
 export default MusicsheetAddModal

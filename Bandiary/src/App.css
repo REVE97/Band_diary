@@ -1127,8 +1127,8 @@ a {
 
 .place-modal-header h2 {
   margin: 0 0 8px;
-  color: var(--color-primary);
-  font-size: 22px;
+  color: var(--color-text-primary);
+  font-size: 19px;
   font-weight: 900;
 }
 
@@ -1274,7 +1274,7 @@ a {
 .place-result-card h2 {
   margin: 0 0 8px;
   color: var(--color-text-primary);
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 900;
 }
 
@@ -1497,7 +1497,7 @@ a {
 .profile-edit-modal-header h2 {
   margin: 0;
   color: var(--color-text-primary);
-  font-size: 18px;
+  font-size: 19px;
   font-weight: 900;
   letter-spacing: -0.4px;
 }
@@ -2363,6 +2363,143 @@ a {
   font-size: 12px;
   font-weight: 700;
   line-height: 1.4;
+}
+
+/* 악보 추가 Modal */
+.musicsheet-add-modal-card {
+  max-width: 390px;
+  padding: 22px 20px 20px;
+  border-radius: 24px;
+}
+
+.musicsheet-add-modal-header {
+  margin-bottom: 18px;
+}
+
+.musicsheet-add-modal-header h2 {
+  color: var(--color-text-primary);
+  font-size: 19px;
+  font-weight: 900;
+}
+
+.musicsheet-add-modal-header p {
+  margin-top: 6px;
+  color: var(--color-text-muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+
+/* 악보 등록 단계 */
+.musicsheet-step-row {
+  width: 100%;
+  margin-bottom: 18px;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 8px;
+}
+
+.musicsheet-step-row span {
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 12px;
+
+  background: var(--color-primary-background);
+  color: var(--color-text-subtle);
+
+  font-size: 11px;
+  font-weight: 900;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.musicsheet-step-row span.active {
+  background: var(--color-primary);
+  color: var(--color-white);
+
+  box-shadow:
+    0 6px 14px var(--color-primary-alpha-18);
+}
+
+
+/* 악보 입력 Form */
+.musicsheet-add-form {
+  margin-bottom: 14px;
+}
+
+.musicsheet-add-form input,
+.musicsheet-add-form select {
+  height: 48px;
+  border-radius: 13px;
+}
+
+
+/* 악보 파일 선택 */
+.musicsheet-file-row {
+  min-height: 48px;
+}
+
+
+/* 악보 파일 안내 */
+.musicsheet-file-help {
+  margin: 8px 0 0;
+
+  color: var(--color-text-muted);
+
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+
+/* 악보 등록 정보 확인 */
+.musicsheet-submit-summary {
+  padding: 15px;
+
+  border-color: var(--color-primary-border-soft);
+  border-radius: 16px;
+
+  background: var(--color-primary-background);
+}
+
+.musicsheet-submit-summary strong {
+  color: var(--color-text-primary);
+
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.musicsheet-submit-summary span {
+  color: var(--color-text-muted);
+
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+
+/* 악보 등록 오류 */
+.musicsheet-add-error {
+  margin-bottom: 12px;
+}
+
+
+/* 악보 등록 하단 버튼 */
+.musicsheet-modal-button-row {
+  margin-top: 4px;
+}
+
+.musicsheet-prev-button {
+  flex: 0 0 84px;
 }
 
 /* 악보 세션 필터 */
