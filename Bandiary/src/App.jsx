@@ -31,7 +31,7 @@ function App() {
               <PlacePage />
             </ProtectedRoute>
             } />
-          <Route path="/practice" element={
+          <Route path="/musicsheet" element={
             <ProtectedRoute>
               <PracticePage />
             </ProtectedRoute>

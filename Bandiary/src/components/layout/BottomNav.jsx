@@ -13,8 +13,8 @@ const navItems = [
     icon: StudioIcon
   },
   {
-    path: '/practice',
-    label: 'Practice',
+    path: '/musicsheet',
+    label: 'Musicsheet',
     icon: SongIcon
   },
   {
