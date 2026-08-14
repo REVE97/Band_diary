@@ -1,11 +1,18 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import supabase from '../api/supabase'
-import styles from './PracticePage.module.css'
+import styles from './MusicsheetPage.module.css'
 
 import PdfPreview from '../components/common/PdfPreview'
-import MusicsheetAddModal from '../components/practice/MusicsheetAddModal'
-import PracticeFilterTabs from '../components/practice/PracticeFilterTabs'
+import MusicsheetAddModal from '../components/musicsheet/MusicsheetAddModal'
+import MusicsheetFilterTabs from '../components/musicsheet/MusicsheetFilterTabs'
 import PlaceResultModal from '../components/place/PlaceResultModal'
+import downloadIcon from '../assets/images/download.svg'
+import bassPdfIcon from '../assets/images/PdfIcon-bass.svg'
+import drumPdfIcon from '../assets/images/PdfIcon-drum.svg'
+import guitarPdfIcon from '../assets/images/PdfIcon-guitar.svg'
+import keyboardPdfIcon from '../assets/images/PdfIcon-keyboard.svg'
+import vocalPdfIcon from '../assets/images/PdfIcon-vocal.svg'
+import searchIcon from '../assets/images/search.svg'
 
 const initialMusicsheetForm = {
   session: 'Vocal',
@@ -13,9 +20,32 @@ const initialMusicsheetForm = {
   description: '',
 }
 
-function PracticePage() {
+const getSessionClassName = (session) => {
+  if (session === 'Vocal') return styles.vocal
+  if (session === 'Guitar') return styles.guitar
+  if (session === 'Bass') return styles.bass
+  if (session === 'Keyboard') return styles.keyboard
+  if (session === 'Drum') return styles.drum
+
+  return styles.defaultSession
+}
+
+const sessionPdfIcons = {
+  Vocal: vocalPdfIcon,
+  Guitar: guitarPdfIcon,
+  Bass: bassPdfIcon,
+  Keyboard: keyboardPdfIcon,
+  Drum: drumPdfIcon,
+}
+
+const getSessionPdfIcon = (session) => {
+  return sessionPdfIcons[session] || guitarPdfIcon
+}
+
+function MusicsheetPage() {
   const [musicsheetList, setMusicsheetList] = useState([])
   const [selectedPdf, setSelectedPdf] = useState(null)
+  const [searchKeyword, setSearchKeyword] = useState('')
 
   // 세션 필터 상태값
   const [activeSessionFilter, setActiveSessionFilter] = useState('전체')
@@ -42,13 +72,52 @@ function PracticePage() {
   // 관리자 여부 확인
   const isAdmin = storageInfo?.userId === 'admin'
 
-  // 선택한 세션에 따라 필터링된 악보 목록
-  const filteredMusicsheetList =
-    activeSessionFilter === '전체'
-      ? musicsheetList
-      : musicsheetList.filter(
-          (musicsheet) => musicsheet.session === activeSessionFilter
-        )
+  const sessionCounts = useMemo(() => {
+    return musicsheetList.reduce(
+      (counts, musicsheet) => {
+        counts.전체 += 1
+
+        if (counts[musicsheet.session] !== undefined) {
+          counts[musicsheet.session] += 1
+        }
+
+        return counts
+      },
+      {
+        전체: 0,
+        Vocal: 0,
+        Guitar: 0,
+        Bass: 0,
+        Keyboard: 0,
+        Drum: 0,
+      }
+    )
+  }, [musicsheetList])
+
+  // 세션과 검색어를 함께 적용한 악보 목록
+  const filteredMusicsheetList = useMemo(() => {
+    const normalizedKeyword = searchKeyword.trim().toLocaleLowerCase()
+
+    return musicsheetList.filter((musicsheet) => {
+      const matchesSession =
+        activeSessionFilter === '전체' ||
+        musicsheet.session === activeSessionFilter
+
+      const searchableText = [
+        musicsheet.title,
+        musicsheet.description,
+        musicsheet.fileName,
+      ]
+        .filter(Boolean)
+        .join(' ')
+        .toLocaleLowerCase()
+
+      const matchesKeyword =
+        !normalizedKeyword || searchableText.includes(normalizedKeyword)
+
+      return matchesSession && matchesKeyword
+    })
+  }, [activeSessionFilter, musicsheetList, searchKeyword])
 
   const getMusicsheetList = async () => {
     const { data, error } = await supabase
@@ -73,6 +142,8 @@ function PracticePage() {
   }
 
   useEffect(() => {
+    // Supabase의 초기 악보 목록을 페이지 진입 시 한 번만 조회합니다.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     getMusicsheetList()
   }, [])
 
@@ -80,7 +151,7 @@ function PracticePage() {
     setSelectedPdf(pdf)
   }
 
-  const handlePracticeFilterChange = (filterValue) => {
+  const handleMusicsheetFilterChange = (filterValue) => {
     setActiveSessionFilter(filterValue)
     setSelectedPdf(null)
   }
@@ -373,11 +444,25 @@ function PracticePage() {
   }
 
   return (
-    <div className={`${styles.page} ${styles.pdfPage}`}>
-      <PracticeFilterTabs
+    <div className={styles.page}>
+      <section className={styles.libraryControls} aria-label="악보 검색과 필터">
+        <label className={styles.searchField}>
+          <img src={searchIcon} alt="" aria-hidden="true" />
+          <input
+            type="search"
+            value={searchKeyword}
+            placeholder="곡명 또는 설명 검색"
+            aria-label="곡명 또는 설명 검색"
+            onChange={(event) => setSearchKeyword(event.target.value)}
+          />
+        </label>
+
+        <MusicsheetFilterTabs
         activeFilter={activeSessionFilter}
-        onChange={handlePracticeFilterChange}
-      />
+          counts={sessionCounts}
+          onChange={handleMusicsheetFilterChange}
+        />
+      </section>
 
       <button
         type="button"
@@ -388,51 +473,93 @@ function PracticePage() {
         +
       </button>
 
-      <div className={styles.studioList}>
-        {filteredMusicsheetList.map((pdf) => (
-          <div
-            key={pdf.id}
-            role="button"
-            tabIndex={0}
-            className={selectedPdf?.id === pdf.id ? styles.studioCard + " " + styles.active : styles.studioCard}
-            onClick={() => handlePdfClick(pdf)}
-            onKeyDown={(event) => {
-              if (event.key === 'Enter') {
-                handlePdfClick(pdf)
-              }
-            }}
-          >
-            {isAdmin && (
+      <section className={styles.librarySection}>
+        <div className={styles.musicsheetList}>
+          {filteredMusicsheetList.map((pdf) => (
+            <article
+              key={pdf.id}
+              className={`${styles.musicsheetCard} ${getSessionClassName(
+                pdf.session
+              )} ${selectedPdf?.id === pdf.id ? styles.active : ''}`}
+            >
               <button
                 type="button"
-                className={styles.studioDeleteButton}
-                onClick={(event) => handleOpenMusicsheetDeleteModal(event, pdf)}
-                aria-label={`${pdf.title} 삭제`}
+                className={styles.cardSelectButton}
+                onClick={() => handlePdfClick(pdf)}
+                aria-label={`${pdf.title} 악보 미리보기`}
               >
-                -
+                <span className={styles.pdfThumbnail} aria-hidden="true">
+                  <img
+                    src={getSessionPdfIcon(pdf.session)}
+                    alt=""
+                    className={styles.pdfIcon}
+                  />
+                  <span className={styles.pdfLabel}>PDF</span>
+                </span>
+
+                <span className={styles.musicsheetInfo}>
+                  <span className={styles.sessionBadge}>{pdf.session}</span>
+                  <strong>{pdf.title}</strong>
+                  <span className={styles.description}>{pdf.description}</span>
+                  <span className={styles.fileMeta}>
+                    {pdf.fileName || 'PDF 파일'}
+                  </span>
+                </span>
               </button>
-            )}
 
-            <div className={styles.studioInfo}>
-              <strong>{pdf.title}</strong>
-              <span>{pdf.description}</span>
-              <p>{pdf.session}</p>
+              <div className={styles.cardActions}>
+                <button
+                  type="button"
+                  className={styles.previewButton}
+                  onClick={() => handlePdfClick(pdf)}
+                >
+                  미리보기
+                </button>
+
+                {pdf.pdfUrl && (
+                  <a
+                    href={pdf.pdfUrl}
+                    download={pdf.fileName}
+                    className={styles.downloadButton}
+                    aria-label={`${pdf.title} 다운로드`}
+                  >
+                    <img src={downloadIcon} alt="" aria-hidden="true" />
+                  </a>
+                )}
+
+                {isAdmin && (
+                  <button
+                    type="button"
+                    className={styles.deleteButton}
+                    onClick={(event) =>
+                      handleOpenMusicsheetDeleteModal(event, pdf)
+                    }
+                    aria-label={`${pdf.title} 삭제`}
+                  >
+                    삭제
+                  </button>
+                )}
+              </div>
+            </article>
+          ))}
+
+          {filteredMusicsheetList.length === 0 && (
+            <div className={styles.emptyState}>
+              {searchKeyword.trim()
+                ? '검색 조건에 맞는 PDF 악보가 없습니다.'
+                : activeSessionFilter === '전체'
+                  ? '등록된 PDF 악보가 없습니다.'
+                  : `${activeSessionFilter} 세션의 PDF 악보가 없습니다.`}
             </div>
-          </div>
-        ))}
+          )}
+        </div>
+      </section>
 
-        {filteredMusicsheetList.length === 0 && (
-          <div className={styles.contentEmptyBox}>
-            {activeSessionFilter === '전체'
-              ? '등록된 PDF 악보가 없습니다.'
-              : `${activeSessionFilter} 세션의 PDF 악보가 없습니다.`}
-          </div>
-        )}
-      </div>
-
-      <div className={styles.pdfBox}>
-        <PdfPreview pdf={selectedPdf} />
-      </div>
+      {selectedPdf && (
+        <section className={styles.previewSection} aria-label="선택한 악보 미리보기">
+          <PdfPreview pdf={selectedPdf} />
+        </section>
+      )}
 
       {isMusicsheetModalOpen && (
         <MusicsheetAddModal
@@ -471,4 +598,4 @@ function PracticePage() {
   )
 }
 
-export default PracticePage
+export default MusicsheetPage

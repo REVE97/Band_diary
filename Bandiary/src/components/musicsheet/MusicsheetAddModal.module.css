@@ -1,0 +1,360 @@
+/* Local styles for MusicsheetAddModal.jsx */
+
+.modalOverlay {
+  position: fixed;
+  top: 64px;
+  left: 50%;
+  bottom: 72px;
+  z-index: 100;
+  width: 100%;
+  max-width: 430px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  transform: translateX(-50%);
+  background: var(--color-modal-overlay);
+}
+
+.modalCard {
+  width: 100%;
+  max-width: 390px;
+  max-height: 100%;
+  padding: 24px 22px 22px;
+  overflow-y: auto;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 24px;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-modal);
+}
+
+.modalHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.modalHeader h2 {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1.25;
+  letter-spacing: -0.03em;
+}
+
+.modalHeader p {
+  margin: 7px 0 0;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.closeButton {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--color-surface-muted);
+  color: var(--color-text-muted);
+  font-size: 23px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.stepRow {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: center;
+  margin: 28px 4px 26px;
+}
+
+.stepRow::before {
+  position: absolute;
+  top: 50%;
+  left: 16.66%;
+  right: 16.66%;
+  height: 1px;
+  content: '';
+  background: var(--color-divider);
+  transform: translateY(-50%);
+}
+
+.stepItem {
+  position: relative;
+  z-index: 1;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  justify-self: center;
+  border: 1px solid var(--color-divider);
+  border-radius: 50%;
+  background: var(--color-surface-muted);
+  color: var(--color-text-muted);
+  font-size: 12px;
+  font-weight: 900;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.stepItem.active {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-on-accent);
+}
+
+.stepItem.complete {
+  border-color: var(--color-primary-border);
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+}
+
+.formContent {
+  min-height: 220px;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.fieldLabel {
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.field input,
+.field select {
+  width: 100%;
+  height: 50px;
+  padding: 0 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  outline: 0;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font: inherit;
+  font-size: 15px;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.field input::placeholder {
+  color: var(--color-placeholder);
+}
+
+.field input:focus,
+.field select:focus {
+  border-color: var(--color-primary);
+  box-shadow: var(--focus-ring-primary);
+}
+
+.filePanel {
+  min-height: 220px;
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  align-content: center;
+  align-items: center;
+  gap: 14px;
+  padding: 22px;
+  border: 1px dashed var(--color-primary-border);
+  border-radius: 18px;
+  background: var(--color-primary-soft);
+}
+
+.fileTypeBadge {
+  width: 52px;
+  height: 64px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-primary-border);
+  border-radius: 12px;
+  background: var(--color-surface);
+  color: var(--color-primary);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.fileDetails {
+  min-width: 0;
+}
+
+.fileDetails strong {
+  display: block;
+  overflow: hidden;
+  color: var(--color-text-primary);
+  font-size: 14px;
+  font-weight: 900;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fileDetails p {
+  margin: 6px 0 0;
+  color: var(--color-text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.fileButton {
+  grid-column: 1 / -1;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-primary-border);
+  border-radius: 12px;
+  background: var(--color-surface);
+  color: var(--color-primary);
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.fileInput {
+  display: none;
+}
+
+.submitSummary {
+  min-height: 220px;
+  padding: 20px;
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+  background: var(--color-surface-subtle);
+}
+
+.submitSummary > strong {
+  display: block;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--color-divider);
+  color: var(--color-text-primary);
+  font-size: 17px;
+  font-weight: 900;
+  line-height: 1.4;
+}
+
+.submitSummary dl {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 16px 0 0;
+}
+
+.submitSummary dl > div {
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr);
+  gap: 10px;
+}
+
+.submitSummary dt,
+.submitSummary dd {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.submitSummary dt {
+  color: var(--color-text-muted);
+  font-weight: 700;
+}
+
+.submitSummary dd {
+  overflow-wrap: anywhere;
+  color: var(--color-text-secondary);
+  font-weight: 800;
+}
+
+.errorMessage {
+  margin: 12px 0 0;
+  color: var(--color-danger);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.buttonRow {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.primaryButton,
+.previousButton {
+  height: 50px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.primaryButton {
+  min-width: 0;
+  flex: 1;
+  background: var(--color-primary);
+  color: var(--color-on-accent);
+  box-shadow: var(--shadow-button);
+}
+
+.primaryButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+  box-shadow: none;
+}
+
+.previousButton {
+  flex: 0 0 84px;
+  border: 1px solid var(--color-primary-border);
+  background: var(--color-surface);
+  color: var(--color-primary);
+}
+
+.closeButton:focus-visible,
+.fileButton:focus-visible,
+.primaryButton:focus-visible,
+.previousButton:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.closeButton:active,
+.primaryButton:active:not(:disabled),
+.previousButton:active {
+  transform: scale(0.97);
+}
+
+@media (max-height: 720px) {
+  .modalCard {
+    padding-top: 20px;
+  }
+
+  .stepRow {
+    margin: 20px 4px;
+  }
+
+  .formContent,
+  .filePanel,
+  .submitSummary {
+    min-height: 180px;
+  }
+}

@@ -3,7 +3,7 @@ import MobileLayout from './components/layout/MobileLayout'
 
 import HomePage from './pages/HomePage'
 import PlacePage from './pages/PlacePage'
-import PracticePage from './pages/PracticePage'
+import MusicsheetPage from './pages/MusicsheetPage'
 import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
 import SchedulePage from './pages/SchedulePage'
@@ -33,7 +33,7 @@ function App() {
             } />
           <Route path="/musicsheet" element={
             <ProtectedRoute>
-              <PracticePage />
+              <MusicsheetPage />
             </ProtectedRoute>
             } />
           <Route path="/schedule" element={

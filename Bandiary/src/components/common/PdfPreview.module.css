@@ -8,8 +8,7 @@
 }
 
 .header {
-  position: relative;
-  padding: 12px 96px 12px 14px;
+  padding: 12px 14px;
   border-bottom: 1px solid var(--color-divider);
   background: var(--color-surface);
 }
@@ -26,21 +25,6 @@
   margin-top: 5px;
   color: var(--color-text-muted);
   font-size: 12px;
-}
-
-.downloadButton {
-  position: absolute;
-  top: 12px;
-  right: 14px;
-  padding: 7px 11px;
-  border-radius: 10px;
-  background: var(--color-primary);
-  color: var(--color-on-accent);
-  font-size: 12px;
-  font-weight: 900;
-  line-height: 1;
-  text-decoration: none;
-  white-space: nowrap;
 }
 
 .canvasBox {

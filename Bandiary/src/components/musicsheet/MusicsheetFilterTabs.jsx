@@ -1,8 +1,8 @@
-import styles from './PracticeFilterTabs.module.css'
+import styles from './MusicsheetFilterTabs.module.css'
 
-const practiceFilterOptions = [
+const musicsheetFilterOptions = [
   {
-    label: '전체보기',
+    label: '전체',
     value: '전체',
   },
   {
@@ -27,11 +27,10 @@ const practiceFilterOptions = [
   },
 ]
 
-function PracticeFilterTabs({ activeFilter, onChange }) {
+function MusicsheetFilterTabs({ activeFilter, counts, onChange }) {
   return (
-    <section className={styles.section}>
-      <div className={styles.row}>
-        {practiceFilterOptions.map((option) => (
+    <div className={styles.row} aria-label="세션별 악보 필터">
+      {musicsheetFilterOptions.map((option) => (
           <button
             key={option.value}
             type="button"
@@ -41,13 +40,14 @@ function PracticeFilterTabs({ activeFilter, onChange }) {
                 : styles.button
             }
             onClick={() => onChange(option.value)}
+            aria-pressed={activeFilter === option.value}
           >
-            {option.label}
+            <span>{option.label}</span>
+            <span className={styles.count}>{counts?.[option.value] ?? 0}</span>
           </button>
-        ))}
-      </div>
-    </section>
+      ))}
+    </div>
   )
 }
 
-export default PracticeFilterTabs
+export default MusicsheetFilterTabs

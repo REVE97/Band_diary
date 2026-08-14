@@ -1,0 +1,342 @@
+/* Local styles for MusicsheetPage.jsx */
+
+.page {
+  padding: 12px 0 32px;
+}
+
+.libraryControls {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.searchField {
+  height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 0 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background: var(--color-surface-subtle);
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.searchField:focus-within {
+  border-color: var(--color-primary);
+  background: var(--color-surface);
+  box-shadow: var(--focus-ring-primary);
+}
+
+.searchField img {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  opacity: 0.52;
+}
+
+.searchField input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--color-text-primary);
+  font: inherit;
+  font-size: 15px;
+}
+
+.searchField input::placeholder {
+  color: var(--color-placeholder);
+}
+
+.searchField input::-webkit-search-cancel-button {
+  cursor: pointer;
+}
+
+.librarySection {
+  margin-top: 28px;
+}
+
+.musicsheetList {
+  display: flex;
+  flex-direction: column;
+}
+
+.musicsheetCard {
+  --session-color: var(--color-primary);
+  --session-soft: var(--color-primary-soft);
+  --session-border: var(--color-primary-border);
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 124px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--color-divider);
+  background: var(--color-surface);
+}
+
+.vocal {
+  --session-color: #8b5cf6;
+  --session-soft: #f3efff;
+  --session-border: #ddd2ff;
+}
+
+.guitar {
+  --session-color: #6b4eff;
+  --session-soft: #f1efff;
+  --session-border: #dcd5ff;
+}
+
+.bass {
+  --session-color: #2f8f55;
+  --session-soft: #edf7f0;
+  --session-border: #cbe7d4;
+}
+
+.keyboard {
+  --session-color: #d97706;
+  --session-soft: #fff6e8;
+  --session-border: #f0d3a8;
+}
+
+.drum {
+  --session-color: #3978d4;
+  --session-soft: #eef5ff;
+  --session-border: #ccdef7;
+}
+
+.defaultSession {
+  --session-color: var(--color-primary);
+  --session-soft: var(--color-primary-soft);
+  --session-border: var(--color-primary-border);
+}
+
+.cardSelectButton {
+  min-width: 0;
+  flex: 1;
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
+  padding: 0;
+  background: transparent;
+  text-align: left;
+}
+
+.pdfThumbnail {
+  width: 76px;
+  height: 94px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border: 1px solid var(--session-border);
+  border-radius: 14px;
+  background: var(--color-surface);
+  color: var(--session-color);
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.musicsheetCard.active .pdfThumbnail {
+  border-color: var(--session-color);
+  background: var(--session-soft);
+}
+
+.pdfIcon {
+  width: 30px;
+  height: 30px;
+  display: block;
+  object-fit: contain;
+}
+
+.pdfLabel {
+  color: var(--session-color);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+}
+
+.musicsheetInfo {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.sessionBadge {
+  max-width: 100%;
+  margin-bottom: 7px;
+  padding: 3px 8px;
+  overflow: hidden;
+  border: 1px solid var(--session-border);
+  border-radius: 999px;
+  background: var(--session-soft);
+  color: var(--session-color);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.musicsheetInfo strong {
+  width: 100%;
+  overflow: hidden;
+  color: var(--color-text-primary);
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.description {
+  width: 100%;
+  margin-top: 5px;
+  overflow: hidden;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fileMeta {
+  width: 100%;
+  margin-top: 7px;
+  overflow: hidden;
+  color: var(--color-text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cardActions {
+  flex: 0 0 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.previewButton,
+.deleteButton {
+  min-height: 30px;
+  padding: 0 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: transparent;
+  font-size: 11px;
+  font-weight: 900;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.previewButton {
+  color: var(--color-text-primary);
+}
+
+.downloadButton {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: transparent;
+}
+
+.downloadButton img {
+  width: 21px;
+  height: 21px;
+  display: block;
+}
+
+.deleteButton {
+  color: var(--color-danger);
+}
+
+.cardSelectButton:focus-visible,
+.previewButton:focus-visible,
+.downloadButton:focus-visible,
+.deleteButton:focus-visible,
+.contentAddButton:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+.previewSection {
+  width: 100%;
+  min-height: 360px;
+  margin-top: 22px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.contentAddButton {
+  position: fixed;
+  right: max(18px, calc((100vw - 430px) / 2 + 22px));
+  bottom: calc(112px + env(safe-area-inset-bottom));
+  z-index: 90;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: var(--color-on-accent);
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: var(--shadow-floating);
+  opacity: 0.5;
+}
+
+.contentAddButton:active {
+  transform: scale(0.96);
+}
+
+.emptyState {
+  margin-top: 14px;
+  padding: 34px 18px;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background: var(--color-surface-subtle);
+  color: var(--color-text-muted);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.5;
+  text-align: center;
+}
+
+@media (max-width: 370px) {
+  .cardSelectButton {
+    grid-template-columns: 68px minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .pdfThumbnail {
+    width: 68px;
+    height: 88px;
+  }
+
+  .cardActions {
+    flex-basis: 50px;
+  }
+}
