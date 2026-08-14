@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import supabase from '../api/supabase'
 import styles from './MusicsheetPage.module.css'
 
@@ -43,6 +43,7 @@ const getSessionPdfIcon = (session) => {
 }
 
 function MusicsheetPage() {
+  const previewSectionRef = useRef(null)
   const [musicsheetList, setMusicsheetList] = useState([])
   const [selectedPdf, setSelectedPdf] = useState(null)
   const [searchKeyword, setSearchKeyword] = useState('')
@@ -148,8 +149,29 @@ function MusicsheetPage() {
   }, [])
 
   const handlePdfClick = (pdf) => {
+    if (selectedPdf?.id === pdf.id) {
+      previewSectionRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      })
+      return
+    }
+
     setSelectedPdf(pdf)
   }
+
+  useEffect(() => {
+    if (!selectedPdf) return undefined
+
+    const frameId = window.requestAnimationFrame(() => {
+      previewSectionRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      })
+    })
+
+    return () => window.cancelAnimationFrame(frameId)
+  }, [selectedPdf])
 
   const handleMusicsheetFilterChange = (filterValue) => {
     setActiveSessionFilter(filterValue)
@@ -458,7 +480,7 @@ function MusicsheetPage() {
         </label>
 
         <MusicsheetFilterTabs
-        activeFilter={activeSessionFilter}
+          activeFilter={activeSessionFilter}
           counts={sessionCounts}
           onChange={handleMusicsheetFilterChange}
         />
@@ -524,6 +546,7 @@ function MusicsheetPage() {
                     aria-label={`${pdf.title} 다운로드`}
                   >
                     <img src={downloadIcon} alt="" aria-hidden="true" />
+                    <span>다운로드</span>
                   </a>
                 )}
 
@@ -556,7 +579,11 @@ function MusicsheetPage() {
       </section>
 
       {selectedPdf && (
-        <section className={styles.previewSection} aria-label="선택한 악보 미리보기">
+        <section
+          ref={previewSectionRef}
+          className={styles.previewSection}
+          aria-label="선택한 악보 미리보기"
+        >
           <PdfPreview pdf={selectedPdf} />
         </section>
       )}
