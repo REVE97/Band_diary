@@ -96,11 +96,18 @@ TEST ACCOUNT : test / 1234
 
 * Vercel
 
+### AI
+
+* Codex 프로젝트 적용 테스트 예정
+
 ### Function Test
 
 * Microsoft Clarity
 
 ## 📦 Version History
+
+### v0.4.0 - 2026.08.14 ~ Present
+* 기존 일정 관리 페이지에 대한 리뉴얼
 
 ### v0.3.2 - 2026.08 ~ 2026.08.11
 * 밴드 공지사항 및 메모 기능 추가
