@@ -73,7 +73,6 @@
   gap: 9px;
 }
 
-.placeAddButton,
 .contentAddButton {
   position: fixed;
   right: max(18px, calc((100vw - 430px) / 2 + 22px));
@@ -94,7 +93,6 @@
   opacity: 0.5;
 }
 
-.placeAddButton:active,
 .contentAddButton:active {
   transform: scale(0.96);
 }

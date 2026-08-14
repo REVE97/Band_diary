@@ -1,6 +1,5 @@
 /* Local styles for ScheduleAddModal.jsx */
 
-.primarySmallButton,
 .primaryButton {
   color: var(--color-white);
   background: var(--color-primary);
@@ -43,11 +42,7 @@
 
 .loginForm input:focus,
 .loginForm select:focus,
-.commentForm textarea:focus,
-.scheduleForm textarea:focus,
-.noticeSearchRow input:focus,
-.noticeFormInput:focus,
-.noticeFormTextarea:focus {
+.scheduleForm textarea:focus {
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px var(--color-primary-alpha-12);
 }
@@ -59,8 +54,7 @@
   font-weight: 800;
 }
 
-.placeModalOverlay,
-.placeResultOverlay {
+.placeModalOverlay {
   position: fixed;
   top: 64px;
   left: 50%;
@@ -79,8 +73,7 @@
   z-index: 100;
 }
 
-.placeModalCard,
-.placeResultCard {
+.placeModalCard {
   border-radius: 24px;
   background: linear-gradient(135deg, var(--color-primary-background), var(--color-white));
   box-shadow: 0 24px 70px var(--color-shell-alpha-24);
@@ -139,10 +132,7 @@
   font-weight: 900;
 }
 
-.scheduleModalCard,
-.scheduleDetailCard,
-.noticeAddModalCard,
-.noticeDetailCard {
+.scheduleModalCard {
   max-width: 390px;
 }
 
@@ -224,14 +214,4 @@
   color: var(--color-white);
   font-size: 14px;
   font-weight: 900;
-}
-
-.noticeDetailCard .placeModalHeader {
-  align-items: flex-start;
-}
-
-.noticeDetailCard
-.placeModalHeader > div:first-child {
-  flex: 1;
-  min-width: 0;
 }

@@ -1,6 +1,5 @@
 /* Local styles for NoticeAddModal.jsx */
 
-.primarySmallButton,
 .primaryButton {
   color: var(--color-white);
   background: var(--color-primary);
@@ -21,19 +20,13 @@
   box-shadow: none;
 }
 
-.loginForm input:focus,
-.loginForm select:focus,
-.commentForm textarea:focus,
-.scheduleForm textarea:focus,
-.noticeSearchRow input:focus,
 .noticeFormInput:focus,
 .noticeFormTextarea:focus {
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px var(--color-primary-alpha-12);
 }
 
-.placeModalOverlay,
-.placeResultOverlay {
+.placeModalOverlay {
   position: fixed;
   top: 64px;
   left: 50%;
@@ -52,8 +45,7 @@
   z-index: 100;
 }
 
-.placeModalCard,
-.placeResultCard {
+.placeModalCard {
   border-radius: 24px;
   background: linear-gradient(135deg, var(--color-primary-background), var(--color-white));
   box-shadow: 0 24px 70px var(--color-shell-alpha-24);
@@ -100,36 +92,14 @@
   line-height: 1;
 }
 
-.placeModalButtonRow .primaryButton {
-  flex: 1;
-}
-
-.profileEditModalHeader .placeModalClose {
-  position: absolute;
-  top: 50%;
-  right: 0;
-  transform: translateY(-50%);
-}
-
-.customFileInput,
 .noticeHiddenFileInput {
   display: none;
 }
 
-.scheduleModalCard,
-.scheduleDetailCard,
-.noticeAddModalCard,
-.noticeDetailCard {
+.noticeAddModalCard {
   max-width: 390px;
 }
 
-.contentDetailHeader .placeModalClose {
-  position: absolute;
-  top: 0;
-  right: 0;
-}
-
-.noticeTypeFilterButton.active,
 .noticeTypeSelector button.active {
   border-color: var(--color-primary);
 
@@ -340,8 +310,7 @@
   gap: 10px;
 }
 
-.noticeEditCancelButton,
-.noticeEditButton {
+.noticeEditCancelButton {
   flex: 1;
   height: 48px;
   border-radius: 14px;
@@ -353,14 +322,11 @@
     0 8px 18px var(--color-primary-alpha-12);
 }
 
-.noticeEditCancelButton:active,
-.noticeEditButton:active {
+.noticeEditCancelButton:active {
   transform: scale(0.98);
 }
 
-.noticeEditCancelButton:disabled,
-.noticeEditButton:disabled,
-.noticeDeleteButton:disabled {
+.noticeEditCancelButton:disabled {
   cursor: not-allowed;
   opacity: 0.5;
 }
@@ -369,14 +335,4 @@
   flex: 1;
   width: auto;
   margin-top: 0;
-}
-
-.noticeDetailCard .placeModalHeader {
-  align-items: flex-start;
-}
-
-.noticeDetailCard
-.placeModalHeader > div:first-child {
-  flex: 1;
-  min-width: 0;
 }

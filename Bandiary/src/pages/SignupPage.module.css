@@ -4,7 +4,6 @@
   padding-bottom: 20px;
 }
 
-.primarySmallButton,
 .primaryButton {
   color: var(--color-white);
   background: var(--color-primary);
@@ -75,12 +74,7 @@
 }
 
 .loginForm input:focus,
-.loginForm select:focus,
-.commentForm textarea:focus,
-.scheduleForm textarea:focus,
-.noticeSearchRow input:focus,
-.noticeFormInput:focus,
-.noticeFormTextarea:focus {
+.loginForm select:focus {
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px var(--color-primary-alpha-12);
 }
@@ -115,19 +109,4 @@
   color: var(--color-success);
   font-size: 12px;
   font-weight: 800;
-}
-
-.pageContentFull .loginPage {
-  min-height: 100vh;
-}
-
-@media (min-width: 431px) {
-
-  .pageContentFull .loginPage {
-    min-height: calc(100vh - 48px);
-  }
-}
-
-.placeModalButtonRow .primaryButton {
-  flex: 1;
 }

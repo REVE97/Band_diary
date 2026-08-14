@@ -28,7 +28,6 @@
   transform: scale(0.98);
 }
 
-.filterRow,
 .tabRow {
   display: flex;
   gap: 8px;
@@ -36,7 +35,6 @@
   padding: 4px 0 16px;
 }
 
-.filterRow button,
 .tabRow button {
   flex: 0 0 auto;
   padding: 9px 14px;
@@ -169,8 +167,7 @@
   opacity: 0.4;
 }
 
-.placeAddButton,
-.contentAddButton {
+.placeAddButton {
   position: fixed;
   right: max(18px, calc((100vw - 430px) / 2 + 22px));
   bottom: calc(112px + env(safe-area-inset-bottom));
@@ -190,8 +187,7 @@
   opacity: 0.5;
 }
 
-.placeAddButton:active,
-.contentAddButton:active {
+.placeAddButton:active {
   transform: scale(0.96);
 }
 
@@ -214,12 +210,4 @@
 
 .studioDeleteButton:active {
   transform: scale(0.92);
-}
-
-.pdfPage .studioCard {
-  position: relative;
-}
-
-.pdfPage .studioDeleteButton {
-  z-index: 2;
 }
