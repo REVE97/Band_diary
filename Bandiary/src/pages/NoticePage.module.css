@@ -6,7 +6,7 @@
 
 .noticeSearchRow input:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px var(--color-primary-alpha-12);
+  box-shadow: var(--focus-ring-primary);
 }
 
 .noticeSectionHeader h3 {
@@ -58,7 +58,7 @@
   border: 1px solid var(--color-border);
   border-radius: 999px;
 
-  background: var(--color-white);
+  background: var(--color-surface);
   color: var(--color-text-muted);
 
   font-size: 12px;
@@ -66,8 +66,7 @@
 
   white-space: nowrap;
 
-  box-shadow:
-    0 6px 16px var(--color-dark-alpha-04);
+  box-shadow: var(--shadow-card);
 
   transition:
     transform 0.2s ease,
@@ -80,17 +79,11 @@
 .noticeTypeFilterButton.active {
   border-color: var(--color-primary);
 
-  background:
-    linear-gradient(
-      135deg,
-      var(--color-primary-gradient-start),
-      var(--color-primary-gradient-end)
-    );
+  background: var(--color-primary);
 
-  color: var(--color-white);
+  color: var(--color-on-accent);
 
-  box-shadow:
-    0 8px 18px var(--color-primary-alpha-18);
+  box-shadow: var(--shadow-button);
 }
 
 .noticeTypeFilterButton:active {
@@ -116,7 +109,7 @@
   border: 1px solid var(--color-border);
   border-radius: 12px;
 
-  background: var(--color-white);
+  background: var(--color-surface);
   color: var(--color-text-primary);
 
   font-size: 16px;
@@ -140,7 +133,7 @@
   border: 1px solid var(--color-border);
   border-radius: 12px;
 
-  background: var(--color-white);
+  background: var(--color-surface);
 }
 
 .noticeSearchButton img {
@@ -163,18 +156,12 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  border: 1px solid var(--color-important-border);
+  border: 1px solid var(--color-primary-border);
   border-radius: 16px;
-  background:
-    linear-gradient(
-      135deg,
-      var(--color-important-background),
-      var(--color-white)
-    );
+  background: var(--color-surface);
   color: var(--color-text-primary);
   text-align: left;
-  box-shadow:
-    0 8px 24px var(--color-primary-alpha-08);
+  box-shadow: var(--shadow-card);
 }
 
 .noticeImportantIcon {
@@ -188,7 +175,7 @@
 
   border-radius: 13px;
 
-  background: var(--color-warning-background);
+  background: var(--color-warning-soft);
 }
 
 .noticeImportantIcon img,
@@ -253,9 +240,8 @@
   overflow: hidden;
   border: 1px solid var(--color-border);
   border-radius: 16px;
-  background: var(--color-white);
-  box-shadow:
-    0 8px 24px var(--color-dark-alpha-05);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
 }
 
 .noticeListItem {
@@ -266,7 +252,7 @@
   align-items: center;
   gap: 10px;
   border-bottom: 1px solid var(--color-divider);
-  background: var(--color-white);
+  background: var(--color-surface);
   color: var(--color-text-primary);
   text-align: left;
 }
@@ -276,7 +262,7 @@
 }
 
 .noticeListItem:active {
-  background: var(--color-active-background);
+  background: var(--color-surface-subtle);
 }
 
 .noticeListIcon {
@@ -343,12 +329,11 @@
   justify-content: center;
   border-radius: 50%;
   background: var(--color-primary);
-  color: var(--color-white);
+  color: var(--color-on-accent);
   font-size: 30px;
   font-weight: 700;
   line-height: 1;
-  box-shadow:
-    0 12px 28px var(--color-primary-alpha-32);
+  box-shadow: var(--shadow-floating);
   opacity: 0.5;
 }
 
@@ -361,11 +346,10 @@
   padding: 28px 18px;
   border: 1px solid var(--color-border);
   border-radius: 16px;
-  background: var(--color-white);
+  background: var(--color-surface);
   color: var(--color-text-muted);
   text-align: center;
-  box-shadow:
-    0 8px 24px var(--color-dark-alpha-05);
+  box-shadow: var(--shadow-card);
 }
 
 .noticeStateBox {

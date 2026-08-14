@@ -7,8 +7,8 @@
 .studioCard {
   border: 1px solid var(--color-border);
   border-radius: 16px;
-  background: var(--color-white);
-  box-shadow: 0 8px 24px var(--color-dark-alpha-05);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
 }
 
 .studioCard {
@@ -21,7 +21,7 @@
 
 .studioCard.active {
   border-color: var(--color-primary);
-  box-shadow: 0 10px 28px var(--color-primary-alpha-18);
+  box-shadow: var(--shadow-selected);
 }
 
 .studioCard:active {
@@ -65,7 +65,7 @@
   margin-bottom: 8px;
   font-size: 13px;
   font-weight: 900;
-  color: var(--color-black);
+  color: var(--color-text-primary);
 }
 
 .studioCard p {
@@ -86,9 +86,9 @@
   overflow: hidden;
   display: block;
   border-radius: 16px;
-  background: linear-gradient(135deg, var(--color-preview-green), var(--color-preview-blue));
+  background: var(--color-surface-muted);
   border: 1px solid var(--color-border);
-  box-shadow: 0 8px 24px var(--color-dark-alpha-05);
+  box-shadow: var(--shadow-card);
 }
 
 .contentAddButton {
@@ -99,12 +99,12 @@
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  color: var(--color-white);
+  color: var(--color-on-accent);
   background: var(--color-primary);
   font-size: 30px;
   font-weight: 700;
   line-height: 1;
-  box-shadow: 0 12px 28px var(--color-primary-alpha-32);
+  box-shadow: var(--shadow-floating);
 }
 
 .contentAddButton {
@@ -141,7 +141,7 @@
   padding: 26px 16px;
   border: 1px solid var(--color-border);
   border-radius: 16px;
-  background: var(--color-primary-background);
+  background: var(--color-surface-subtle);
   color: var(--color-text-muted);
   font-size: 13px;
   font-weight: 800;

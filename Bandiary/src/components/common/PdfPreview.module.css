@@ -4,14 +4,14 @@
   min-height: 360px;
   display: flex;
   flex-direction: column;
-  background: var(--color-white);
+  background: var(--color-surface);
 }
 
 .header {
   position: relative;
   padding: 12px 96px 12px 14px;
   border-bottom: 1px solid var(--color-divider);
-  background: var(--color-white);
+  background: var(--color-surface);
 }
 
 .header strong {
@@ -35,7 +35,7 @@
   padding: 7px 11px;
   border-radius: 10px;
   background: var(--color-primary);
-  color: var(--color-white);
+  color: var(--color-on-accent);
   font-size: 12px;
   font-weight: 900;
   line-height: 1;
@@ -82,6 +82,6 @@
   height: 76px;
   display: block;
   object-fit: contain;
-  color: var(--color-primary-icon-soft);
+  color: var(--color-text-subtle);
   opacity: 0.85;
 }

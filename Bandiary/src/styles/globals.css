@@ -18,7 +18,7 @@ body {
     "Apple SD Gothic Neo",
     "Noto Sans KR",
     sans-serif;
-  background: var(--color-body-background);
+  background: var(--color-canvas);
   color: var(--color-text-primary);
 }
 

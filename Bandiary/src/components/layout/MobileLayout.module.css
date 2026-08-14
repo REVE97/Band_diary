@@ -3,9 +3,7 @@
   min-height: 100vh;
   display: flex;
   justify-content: center;
-  background:
-    radial-gradient(circle at top left, var(--color-primary-glow), transparent 32%),
-    var(--color-app-background);
+  background: var(--color-canvas);
 }
 
 .mobileShell {
@@ -14,8 +12,8 @@
   max-width: 430px;
   min-height: 100vh;
   overflow: hidden;
-  background: var(--color-white);
-  box-shadow: 0 24px 70px var(--color-shell-alpha-15);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-shell);
 }
 
 .pageContent {

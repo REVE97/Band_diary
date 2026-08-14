@@ -8,9 +8,9 @@
   gap: 12px;
   border: 1px solid var(--color-border);
   border-radius: 16px;
-  background: var(--color-white);
+  background: var(--color-surface);
   text-align: left;
-  box-shadow: 0 6px 18px var(--color-dark-alpha-04);
+  box-shadow: var(--shadow-card);
   transition:
     transform 0.2s ease,
     border-color 0.2s ease,
@@ -19,8 +19,8 @@
 
 .card.active {
   border-color: var(--color-primary-border);
-  background: var(--color-active-background);
-  box-shadow: 0 8px 20px var(--color-primary-alpha-12);
+  background: var(--color-surface-subtle);
+  box-shadow: var(--shadow-selected);
 }
 
 .card:active {
@@ -42,27 +42,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(
-    135deg,
-    var(--color-primary-border),
-    var(--color-primary-surface)
-  );
+  background: var(--color-primary);
 }
 
 .picture .placeholder {
-  background: linear-gradient(135deg, var(--color-preview-green), var(--color-success));
+  background: var(--color-success);
 }
 
 .video .placeholder {
-  background: linear-gradient(
-    135deg,
-    var(--color-primary-gradient-start),
-    var(--color-primary-gradient-end)
-  );
+  background: var(--color-primary);
 }
 
 .audio .placeholder {
-  background: linear-gradient(135deg, var(--color-danger-soft), var(--color-danger));
+  background: var(--color-danger);
 }
 
 .previewIcon {

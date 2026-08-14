@@ -1,10 +1,10 @@
 /* Local styles for NoticeAddModal.jsx */
 
 .primaryButton {
-  color: var(--color-white);
+  color: var(--color-on-accent);
   background: var(--color-primary);
   font-weight: 900;
-  box-shadow: 0 8px 18px var(--color-primary-alpha-25);
+  box-shadow: var(--shadow-button);
 }
 
 .primaryButton {
@@ -23,7 +23,7 @@
 .noticeFormInput:focus,
 .noticeFormTextarea:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px var(--color-primary-alpha-12);
+  box-shadow: var(--focus-ring-primary);
 }
 
 .placeModalOverlay {
@@ -47,8 +47,8 @@
 
 .placeModalCard {
   border-radius: 24px;
-  background: linear-gradient(135deg, var(--color-primary-background), var(--color-white));
-  box-shadow: 0 24px 70px var(--color-shell-alpha-24);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-modal);
 }
 
 .placeModalCard {
@@ -86,7 +86,7 @@
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: var(--color-white);
+  background: var(--color-surface);
   color: var(--color-text-muted);
   font-size: 24px;
   line-height: 1;
@@ -103,17 +103,11 @@
 .noticeTypeSelector button.active {
   border-color: var(--color-primary);
 
-  background:
-    linear-gradient(
-      135deg,
-      var(--color-primary-gradient-start),
-      var(--color-primary-gradient-end)
-    );
+  background: var(--color-primary);
 
-  color: var(--color-white);
+  color: var(--color-on-accent);
 
-  box-shadow:
-    0 8px 18px var(--color-primary-alpha-18);
+  box-shadow: var(--shadow-button);
 }
 
 .noticeAddForm {
@@ -141,7 +135,7 @@
   padding: 0 14px;
   border: 1px solid var(--color-border);
   border-radius: 12px;
-  background: var(--color-white);
+  background: var(--color-surface);
   color: var(--color-text-primary);
   font-family: inherit;
   font-size: 16px;
@@ -180,7 +174,7 @@
   height: 42px;
   border: 1px solid var(--color-border);
   border-radius: 12px;
-  background: var(--color-white);
+  background: var(--color-surface);
   color: var(--color-text-muted);
   font-size: 13px;
   font-weight: 900;
@@ -203,7 +197,7 @@
   align-items: center;
   justify-content: center;
 
-  background-color: var(--color-white);
+  background-color: var(--color-surface);
 
   border-radius: 12px;
 }
@@ -225,8 +219,8 @@
   height: 38px;
   padding: 0 12px;
   border-radius: 11px;
-  background: var(--color-white);
-  color: var(--color-red);
+  background: var(--color-surface);
+  color: var(--color-danger);
   font-size: 12px;
   font-weight: 900;
 }
@@ -262,7 +256,7 @@
   gap: 14px;
   border: 1px solid var(--color-border);
   border-radius: 14px;
-  background: var(--color-white);
+  background: var(--color-surface);
 }
 
 .noticeImportantSetting > div {
@@ -288,15 +282,15 @@
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  background: var(--color-star-background);
+  background: var(--color-surface-muted);
   color: var(--color-placeholder);
   font-size: 24px;
   line-height: 1;
 }
 
 .noticeStarButton.active {
-  background: var(--color-star-active-background);
-  color: var(--color-star-active);
+  background: var(--color-warning-soft);
+  color: var(--color-warning);
 }
 
 .noticeSubmitButton {
@@ -318,8 +312,7 @@
   color: var(--color-primary);
   font-size: 14px;
   font-weight: 900;
-  box-shadow:
-    0 8px 18px var(--color-primary-alpha-12);
+  box-shadow: var(--shadow-button);
 }
 
 .noticeEditCancelButton:active {

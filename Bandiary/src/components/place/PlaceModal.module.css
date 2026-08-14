@@ -1,10 +1,10 @@
 /* Local styles for PlaceModal.jsx */
 
 .primaryButton {
-  color: var(--color-white);
+  color: var(--color-on-accent);
   background: var(--color-primary);
   font-weight: 900;
-  box-shadow: 0 8px 18px var(--color-primary-alpha-25);
+  box-shadow: var(--shadow-button);
 }
 
 .primaryButton {
@@ -34,7 +34,7 @@
   padding: 0 14px;
   border: 1px solid var(--color-border);
   border-radius: 12px;
-  background: var(--color-white);
+  background: var(--color-surface);
   color: var(--color-text-primary);
   font-size: 16px;
   outline: none;
@@ -43,7 +43,7 @@
 .loginForm input:focus,
 .loginForm select:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px var(--color-primary-alpha-12);
+  box-shadow: var(--focus-ring-primary);
 }
 
 .loginError {
@@ -74,8 +74,8 @@
 
 .placeModalCard {
   border-radius: 24px;
-  background: linear-gradient(135deg, var(--color-primary-background), var(--color-white));
-  box-shadow: 0 24px 70px var(--color-shell-alpha-24);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-modal);
 }
 
 .placeModalCard {
@@ -113,7 +113,7 @@
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: var(--color-white);
+  background: var(--color-surface);
   color: var(--color-text-muted);
   font-size: 24px;
   line-height: 1;
@@ -134,7 +134,7 @@
   gap: 6px;
   border: 1px solid var(--color-border);
   border-radius: 14px;
-  background: var(--color-white);
+  background: var(--color-surface);
   color: var(--color-text-secondary);
   font-size: 12px;
   font-weight: 900;
@@ -168,7 +168,7 @@
 }
 
 .placeStepRow span.active {
-  color: var(--color-white);
+  color: var(--color-on-accent);
   background: var(--color-primary);
 }
 
@@ -198,7 +198,7 @@
   padding: 14px;
   border: 1px solid var(--color-border);
   border-radius: 16px;
-  background: var(--color-white);
+  background: var(--color-surface);
   text-align: left;
 }
 
@@ -229,7 +229,7 @@
   height: 46px;
   border-radius: 12px;
   background: var(--color-primary);
-  color: var(--color-white);
+  color: var(--color-on-accent);
   font-size: 13px;
   font-weight: 900;
 }
@@ -252,7 +252,7 @@
   padding: 10px 12px;
   border: 1px solid var(--color-border);
   border-radius: 12px;
-  background: var(--color-white);
+  background: var(--color-surface);
   text-align: left;
 }
 
@@ -276,9 +276,9 @@
   flex-direction: column;
   gap: 6px;
   padding: 12px;
-  border: 1px solid var(--color-primary-border-soft);
+  border: 1px solid var(--color-primary-border);
   border-radius: 14px;
-  background: var(--color-primary-background);
+  background: var(--color-primary-soft);
   text-align: left;
 }
 

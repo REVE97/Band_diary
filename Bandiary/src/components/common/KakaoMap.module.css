@@ -4,7 +4,7 @@
   min-height: 230px;
   display: flex;
   flex-direction: column;
-  background: var(--color-white);
+  background: var(--color-surface);
 }
 
 .header {
@@ -14,7 +14,7 @@
   justify-content: space-between;
   gap: 10px;
   border-bottom: 1px solid var(--color-divider);
-  background: var(--color-white);
+  background: var(--color-surface);
 }
 
 .header div {
@@ -47,10 +47,10 @@
   padding: 0 11px;
   border-radius: 999px;
   background: var(--color-primary);
-  color: var(--color-white);
+  color: var(--color-on-accent);
   font-size: 12px;
   font-weight: 900;
-  box-shadow: 0 6px 14px var(--color-primary-alpha-22);
+  box-shadow: var(--shadow-button);
 }
 
 .routeButton:active {
@@ -83,6 +83,6 @@
   height: 76px;
   display: block;
   object-fit: contain;
-  color: var(--color-primary-icon-soft);
+  color: var(--color-text-subtle);
   opacity: 0.85;
 }

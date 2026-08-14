@@ -1,10 +1,10 @@
 /* Local styles for MusicsheetAddModal.jsx */
 
 .primaryButton {
-  color: var(--color-white);
+  color: var(--color-on-accent);
   background: var(--color-primary);
   font-weight: 900;
-  box-shadow: 0 8px 18px var(--color-primary-alpha-25);
+  box-shadow: var(--shadow-button);
 }
 
 .primaryButton {
@@ -34,7 +34,7 @@
   padding: 0 14px;
   border: 1px solid var(--color-border);
   border-radius: 12px;
-  background: var(--color-white);
+  background: var(--color-surface);
   color: var(--color-text-primary);
   font-size: 16px;
   outline: none;
@@ -43,7 +43,7 @@
 .loginForm input:focus,
 .loginForm select:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px var(--color-primary-alpha-12);
+  box-shadow: var(--focus-ring-primary);
 }
 
 .loginError {
@@ -74,8 +74,8 @@
 
 .placeModalCard {
   border-radius: 24px;
-  background: linear-gradient(135deg, var(--color-primary-background), var(--color-white));
-  box-shadow: 0 24px 70px var(--color-shell-alpha-24);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-modal);
 }
 
 .placeModalCard {
@@ -113,7 +113,7 @@
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: var(--color-white);
+  background: var(--color-surface);
   color: var(--color-text-muted);
   font-size: 24px;
   line-height: 1;
@@ -149,7 +149,7 @@
   padding: 14px;
   border: 1px solid var(--color-border);
   border-radius: 16px;
-  background: var(--color-white);
+  background: var(--color-surface);
   text-align: left;
 }
 
@@ -175,7 +175,7 @@
   gap: 10px;
   border: 1px solid var(--color-border);
   border-radius: 12px;
-  background: var(--color-white);
+  background: var(--color-surface);
 }
 
 .customFileButton {
@@ -258,7 +258,7 @@
 
   border-radius: 12px;
 
-  background: var(--color-primary-background);
+  background: var(--color-surface-subtle);
   color: var(--color-text-subtle);
 
   font-size: 11px;
@@ -272,10 +272,9 @@
 
 .musicsheetStepRow span.active {
   background: var(--color-primary);
-  color: var(--color-white);
+  color: var(--color-on-accent);
 
-  box-shadow:
-    0 6px 14px var(--color-primary-alpha-18);
+  box-shadow: var(--shadow-button);
 }
 
 .musicsheetAddForm {
@@ -305,10 +304,10 @@
 .musicsheetSubmitSummary {
   padding: 15px;
 
-  border-color: var(--color-primary-border-soft);
+  border-color: var(--color-border);
   border-radius: 16px;
 
-  background: var(--color-primary-background);
+  background: var(--color-surface-subtle);
 }
 
 .musicsheetSubmitSummary strong {

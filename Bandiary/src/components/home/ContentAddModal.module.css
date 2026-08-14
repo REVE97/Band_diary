@@ -1,10 +1,10 @@
 /* Local styles for ContentAddModal.jsx */
 
 .primaryButton {
-  color: var(--color-white);
+  color: var(--color-on-accent);
   background: var(--color-primary);
   font-weight: 900;
-  box-shadow: 0 8px 18px var(--color-primary-alpha-25);
+  box-shadow: var(--shadow-button);
 }
 
 .primaryButton {
@@ -34,7 +34,7 @@
   padding: 0 14px;
   border: 1px solid var(--color-border);
   border-radius: 12px;
-  background: var(--color-white);
+  background: var(--color-surface);
   color: var(--color-text-primary);
   font-size: 16px;
   outline: none;
@@ -43,7 +43,7 @@
 .loginForm input:focus,
 .loginForm select:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px var(--color-primary-alpha-12);
+  box-shadow: var(--focus-ring-primary);
 }
 
 .loginError {
@@ -74,8 +74,8 @@
 
 .placeModalCard {
   border-radius: 24px;
-  background: linear-gradient(135deg, var(--color-primary-background), var(--color-white));
-  box-shadow: 0 24px 70px var(--color-shell-alpha-24);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-modal);
 }
 
 .placeModalCard {
@@ -113,7 +113,7 @@
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: var(--color-white);
+  background: var(--color-surface);
   color: var(--color-text-muted);
   font-size: 24px;
   line-height: 1;
@@ -134,7 +134,7 @@
   gap: 6px;
   border: 1px solid var(--color-border);
   border-radius: 14px;
-  background: var(--color-white);
+  background: var(--color-surface);
   color: var(--color-text-secondary);
   font-size: 12px;
   font-weight: 900;
@@ -174,7 +174,7 @@
   padding: 14px;
   border: 1px solid var(--color-border);
   border-radius: 16px;
-  background: var(--color-white);
+  background: var(--color-surface);
   text-align: left;
 }
 
@@ -260,7 +260,7 @@
   justify-content: center;
   gap: 1px;
   border-radius: 12px;
-  background: var(--color-primary-background);
+  background: var(--color-surface-subtle);
   color: var(--color-text-subtle);
 }
 
@@ -277,8 +277,8 @@
 
 .contentAddModalCard .contentStepRow span.active {
   background: var(--color-primary);
-  color: var(--color-white);
-  box-shadow: 0 6px 14px var(--color-primary-alpha-18);
+  color: var(--color-on-accent);
+  box-shadow: var(--shadow-button);
 }
 
 .contentTypeRow {
@@ -299,16 +299,16 @@
   gap: 6px;
   border: 1px solid var(--color-border);
   border-radius: 14px;
-  background: var(--color-white);
+  background: var(--color-surface);
   color: var(--color-text-muted);
   cursor: pointer;
 }
 
 .contentTypeRow label.active {
   border-color: var(--color-primary);
-  background: var(--color-primary-background);
+  background: var(--color-primary-soft);
   color: var(--color-primary);
-  box-shadow: 0 0 0 2px var(--color-primary-alpha-08);
+  box-shadow: var(--shadow-selected);
 }
 
 .contentTypeRow input {
@@ -369,7 +369,7 @@
   padding: 0 14px;
   border: 1px solid var(--color-border);
   border-radius: 13px;
-  background: var(--color-white);
+  background: var(--color-surface);
   color: var(--color-text-primary);
   font-size: 15px;
   outline: none;
@@ -377,7 +377,7 @@
 
 .contentAddField input:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px var(--color-primary-alpha-12);
+  box-shadow: var(--focus-ring-primary);
 }
 
 .contentUploadPreview {
@@ -408,7 +408,7 @@
   gap: 10px;
   border: 1px dashed var(--color-primary-border);
   border-radius: 14px;
-  background: var(--color-primary-background);
+  background: var(--color-surface-subtle);
 }
 
 .contentFileSelectBox .customFileButton {
@@ -428,7 +428,7 @@
   padding: 15px;
   gap: 8px;
   border-radius: 16px;
-  background: var(--color-primary-background);
+  background: var(--color-surface-subtle);
 }
 
 .contentSubmitSummaryTitle {
@@ -462,9 +462,9 @@
 .contentUploadGuide {
   margin-bottom: 12px;
   padding: 13px 14px;
-  border: 1px solid var(--color-primary-border-soft);
+  border: 1px solid var(--color-border);
   border-radius: 14px;
-  background: var(--color-primary-background);
+  background: var(--color-surface-subtle);
   text-align: left;
 }
 

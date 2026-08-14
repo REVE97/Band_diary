@@ -19,8 +19,8 @@
   max-width: 320px;
   padding: 28px 20px;
   border-radius: 24px;
-  background: linear-gradient(135deg, var(--color-primary-background), var(--color-white));
-  box-shadow: 0 24px 70px var(--color-shell-alpha-24);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-modal);
   text-align: center;
 }
 
@@ -33,7 +33,7 @@
   align-items: center;
   justify-content: center;
   background: var(--color-danger);
-  color: var(--color-white);
+  color: var(--color-on-accent);
   font-size: 30px;
   font-weight: 900;
 }
@@ -82,13 +82,13 @@
 
 .confirmButton {
   background: var(--color-danger);
-  color: var(--color-white);
-  box-shadow: 0 8px 18px var(--color-danger-alpha-22);
+  color: var(--color-on-accent);
+  box-shadow: var(--shadow-button);
 }
 
 .primaryButton {
   width: 100%;
   background: var(--color-primary);
-  color: var(--color-white);
-  box-shadow: 0 8px 18px var(--color-primary-alpha-25);
+  color: var(--color-on-accent);
+  box-shadow: var(--shadow-button);
 }

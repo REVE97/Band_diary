@@ -18,8 +18,8 @@
 }
 .placeModalCard {
   border-radius: 24px;
-  background: linear-gradient(135deg, var(--color-primary-background), var(--color-white));
-  box-shadow: 0 24px 70px var(--color-shell-alpha-24);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-modal);
 }
 .placeModalCard {
   width: 100%;
@@ -52,7 +52,7 @@
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: var(--color-white);
+  background: var(--color-surface);
   color: var(--color-text-muted);
   font-size: 24px;
   line-height: 1;
@@ -85,7 +85,7 @@
   padding: 14px;
   border: 1px solid var(--color-border);
   border-radius: 14px;
-  background: var(--color-white);
+  background: var(--color-surface);
 }
 .scheduleDetailTitleBox strong {
   color: var(--color-text-primary);
@@ -116,10 +116,10 @@
   margin-top: 18px;
   border-radius: 14px;
   background: var(--color-danger);
-  color: var(--color-white);
+  color: var(--color-on-accent);
   font-size: 14px;
   font-weight: 900;
-  box-shadow: 0 8px 18px var(--color-danger-alpha-22);
+  box-shadow: var(--shadow-button);
 }
 .scheduleDeleteButton:active {
   transform: scale(0.98);

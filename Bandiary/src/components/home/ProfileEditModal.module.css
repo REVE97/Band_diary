@@ -1,10 +1,10 @@
 /* Local styles for ProfileEditModal.jsx */
 
 .primaryButton {
-  color: var(--color-white);
+  color: var(--color-on-accent);
   background: var(--color-primary);
   font-weight: 900;
-  box-shadow: 0 8px 18px var(--color-primary-alpha-25);
+  box-shadow: var(--shadow-button);
 }
 
 .primaryButton {
@@ -48,8 +48,8 @@
 
 .placeModalCard {
   border-radius: 24px;
-  background: linear-gradient(135deg, var(--color-primary-background), var(--color-white));
-  box-shadow: 0 24px 70px var(--color-shell-alpha-24);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-modal);
 }
 
 .placeModalCard {
@@ -87,7 +87,7 @@
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: var(--color-white);
+  background: var(--color-surface);
   color: var(--color-text-muted);
   font-size: 24px;
   line-height: 1;
@@ -96,7 +96,7 @@
 .profileEditModalCard {
   max-width: 360px;
   padding: 22px 20px 20px;
-  background: var(--color-white);
+  background: var(--color-surface);
 }
 
 .profileEditModalHeader {
@@ -156,8 +156,8 @@
   justify-content: center;
   border: 1px solid var(--color-border);
   border-radius: 50%;
-  background: var(--color-white);
-  box-shadow: 0 6px 16px var(--color-primary-alpha-18);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-button);
 }
 
 .profileEditImageButton img {
@@ -206,7 +206,7 @@
   padding: 0 14px;
   border: 1px solid var(--color-border);
   border-radius: 12px;
-  background: var(--color-white);
+  background: var(--color-surface);
   color: var(--color-text-primary);
   font-family: inherit;
   font-size: 15px;
@@ -220,8 +220,7 @@
 .profileEditField input:focus,
 .profileEditField select:focus {
   border-color: var(--color-primary);
-  box-shadow:
-    0 0 0 3px var(--color-primary-alpha-12);
+  box-shadow: var(--focus-ring-primary);
 }
 
 .profileEditError {
