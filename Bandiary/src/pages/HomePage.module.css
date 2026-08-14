@@ -1,0 +1,171 @@
+/* Local styles for HomePage.jsx */
+
+.page {
+  padding-bottom: 20px;
+}
+
+.userGreeting {
+  width: 100%;
+  margin-top: 10px;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  background: var(--color-white);
+  box-shadow: 0 8px 24px var(--color-dark-alpha-05);
+}
+
+.userGreeting h2 {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: -0.7px;
+}
+
+.userGreeting p {
+  margin: 7px 0 0;
+  color: var(--color-text-description);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.profileAvatarWrap {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.profileAvatar {
+  width: 82px;
+  height: 82px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-surface-muted);
+}
+
+.profileAvatar img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.profileSummary {
+  flex: 1;
+  min-width: 0;
+}
+
+.contentListSection {
+  margin-top: 12px;
+}
+
+.homeCardGrid {
+  margin-top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.placeAddButton,
+.contentAddButton {
+  position: fixed;
+  right: max(18px, calc((100vw - 430px) / 2 + 22px));
+  bottom: calc(112px + env(safe-area-inset-bottom));
+  z-index: 90;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  color: var(--color-white);
+  background: var(--color-primary);
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: 0 12px 28px var(--color-primary-alpha-32);
+}
+
+.contentAddButton {
+  opacity: 0.5;
+}
+
+.placeAddButton:active,
+.contentAddButton:active {
+  transform: scale(0.96);
+}
+
+.profileEditButton {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-white);
+  color: var(--color-primary);
+  box-shadow: 0 6px 16px var(--color-primary-alpha-18);
+}
+
+.profileEditButton img {
+  width: 15px;
+  height: 15px;
+  display: block;
+}
+
+.profileEditButton:active {
+  transform: scale(0.94);
+}
+
+.snsList {
+  margin-top: 13px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.snsList a {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-white);
+}
+
+.snsList a:active {
+  transform: scale(0.94);
+  background: var(--color-primary-background);
+  border-color: var(--color-primary-border-soft);
+}
+
+.snsList img {
+  width: 20px;
+  height: 20px;
+  display: block;
+  object-fit: contain;
+  cursor: pointer;
+}
+
+.contentEmptyBox {
+  margin-top: 10px;
+  padding: 26px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background: var(--color-primary-background);
+  color: var(--color-text-muted);
+  font-size: 13px;
+  font-weight: 800;
+  text-align: center;
+}

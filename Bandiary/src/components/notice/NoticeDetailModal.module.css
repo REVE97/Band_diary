@@ -1,0 +1,209 @@
+/* Local styles for NoticeDetailModal.jsx */
+.placeModalOverlay,
+.placeResultOverlay {
+  position: fixed;
+  top: 64px;
+  left: 50%;
+  bottom: 72px;
+  width: 100%;
+  max-width: 430px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: var(--color-modal-overlay);
+}
+.placeModalOverlay {
+  z-index: 100;
+}
+.placeModalCard,
+.placeResultCard {
+  border-radius: 24px;
+  background: linear-gradient(135deg, var(--color-primary-background), var(--color-white));
+  box-shadow: 0 24px 70px var(--color-shell-alpha-24);
+}
+.placeModalCard {
+  width: 100%;
+  max-width: 390px;
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 24px 20px;
+}
+.placeModalHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.placeModalHeader h2 {
+  margin: 0 0 8px;
+  color: var(--color-text-primary);
+  font-size: 19px;
+  font-weight: 900;
+}
+.placeModalHeader p {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  line-height: 1.4;
+}
+.placeModalClose {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--color-white);
+  color: var(--color-text-muted);
+  font-size: 24px;
+  line-height: 1;
+}
+.profileEditModalHeader .placeModalClose {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+}
+.scheduleModalCard,
+.scheduleDetailCard,
+.noticeAddModalCard,
+.noticeDetailCard {
+  max-width: 390px;
+}
+.contentDetailHeader .placeModalClose {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.noticeEditCancelButton,
+.noticeEditButton {
+  flex: 1;
+  height: 48px;
+  border-radius: 14px;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-size: 14px;
+  font-weight: 900;
+  box-shadow:
+    0 8px 18px var(--color-primary-alpha-12);
+}
+.noticeEditCancelButton:active,
+.noticeEditButton:active {
+  transform: scale(0.98);
+}
+.noticeEditCancelButton:disabled,
+.noticeEditButton:disabled,
+.noticeDeleteButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.noticeDetailCard .placeModalHeader {
+  align-items: flex-start;
+}
+.noticeDetailCard
+.placeModalHeader > div:first-child {
+  flex: 1;
+  min-width: 0;
+}
+.noticeDetailTitle {
+  margin: 0 !important;
+  color: var(--color-text-primary) !important;
+  font-size: 20px !important;
+  line-height: 1.35;
+  word-break: break-word;
+}
+.noticeDetailBody {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.noticeDetailMeta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.noticeDetailMeta > div,
+.noticeDetailProperties > div {
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 13px;
+  background: var(--color-white);
+}
+.noticeDetailMeta span,
+.noticeDetailProperties span,
+.noticeDetailContentSection > span,
+.noticeDetailImageSection > span {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--color-text-subtle);
+  font-size: 11px;
+  font-weight: 900;
+}
+.noticeDetailMeta strong,
+.noticeDetailProperties strong {
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-weight: 900;
+}
+.noticeDetailContentSection {
+  padding: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: var(--color-white);
+}
+.noticeDetailContentSection p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.noticeDetailImageSection {
+  width: 100%;
+}
+.noticeDetailImage {
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background: var(--color-surface-muted);
+}
+.noticeDetailImage img {
+  width: 100%;
+  max-height: 420px;
+  display: block;
+  object-fit: contain;
+}
+.noticeDetailProperties {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+.noticeDeleteButton {
+  width: 100%;
+  height: 48px;
+  margin-top: 4px;
+  border-radius: 14px;
+  background: var(--color-danger);
+  color: var(--color-white);
+  font-size: 14px;
+  font-weight: 900;
+  box-shadow:
+    0 8px 18px var(--color-danger-alpha-22);
+}
+.noticeDeleteButton:active {
+  transform: scale(0.98);
+}
+.noticeDetailActionRow {
+  width: 100%;
+  margin-top: 4px;
+  display: flex;
+  gap: 10px;
+}
+.noticeDetailActionRow .noticeDeleteButton {
+  flex: 1;
+  width: auto;
+  margin-top: 0;
+}

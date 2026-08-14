@@ -1,12 +1,14 @@
+import styles from './LogoutConfirmModal.module.css'
+
 function LogoutConfirmModal({ onClose, onConfirm }) {
   return (
     <div
-      className="place-result-overlay"
+      className={styles.overlay}
       role="presentation"
       onClick={onClose}
     >
       <div
-        className="place-result-card"
+        className={styles.card}
         role="dialog"
         aria-modal="true"
         aria-labelledby="logout-modal-title"
@@ -19,10 +21,10 @@ function LogoutConfirmModal({ onClose, onConfirm }) {
           정말 로그아웃하시겠습니까?
         </p>
 
-        <div className="delete-confirm-button-row">
+        <div className={styles.buttonRow}>
           <button
             type="button"
-            className="delete-cancel-button"
+            className={styles.cancelButton}
             onClick={onClose}
           >
             취소
@@ -30,7 +32,7 @@ function LogoutConfirmModal({ onClose, onConfirm }) {
 
           <button
             type="button"
-            className="delete-confirm-button"
+            className={styles.confirmButton}
             onClick={onConfirm}
           >
             확인

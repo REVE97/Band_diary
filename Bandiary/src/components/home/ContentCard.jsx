@@ -2,6 +2,7 @@ import { formatDate } from '../../features/common'
 import audioIcon from '../../assets/images/audio_white.svg'
 import videoIcon from '../../assets/images/video_white.svg'
 import pictureIcon from '../../assets/images/picture_white.svg'
+import styles from './ContentCard.module.css'
 
 function ContentCard({ item, isActive, isAdmin, onClick, onDeleteClick }) {
   const isPicture = item.type === '사진'
@@ -29,12 +30,11 @@ function ContentCard({ item, isActive, isAdmin, onClick, onDeleteClick }) {
       role="button"
       tabIndex={0}
       className={[
-        'content-card',
-        isActive ? 'active' : '',
-        isPicture ? 'picture' : '',
-        isVideo ? 'video' : '',
-        isAudio ? 'audio' : '',
-        isAdmin ? 'admin' : '',
+        styles.card,
+        isActive ? styles.active : '',
+        isPicture ? styles.picture : '',
+        isVideo ? styles.video : '',
+        isAudio ? styles.audio : '',
       ]
         .filter(Boolean)
         .join(' ')}
@@ -46,27 +46,27 @@ function ContentCard({ item, isActive, isAdmin, onClick, onDeleteClick }) {
       }}
     >
       {/* 콘텐츠 타입 미리보기 */}
-      <div className="content-list-preview">
-        <div className="content-preview-placeholder">
+      <div className={styles.preview}>
+        <div className={styles.placeholder}>
           <img
             src={getContentIcon()}
             alt={`${item.type} 콘텐츠`}
-            className="content-preview-icon"
+            className={styles.previewIcon}
           />
         </div>
       </div>
 
       {/* 콘텐츠 정보 */}
-      <div className="content-list-info">
-        <div className="content-card-top">
-          <p className="small-title">
+      <div className={styles.info}>
+        <div className={styles.top}>
+          <p className={styles.title}>
             {item.type}
           </p>
 
           {isAdmin && (
             <button
               type="button"
-              className="content-delete-button"
+              className={styles.deleteButton}
               onClick={handleDeleteClick}
               aria-label={`${item.title} 삭제`}
             >
@@ -80,7 +80,7 @@ function ContentCard({ item, isActive, isAdmin, onClick, onDeleteClick }) {
       </div>
 
       <span
-        className="content-list-arrow"
+        className={styles.arrow}
         aria-hidden="true"
       >
         ›

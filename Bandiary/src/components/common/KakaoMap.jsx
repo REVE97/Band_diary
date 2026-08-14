@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import mapIcon from '../../assets/images/map_purple.svg'
+import styles from './KakaoMap.module.css'
 
 function KakaoMap({ place }) {
   const mapRef = useRef(null)
@@ -47,16 +48,16 @@ function KakaoMap({ place }) {
 
   if (!place) {
     return (
-      <div className="kakao-map-empty">
-        <img src={mapIcon} alt="" className="empty-preview-icon" />
+      <div className={styles.empty}>
+        <img src={mapIcon} alt="" className={styles.emptyIcon} />
         <p>장소를 선택하면 지도가 표시됩니다.</p>
       </div>
     )
   }
 
   return (
-    <div className="kakao-map-wrap">
-      <div className="kakao-map-header">
+    <div className={styles.wrap}>
+      <div className={styles.header}>
         <div>
           <strong>{place.name}</strong>
           <span>{place.address}</span>
@@ -64,14 +65,14 @@ function KakaoMap({ place }) {
 
         <button
           type="button"
-          className="kakao-route-button"
+          className={styles.routeButton}
           onClick={handleOpenKakaoRoute}
         >
           길찾기
         </button>
       </div>
 
-      <div ref={mapRef} className="kakao-map" />
+      <div ref={mapRef} className={styles.map} />
     </div>
   )
 }

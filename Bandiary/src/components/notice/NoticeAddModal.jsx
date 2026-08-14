@@ -5,6 +5,7 @@ import PlaceResultModal from '../place/PlaceResultModal'
 import cameraIcon from '../../assets/images/notice-camera-black.svg'
 
 import supabase from '../../api/supabase'
+import styles from './NoticeAddModal.module.css'
 
 function NoticeAddModal({
   userName,
@@ -412,7 +413,7 @@ function NoticeAddModal({
   return (
     <>
       <div
-        className="place-modal-overlay"
+        className={styles.placeModalOverlay}
         onMouseDown={(event) => {
           // Modal 바깥 영역 클릭 시 닫기 - 등록 중에는 닫지 않음
           if (
@@ -423,10 +424,10 @@ function NoticeAddModal({
           }
         }}
       >
-        <div className="place-modal-card notice-add-modal-card">
+        <div className={styles.placeModalCard + " " + styles.noticeAddModalCard}>
 
           {/* 등록 Modal 헤더 */}
-          <header className="place-modal-header">
+          <header className={styles.placeModalHeader}>
             <div>
               <h2>
                 {isEditMode
@@ -442,7 +443,7 @@ function NoticeAddModal({
 
             <button
               type="button"
-              className="place-modal-close"
+              className={styles.placeModalClose}
               aria-label="닫기"
               disabled={submitting}
               onClick={handleModalClose}
@@ -454,26 +455,22 @@ function NoticeAddModal({
 
           {/* 상세 항목 */}
           <form
-            className="notice-add-form"
+            className={styles.noticeAddForm}
             onSubmit={handleSubmit}
           >
 
             {/* 유형 */}
-            <section className="notice-form-section">
+            <section className={styles.noticeFormSection}>
 
-              <label className="notice-form-label">
+              <label className={styles.noticeFormLabel}>
                 유형
               </label>
 
-              <div className="notice-type-selector">
+              <div className={styles.noticeTypeSelector}>
 
                 <button
                   type="button"
-                  className={
-                    type === '공지'
-                      ? 'active'
-                      : ''
-                  }
+                  className={type === '공지' ? styles.active : ""}
                   onClick={() =>
                     setType('공지')
                   }
@@ -483,11 +480,7 @@ function NoticeAddModal({
 
                 <button
                   type="button"
-                  className={
-                    type === '메모'
-                      ? 'active'
-                      : ''
-                  }
+                  className={type === '메모' ? styles.active : ""}
                   onClick={() =>
                     setType('메모')
                   }
@@ -500,10 +493,10 @@ function NoticeAddModal({
             </section>
 
             {/* 제목 */}
-            <section className="notice-form-section">
+            <section className={styles.noticeFormSection}>
 
               <label
-                className="notice-form-label"
+                className={styles.noticeFormLabel}
                 htmlFor="notice-title"
               >
                 제목
@@ -511,7 +504,7 @@ function NoticeAddModal({
 
               <input
                 id="notice-title"
-                className="notice-form-input"
+                className={styles.noticeFormInput}
                 type="text"
                 value={title}
                 maxLength={100}
@@ -523,17 +516,17 @@ function NoticeAddModal({
                 }
               />
 
-              <span className="notice-input-count">
+              <span className={styles.noticeInputCount}>
                 {title.length} / 100
               </span>
 
             </section>
 
             {/* 내용 */}
-            <section className="notice-form-section">
+            <section className={styles.noticeFormSection}>
 
               <label
-                className="notice-form-label"
+                className={styles.noticeFormLabel}
                 htmlFor="notice-content"
               >
                 내용
@@ -541,7 +534,7 @@ function NoticeAddModal({
 
               <textarea
                 id="notice-content"
-                className="notice-form-textarea"
+                className={styles.noticeFormTextarea}
                 value={content}
                 placeholder="밴드원에게 전달할 내용을 입력해주세요"
                 onChange={(event) =>
@@ -554,17 +547,17 @@ function NoticeAddModal({
             </section>
 
             {/* 이미지 */}
-            <section className="notice-form-section">
+            <section className={styles.noticeFormSection}>
 
-              <span className="notice-form-label">
+              <span className={styles.noticeFormLabel}>
                 이미지
               </span>
 
-              <div className="notice-image-action-row">
+              <div className={styles.noticeImageActionRow}>
 
                 <button
                   type="button"
-                  className="notice-camera-button"
+                  className={styles.noticeCameraButton}
                   onClick={
                     handleImageButtonClick
                   }
@@ -579,7 +572,7 @@ function NoticeAddModal({
                 {(imageFile || imagePreview) && (
                   <button
                     type="button"
-                    className="notice-image-remove-button"
+                    className={styles.noticeImageRemoveButton}
                     onClick={removeImage}
                   >
                     이미지 제거
@@ -591,7 +584,7 @@ function NoticeAddModal({
               {/* 실제 file input */}
               <input
                 ref={fileInputRef}
-                className="notice-hidden-file-input"
+                className={styles.noticeHiddenFileInput}
                 type="file"
                 accept="image/*"
                 onChange={handleImageChange}
@@ -599,7 +592,7 @@ function NoticeAddModal({
 
               {/* 이미지 미리보기 */}
               {imagePreview && (
-                <div className="notice-image-preview">
+                <div className={styles.noticeImagePreview}>
 
                   <img
                     src={imagePreview}
@@ -609,14 +602,14 @@ function NoticeAddModal({
                 </div>
               )}
 
-              <p className="notice-image-help">
+              <p className={styles.noticeImageHelp}>
                 이미지 파일만 첨부할 수 있습니다.
               </p>
 
             </section>
 
             {/* 중요 공지 */}
-            <section className="notice-important-setting">
+            <section className={styles.noticeImportantSetting}>
 
               <div>
                 <strong>
@@ -630,11 +623,7 @@ function NoticeAddModal({
 
               <button
                 type="button"
-                className={
-                  important
-                    ? 'notice-star-button active'
-                    : 'notice-star-button'
-                }
+                className={important ? styles.noticeStarButton + " " + styles.active : styles.noticeStarButton}
                 aria-label={
                   important
                     ? '중요 표시 해제'
@@ -656,12 +645,12 @@ function NoticeAddModal({
 
             {/* 등록 */}
             {isEditMode ? (
-              <div className="notice-edit-submit-row">
+              <div className={styles.noticeEditSubmitRow}>
 
                 {/* 수정 취소 */}
                 <button
                   type="button"
-                  className="notice-edit-cancel-button"
+                  className={styles.noticeEditCancelButton}
                   disabled={submitting}
                   onClick={handleModalClose}
                 >
@@ -670,7 +659,7 @@ function NoticeAddModal({
 
                 <button
                   type="submit"
-                  className="primary-button notice-submit-button"
+                  className={styles.primaryButton + " " + styles.noticeSubmitButton}
                   disabled={submitting}
                 >
                   {submitting
@@ -682,7 +671,7 @@ function NoticeAddModal({
             ) : (
               <button
                 type="submit"
-                className="primary-button notice-submit-button"
+                className={styles.primaryButton + " " + styles.noticeSubmitButton}
                 disabled={submitting}
               >
                 {submitting

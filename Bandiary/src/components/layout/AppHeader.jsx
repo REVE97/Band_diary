@@ -5,6 +5,7 @@ import logo from '../../assets/images/logo.svg'
 import logoutIcon from '../../assets/images/logout.svg'
 
 import LogoutConfirmModal from './modal/LogoutConfirmModal'
+import styles from './AppHeader.module.css'
 
 function AppHeader() {
   const navigate = useNavigate()
@@ -34,8 +35,8 @@ function AppHeader() {
 
   return (
     <>
-      <header className="app-header">
-        <Link to="/home" className="logo">
+      <header className={styles.header}>
+        <Link to="/home" className={styles.logo}>
           <img
             src={logo}
             alt="Bandiary 로고"
@@ -44,7 +45,7 @@ function AppHeader() {
         </Link>
 
         <button
-          className="logout-icon-button"
+          className={styles.logoutButton}
           type="button"
           aria-label="로그아웃 기능"
           onClick={openLogoutModal}

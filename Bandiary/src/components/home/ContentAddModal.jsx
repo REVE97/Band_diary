@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import pictureTypeIcon from '../../assets/images/content-type-picture.svg'
 import videoTypeIcon from '../../assets/images/content-type-video.svg'
 import audioTypeIcon from '../../assets/images/content-type-audio.svg'
+import styles from './ContentAddModal.module.css'
 
 function ContentAddModal({
   contentType,
@@ -118,9 +119,9 @@ function ContentAddModal({
   }
 
   return (
-    <div className="place-modal-overlay">
-      <div className="place-modal-card content-add-modal-card">
-        <div className="place-modal-header content-add-modal-header">
+    <div className={styles.placeModalOverlay}>
+      <div className={styles.placeModalCard + " " + styles.contentAddModalCard}>
+        <div className={styles.placeModalHeader + " " + styles.contentAddModalHeader}>
           <div>
             <h2>콘텐츠 추가</h2>
             <p>{getStepTitle()}</p>
@@ -128,7 +129,7 @@ function ContentAddModal({
 
           <button
             type="button"
-            className="place-modal-close"
+            className={styles.placeModalClose}
             onClick={onClose}
             disabled={isContentUploading}
           >
@@ -137,24 +138,24 @@ function ContentAddModal({
         </div>
 
         {/* 콘텐츠 등록 단계 */}
-        <div className="content-step-row">
-          <span className={currentStep === 1 ? 'active' : ''}>
+        <div className={styles.contentStepRow}>
+          <span className={currentStep === 1 ? styles.active : ""}>
             <strong>1</strong>
             <small>정보</small>
           </span>
-          <span className={currentStep === 2 ? 'active' : ''}>
+          <span className={currentStep === 2 ? styles.active : ""}>
             <strong>2</strong>
             <small>파일</small>
           </span>
-          <span className={currentStep === 3 ? 'active' : ''}>
+          <span className={currentStep === 3 ? styles.active : ""}>
             <strong>3</strong>
             <small>확인</small>
           </span>
         </div>
 
         {/* 콘텐츠 타입 */}
-        <div className="place-type-row content-type-row">
-          <label className={isPicture ? 'active' : ''}>
+        <div className={styles.placeTypeRow + " " + styles.contentTypeRow}>
+          <label className={isPicture ? styles.active : ""}>
             <input
               type="radio"
               name="contentType"
@@ -163,7 +164,7 @@ function ContentAddModal({
               onChange={onContentTypeChange}
               disabled={isContentUploading}
             />
-            <span className="content-type-symbol">
+            <span className={styles.contentTypeSymbol}>
               <img
                 src={pictureTypeIcon}
                 alt=""
@@ -173,7 +174,7 @@ function ContentAddModal({
             <strong>사진</strong>
           </label>
 
-          <label className={isVideo ? 'active' : ''}>
+          <label className={isVideo ? styles.active : ""}>
             <input
               type="radio"
               name="contentType"
@@ -182,7 +183,7 @@ function ContentAddModal({
               onChange={onContentTypeChange}
               disabled={isContentUploading}
             />
-            <span className="content-type-symbol">
+            <span className={styles.contentTypeSymbol}>
               <img
                 src={videoTypeIcon}
                 alt=""
@@ -192,7 +193,7 @@ function ContentAddModal({
             <strong>비디오</strong>
           </label>
 
-          <label className={isAudio ? 'active' : ''}>
+          <label className={isAudio ? styles.active : ""}>
             <input
               type="radio"
               name="contentType"
@@ -201,7 +202,7 @@ function ContentAddModal({
               onChange={onContentTypeChange}
               disabled={isContentUploading}
             />
-            <span className="content-type-symbol">
+            <span className={styles.contentTypeSymbol}>
               <img
                 src={audioTypeIcon}
                 alt=""
@@ -212,11 +213,11 @@ function ContentAddModal({
           </label>
         </div>
 
-        <div className="login-form place-form content-add-form">
+        <div className={styles.loginForm + " " + styles.placeForm + " " + styles.contentAddForm}>
           {currentStep === 1 && (
             <>
               {/* 제목 */}
-              <div className="content-add-field">
+              <div className={styles.contentAddField}>
                 <label htmlFor="contentTitle">제목</label>
 
                 <input
@@ -236,19 +237,19 @@ function ContentAddModal({
             <>
               {/* 파일 미리보기 */}
               {contentPreview && isPicture && (
-                <div className="content-upload-preview">
+                <div className={styles.contentUploadPreview}>
                   <img src={contentPreview} alt="콘텐츠 이미지 미리보기" />
                 </div>
               )}
 
               {contentPreview && isVideo && (
-                <div className="content-upload-preview">
+                <div className={styles.contentUploadPreview}>
                   <video src={contentPreview} controls />
                 </div>
               )}
 
               {isVideo && (
-                <div className="content-upload-guide">
+                <div className={styles.contentUploadGuide}>
                   <strong>비디오 업로드 안내</strong>
                   <p>
                     비디오 탭에서는 30MB 이하의 영상 파일을 원본 비디오로
@@ -258,7 +259,7 @@ function ContentAddModal({
               )}
 
               {isAudio && (
-                <div className="content-upload-guide">
+                <div className={styles.contentUploadGuide}>
                   <strong>오디오 업로드 안내</strong>
                   <p>
                     mp3, m4a, wav, webm 등의 오디오 파일은 그대로 저장되고,
@@ -269,16 +270,16 @@ function ContentAddModal({
               )}
 
               {/* 파일 선택 */}
-              <div className="content-file-select-box">
-                <label htmlFor="contentFile" className="custom-file-button">
+              <div className={styles.contentFileSelectBox}>
+                <label htmlFor="contentFile" className={styles.customFileButton}>
                   파일 선택
                 </label>
 
-                <span className="custom-file-name">{contentFileName}</span>
+                <span className={styles.customFileName}>{contentFileName}</span>
 
                 <input
                   id="contentFile"
-                  className="custom-file-input"
+                  className={styles.customFileInput}
                   type="file"
                   accept={getFileAcceptValue()}
                   onChange={handleChangeFile}
@@ -289,8 +290,8 @@ function ContentAddModal({
           )}
 
           {currentStep === 3 && (
-            <div className="place-submit-summary content-submit-summary">
-              <div className="content-submit-summary-title">
+            <div className={styles.placeSubmitSummary + " " + styles.contentSubmitSummary}>
+              <div className={styles.contentSubmitSummaryTitle}>
                 <span>{contentType}</span>
                 <strong>{contentForm.title}</strong>
               </div>
@@ -310,16 +311,16 @@ function ContentAddModal({
         </div>
 
         {(stepErrorMessage || errorMessage || convertMessage) && (
-          <p className="login-error content-add-error">
+          <p className={styles.loginError + " " + styles.contentAddError}>
             {convertMessage || stepErrorMessage || errorMessage}
           </p>
         )}
 
-        <div className="place-modal-button-row content-add-button-row">
+        <div className={styles.placeModalButtonRow + " " + styles.contentAddButtonRow}>
           {currentStep > 1 && (
             <button
               type="button"
-              className="place-prev-button"
+              className={styles.placePrevButton}
               onClick={handlePrevStep}
               disabled={isContentUploading}
             >
@@ -330,7 +331,7 @@ function ContentAddModal({
           {currentStep < 3 && (
             <button
               type="button"
-              className="primary-button"
+              className={styles.primaryButton}
               onClick={handleNextStep}
               disabled={!isCurrentStepValid() || isContentUploading}
             >
@@ -341,7 +342,7 @@ function ContentAddModal({
           {currentStep === 3 && (
             <button
               type="button"
-              className="primary-button"
+              className={styles.primaryButton}
               onClick={onSubmit}
               disabled={isContentUploading}
             >

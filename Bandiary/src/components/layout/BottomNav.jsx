@@ -5,6 +5,7 @@ import DiaryIcon from '../../assets/images/diary.svg'
 import SongIcon from '../../assets/images/song.svg'
 import ScheduleIcon from '../../assets/images/calendar.svg'
 import NoticeIcon from '../../assets/images/notice-renewal.svg'
+import styles from './BottomNav.module.css'
 
 const navItems = [
   {
@@ -36,20 +37,20 @@ const navItems = [
 
 function BottomNav() {
   return (
-    <nav className="bottom-nav">
+    <nav className={styles.nav}>
       {navItems.map((item) => (
         <NavLink
           key={item.path}
           to={item.path}
           className={({ isActive }) =>
-            isActive ? 'bottom-nav-item active' : 'bottom-nav-item'
+            `${styles.item} ${isActive ? styles.active : ''}`
           }
         >
-          <span className="bottom-nav-icon">
-            <img src={item.icon} />
+          <span className={styles.icon}>
+            <img src={item.icon} alt="" />
           </span>
           
-          <span className="bottom-nav-label">{item.label}</span>
+          <span className={styles.label}>{item.label}</span>
         </NavLink>
       ))}
     </nav>

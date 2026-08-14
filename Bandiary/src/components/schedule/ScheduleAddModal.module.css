@@ -1,0 +1,237 @@
+/* Local styles for ScheduleAddModal.jsx */
+
+.primarySmallButton,
+.primaryButton {
+  color: var(--color-white);
+  background: var(--color-primary);
+  font-weight: 900;
+  box-shadow: 0 8px 18px var(--color-primary-alpha-25);
+}
+
+.primaryButton {
+  width: 100%;
+  height: 48px;
+  border-radius: 14px;
+  font-size: 15px;
+}
+
+.primaryButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+  box-shadow: none;
+}
+
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.loginForm input,
+.loginForm select {
+  width: 100%;
+  height: 46px;
+  padding: 0 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-white);
+  color: var(--color-text-primary);
+  font-size: 16px;
+  outline: none;
+}
+
+.loginForm input:focus,
+.loginForm select:focus,
+.commentForm textarea:focus,
+.scheduleForm textarea:focus,
+.noticeSearchRow input:focus,
+.noticeFormInput:focus,
+.noticeFormTextarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-alpha-12);
+}
+
+.loginError {
+  margin: 0 0 12px;
+  color: var(--color-danger);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.placeModalOverlay,
+.placeResultOverlay {
+  position: fixed;
+  top: 64px;
+  left: 50%;
+  bottom: 72px;
+  width: 100%;
+  max-width: 430px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: var(--color-modal-overlay);
+}
+
+.placeModalOverlay {
+  z-index: 100;
+}
+
+.placeModalCard,
+.placeResultCard {
+  border-radius: 24px;
+  background: linear-gradient(135deg, var(--color-primary-background), var(--color-white));
+  box-shadow: 0 24px 70px var(--color-shell-alpha-24);
+}
+
+.placeModalCard {
+  width: 100%;
+  max-width: 390px;
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 24px 20px;
+}
+
+.placeModalHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.placeModalHeader h2 {
+  margin: 0 0 8px;
+  color: var(--color-text-primary);
+  font-size: 19px;
+  font-weight: 900;
+}
+
+.placeModalHeader p {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.placeForm {
+  margin-bottom: 12px;
+}
+
+.placeModalButtonRow {
+  display: flex;
+  gap: 10px;
+}
+
+.placeModalButtonRow .primaryButton {
+  flex: 1;
+}
+
+.placePrevButton {
+  width: 84px;
+  height: 48px;
+  border-radius: 14px;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.scheduleModalCard,
+.scheduleDetailCard,
+.noticeAddModalCard,
+.noticeDetailCard {
+  max-width: 390px;
+}
+
+.scheduleForm textarea {
+  width: 100%;
+  min-height: 92px;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-white);
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 1.4;
+  outline: none;
+  resize: none;
+}
+
+.scheduleTimeRow {
+  display: grid;
+  grid-template-columns: 1fr 20px 1fr;
+  gap: 8px;
+  align-items: center;
+}
+
+.scheduleTimeRow span {
+  color: var(--color-text-muted);
+  font-size: 14px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.scheduleColorSection {
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: var(--color-white);
+}
+
+.scheduleColorSection > span {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--color-text-muted);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.scheduleColorRow {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.scheduleColorChip {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.scheduleColorChip input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.scheduleColorChip.active {
+  outline: 3px solid var(--color-primary-alpha-22);
+  outline-offset: 3px;
+}
+
+.scheduleColorChip.active::after {
+  content: "✓";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--color-white);
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.noticeDetailCard .placeModalHeader {
+  align-items: flex-start;
+}
+
+.noticeDetailCard
+.placeModalHeader > div:first-child {
+  flex: 1;
+  min-width: 0;
+}

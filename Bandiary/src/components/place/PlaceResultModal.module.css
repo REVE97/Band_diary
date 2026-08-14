@@ -1,0 +1,94 @@
+.overlay {
+  position: fixed;
+  top: 64px;
+  left: 50%;
+  bottom: 72px;
+  z-index: 120;
+  width: 100%;
+  max-width: 430px;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateX(-50%);
+  background: var(--color-modal-overlay);
+}
+
+.card {
+  width: 100%;
+  max-width: 320px;
+  padding: 28px 20px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, var(--color-primary-background), var(--color-white));
+  box-shadow: 0 24px 70px var(--color-shell-alpha-24);
+  text-align: center;
+}
+
+.icon {
+  width: 58px;
+  height: 58px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-danger);
+  color: var(--color-white);
+  font-size: 30px;
+  font-weight: 900;
+}
+
+.success {
+  background: var(--color-primary);
+}
+
+.card h2 {
+  margin: 0 0 8px;
+  color: var(--color-text-primary);
+  font-size: 19px;
+  font-weight: 900;
+}
+
+.card p {
+  margin: 0 0 20px;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.buttonRow {
+  display: flex;
+  gap: 10px;
+}
+
+.cancelButton,
+.confirmButton,
+.primaryButton {
+  height: 48px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.cancelButton,
+.confirmButton {
+  flex: 1;
+}
+
+.cancelButton {
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+}
+
+.confirmButton {
+  background: var(--color-danger);
+  color: var(--color-white);
+  box-shadow: 0 8px 18px var(--color-danger-alpha-22);
+}
+
+.primaryButton {
+  width: 100%;
+  background: var(--color-primary);
+  color: var(--color-white);
+  box-shadow: 0 8px 18px var(--color-primary-alpha-25);
+}

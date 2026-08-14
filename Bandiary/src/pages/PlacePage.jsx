@@ -4,6 +4,7 @@ import KakaoMap from '../components/common/KakaoMap'
 import PlaceModal from '../components/place/PlaceModal'
 import PlaceResultModal from '../components/place/PlaceResultModal'
 import supabase from '../api/supabase'
+import styles from './PlacePage.module.css'
 
 // 초기 입력 데이터 초기화
 const initialForm = {
@@ -531,15 +532,11 @@ function PlacePage() {
   }
 
   return (
-    <div className="page studio-page">
-      <div className="tab-row">
+    <div className={styles.page}>
+      <div className={styles.tabRow}>
         <button
           type="button"
-          className={
-            activeTab === 'studio'
-              ? 'active'
-              : ''
-          }
+          className={activeTab === 'studio' ? styles.active : ""}
           onClick={() =>
             handleTabClick('studio')
           }
@@ -549,11 +546,7 @@ function PlacePage() {
 
         <button
           type="button"
-          className={
-            activeTab === 'restaurant'
-              ? 'active'
-              : ''
-          }
+          className={activeTab === 'restaurant' ? styles.active : ""}
           onClick={() =>
             handleTabClick('restaurant')
           }
@@ -564,28 +557,21 @@ function PlacePage() {
 
       <button
         type="button"
-        className="place-add-button"
+        className={styles.placeAddButton}
         onClick={handleOpenModal}
         aria-label="장소 추가"
       >
         +
       </button>
 
-      <div className="studio-list">
+      <div className={styles.studioList}>
         {paginatedList.map(
           (place) => (
             <div
               key={`${place.type}-${place.id}`}
               role="button"
               tabIndex={0}
-              className={
-                selectedPlace?.id ===
-                  place.id &&
-                selectedPlace?.type ===
-                  place.type
-                  ? 'studio-card active'
-                  : 'studio-card'
-              }
+              className={selectedPlace?.id === place.id && selectedPlace?.type === place.type ? styles.studioCard + " " + styles.active : styles.studioCard}
               onClick={() =>
                 handlePlaceClick(place)
               }
@@ -603,7 +589,7 @@ function PlacePage() {
               {isAdmin && (
                 <button
                   type="button"
-                  className="studio-delete-button"
+                  className={styles.studioDeleteButton}
                   onClick={(event) =>
                     handleOpenDeleteModal(
                       event,
@@ -616,7 +602,7 @@ function PlacePage() {
                 </button>
               )}
 
-              <div className="studio-info">
+              <div className={styles.studioInfo}>
                 <strong>
                   {place.name}
                 </strong>
@@ -636,7 +622,7 @@ function PlacePage() {
                   </span>
                 )}
 
-                <div className="tag-row">
+                <div className={styles.tagRow}>
                   {place.tags?.map(
                     (tag) => (
                       <span key={tag}>
@@ -653,7 +639,7 @@ function PlacePage() {
 
       {/* 페이지네이션 */}
       {totalPages > 1 && (
-        <div className="pagination">
+        <div className={styles.pagination}>
           <button
             type="button"
             disabled={
@@ -669,11 +655,7 @@ function PlacePage() {
               <button
                 key={page}
                 type="button"
-                className={
-                  currentPage === page
-                    ? 'active'
-                    : ''
-                }
+                className={currentPage === page ? styles.active : ""}
                 onClick={() =>
                   handlePageChange(page)
                 }
@@ -697,7 +679,7 @@ function PlacePage() {
       )}
 
       {/* 카카오맵 */}
-      <div className="map-box">
+      <div className={styles.mapBox}>
         <KakaoMap
           place={selectedPlace}
         />

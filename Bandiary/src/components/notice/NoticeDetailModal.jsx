@@ -3,6 +3,7 @@ import { useState } from 'react'
 import PlaceResultModal from '../place/PlaceResultModal'
 
 import supabase from '../../api/supabase'
+import styles from './NoticeDetailModal.module.css'
 
 function NoticeDetailModal({
   notice,
@@ -121,7 +122,7 @@ function NoticeDetailModal({
   return (
     <>
       <div
-        className="place-modal-overlay"
+        className={styles.placeModalOverlay}
         onMouseDown={(event) => {
           if (
             event.target === event.currentTarget &&
@@ -131,19 +132,19 @@ function NoticeDetailModal({
           }
         }}
       >
-        <article className="place-modal-card notice-detail-card">
+        <article className={styles.placeModalCard + " " + styles.noticeDetailCard}>
 
           {/* 헤더 */}
-          <header className="place-modal-header">
+          <header className={styles.placeModalHeader}>
             <div>
-              <h2 className="notice-detail-title">
+              <h2 className={styles.noticeDetailTitle}>
                 {notice.title}
               </h2>
             </div>
 
             <button
               type="button"
-              className="place-modal-close"
+              className={styles.placeModalClose}
               aria-label="닫기"
               onClick={onClose}
             >
@@ -151,10 +152,10 @@ function NoticeDetailModal({
             </button>
           </header>
 
-          <div className="notice-detail-body">
+          <div className={styles.noticeDetailBody}>
 
             {/* 작성 정보 */}
-            <div className="notice-detail-meta">
+            <div className={styles.noticeDetailMeta}>
               <div>
                 <span>작성자</span>
                 <strong>
@@ -173,7 +174,7 @@ function NoticeDetailModal({
             </div>
 
             {/* 내용 */}
-            <section className="notice-detail-content-section">
+            <section className={styles.noticeDetailContentSection}>
               <span>내용</span>
               <p>
                 {notice.content}
@@ -182,10 +183,10 @@ function NoticeDetailModal({
 
             {/* 이미지 */}
             {notice.imageUrl && (
-              <section className="notice-detail-image-section">
+              <section className={styles.noticeDetailImageSection}>
                 <span>첨부 이미지</span>
 
-                <div className="notice-detail-image">
+                <div className={styles.noticeDetailImage}>
                   <img
                     src={notice.imageUrl}
                     alt={`${notice.title} 첨부 이미지`}
@@ -195,7 +196,7 @@ function NoticeDetailModal({
             )}
 
             {/* 세부 속성 */}
-            <div className="notice-detail-properties">
+            <div className={styles.noticeDetailProperties}>
               <div>
                 <span>유형</span>
 
@@ -216,12 +217,12 @@ function NoticeDetailModal({
             </div>
 
             {/* 수정 및 삭제 버튼 */}
-            <div className="notice-detail-action-row">
+            <div className={styles.noticeDetailActionRow}>
 
               {/* 수정 */}
               <button
                 type="button"
-                className="notice-edit-button"
+                className={styles.noticeEditButton}
                 disabled={deleting}
                 onClick={openEditModal}
               >
@@ -232,7 +233,7 @@ function NoticeDetailModal({
               {isAdmin && (
                 <button
                   type="button"
-                  className="notice-delete-button"
+                  className={styles.noticeDeleteButton}
                   disabled={deleting}
                   onClick={openDeleteConfirm}
                 >

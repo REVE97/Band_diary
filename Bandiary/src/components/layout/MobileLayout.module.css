@@ -1,0 +1,46 @@
+.appRoot {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  background:
+    radial-gradient(circle at top left, var(--color-primary-glow), transparent 32%),
+    var(--color-app-background);
+}
+
+.mobileShell {
+  position: relative;
+  width: 100%;
+  max-width: 430px;
+  min-height: 100vh;
+  overflow: hidden;
+  background: var(--color-white);
+  box-shadow: 0 24px 70px var(--color-shell-alpha-15);
+}
+
+.pageContent {
+  height: calc(100vh - 64px - 72px);
+  padding: 0 18px 24px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.loginOnly {
+  height: 100vh;
+}
+
+@media (min-width: 431px) {
+  .mobileShell {
+    min-height: calc(100vh - 48px);
+    margin: 24px 0;
+    border-radius: 34px;
+  }
+
+  .pageContent {
+    height: calc(100vh - 48px - 64px - 72px);
+  }
+
+  .loginOnly {
+    height: calc(100vh - 48px);
+  }
+}

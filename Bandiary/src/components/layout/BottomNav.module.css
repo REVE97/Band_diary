@@ -1,0 +1,36 @@
+.nav {
+  position: sticky;
+  bottom: 0;
+  z-index: 30;
+  height: 72px;
+  padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  background: var(--color-white-alpha-96);
+  border-top: 1px solid var(--color-divider);
+  backdrop-filter: blur(12px);
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  color: var(--color-text-muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.active {
+  color: var(--color-primary);
+}
+
+.icon img {
+  display: block;
+  width: 24px;
+  height: 24px;
+}
+
+.label {
+  line-height: 1.2;
+}

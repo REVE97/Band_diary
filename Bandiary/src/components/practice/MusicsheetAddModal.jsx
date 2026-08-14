@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import styles from './MusicsheetAddModal.module.css'
 
 
 const sessionOptions = ['Vocal', 'Guitar', 'Bass', 'Keyboard', 'Drum']
@@ -129,9 +130,9 @@ function MusicsheetAddModal({
 
 
   return (
-    <div className="place-modal-overlay">
-      <div className="place-modal-card musicsheet-add-modal-card">
-        <div className="place-modal-header musicsheet-add-modal-header">
+    <div className={styles.placeModalOverlay}>
+      <div className={styles.placeModalCard + " " + styles.musicsheetAddModalCard}>
+        <div className={styles.placeModalHeader + " " + styles.musicsheetAddModalHeader}>
           <div>
             <h2>악보 추가</h2>
             <p>{getStepTitle()}</p>
@@ -140,7 +141,7 @@ function MusicsheetAddModal({
 
           <button
             type="button"
-            className="place-modal-close"
+            className={styles.placeModalClose}
             onClick={onClose}
           >
             ×
@@ -149,14 +150,14 @@ function MusicsheetAddModal({
 
 
         {/* 악보 등록 단계 */}
-        <div className="musicsheet-step-row">
-          <span className={currentStep === 1 ? 'active' : ''}>1</span>
-          <span className={currentStep === 2 ? 'active' : ''}>2</span>
-          <span className={currentStep === 3 ? 'active' : ''}>완료</span>
+        <div className={styles.musicsheetStepRow}>
+          <span className={currentStep === 1 ? styles.active : ""}>1</span>
+          <span className={currentStep === 2 ? styles.active : ""}>2</span>
+          <span className={currentStep === 3 ? styles.active : ""}>완료</span>
         </div>
 
 
-        <div className="login-form place-form musicsheet-add-form">
+        <div className={styles.loginForm + " " + styles.placeForm + " " + styles.musicsheetAddForm}>
           {currentStep === 1 && (
             <>
               <select
@@ -194,23 +195,23 @@ function MusicsheetAddModal({
 
           {currentStep === 2 && (
             <>
-              <div className="custom-file-row musicsheet-file-row">
+              <div className={styles.customFileRow + " " + styles.musicsheetFileRow}>
                 <label
                   htmlFor="musicsheetFile"
-                  className="custom-file-button"
+                  className={styles.customFileButton}
                 >
                   파일 선택
                 </label>
 
 
-                <span className="custom-file-name">
+                <span className={styles.customFileName}>
                   {musicsheetFileName}
                 </span>
 
 
                 <input
                   id="musicsheetFile"
-                  className="custom-file-input"
+                  className={styles.customFileInput}
                   type="file"
                   accept="application/pdf,.pdf"
                   onChange={handleChangeFile}
@@ -218,7 +219,7 @@ function MusicsheetAddModal({
               </div>
 
 
-              <p className="musicsheet-file-help">
+              <p className={styles.musicsheetFileHelp}>
                 PDF 파일을 선택하면 파일명이 자동으로 저장됩니다.
               </p>
             </>
@@ -226,7 +227,7 @@ function MusicsheetAddModal({
 
 
           {currentStep === 3 && (
-            <div className="place-submit-summary musicsheet-submit-summary">
+            <div className={styles.placeSubmitSummary + " " + styles.musicsheetSubmitSummary}>
               <strong>{musicsheetForm.title}</strong>
               <span>세션: {musicsheetForm.session}</span>
               <span>설명: {musicsheetForm.description}</span>
@@ -237,17 +238,17 @@ function MusicsheetAddModal({
 
 
         {(stepErrorMessage || errorMessage) && (
-          <p className="login-error musicsheet-add-error">
+          <p className={styles.loginError + " " + styles.musicsheetAddError}>
             {stepErrorMessage || errorMessage}
           </p>
         )}
 
 
-        <div className="place-modal-button-row musicsheet-modal-button-row">
+        <div className={styles.placeModalButtonRow + " " + styles.musicsheetModalButtonRow}>
           {currentStep > 1 && (
             <button
               type="button"
-              className="place-prev-button musicsheet-prev-button"
+              className={styles.placePrevButton + " " + styles.musicsheetPrevButton}
               onClick={handlePrevStep}
             >
               이전
@@ -258,7 +259,7 @@ function MusicsheetAddModal({
           {currentStep < 3 && (
             <button
               type="button"
-              className="primary-button"
+              className={styles.primaryButton}
               onClick={handleNextStep}
               disabled={!isCurrentStepValid()}
             >
@@ -270,7 +271,7 @@ function MusicsheetAddModal({
           {currentStep === 3 && (
             <button
               type="button"
-              className="primary-button"
+              className={styles.primaryButton}
               onClick={onSubmit}
             >
               등록하기

@@ -9,6 +9,7 @@ import memoIcon from '../assets/images/notice-memo.svg'
 import searchIcon from '../assets/images/search.svg'
 
 import supabase from '../api/supabase'
+import styles from './NoticePage.module.css'
 
 function NoticePage() {
   // 유저 데이터 호출
@@ -213,17 +214,17 @@ function NoticePage() {
   }
 
   return (
-    <div className="page notice-page">
+    <div className={`${styles.page} ${styles.noticePage}`}>
       {/* 로딩중 */}
       {loading && (
-        <div className="notice-state-box">
+        <div className={styles.noticeStateBox}>
           공지사항을 불러오는 중입니다.
         </div>
       )}
 
       {/* 조회 오류 */}
       {!loading && errorMessage && (
-        <div className="notice-state-box error">
+        <div className={styles.noticeStateBox + " " + styles.error}>
           <p>
             {errorMessage}
           </p>
@@ -243,40 +244,40 @@ function NoticePage() {
 
           {/* 중요 공지 */}
           {importantNotices.length > 0 && (
-            <section className="notice-section">
+            <section className={styles.noticeSection}>
 
-              <div className="notice-section-header">
+              <div className={styles.noticeSectionHeader}>
                 <h3>중요 공지</h3>
               </div>
 
-              <div className="notice-important-list">
+              <div className={styles.noticeImportantList}>
 
                 {importantNotices.map((notice) => (
                   <button
                     key={notice.id}
                     type="button"
-                    className="notice-important-card"
+                    className={styles.noticeImportantCard}
                     onClick={() =>
                       openDetailModal(notice)
                     }
                   >
 
                     {/* 중요 표시 */}
-                    <div className="notice-important-icon">
+                    <div className={styles.noticeImportantIcon}>
                       <img
                         src={importantIcon}
                         aria-hidden="true"
                       />
                     </div>
 
-                    <div className="notice-card-content">
-                      <div className="notice-card-title-row">
+                    <div className={styles.noticeCardContent}>
+                      <div className={styles.noticeCardTitleRow}>
                         <strong>
                           {notice.title}
                         </strong>
                       </div>
 
-                      <div className="notice-card-meta">
+                      <div className={styles.noticeCardMeta}>
                         {/* 작성자 */}
                         <span>
                           {notice.name}
@@ -298,18 +299,14 @@ function NoticePage() {
           )}
 
           {/* 유형 및 제목 검색 */}
-          <section className="notice-filter-section">
+          <section className={styles.noticeFilterSection}>
 
-            <div className="notice-type-filter-row">
+            <div className={styles.noticeTypeFilterRow}>
               {['전체', '공지', '메모'].map((type) => (
                 <button
                   key={type}
                   type="button"
-                  className={
-                    selectedType === type
-                      ? 'notice-type-filter-button active'
-                      : 'notice-type-filter-button'
-                  }
+                  className={selectedType === type ? styles.noticeTypeFilterButton + " " + styles.active : styles.noticeTypeFilterButton}
                   onClick={() =>
                     setSelectedType(type)
                   }
@@ -320,7 +317,7 @@ function NoticePage() {
             </div>
 
             <form
-              className="notice-search-row"
+              className={styles.noticeSearchRow}
               onSubmit={handleSearch}
             >
               <input
@@ -337,7 +334,7 @@ function NoticePage() {
 
               <button
                 type="submit"
-                className="notice-search-button"
+                className={styles.noticeSearchButton}
                 aria-label="검색"
               >
                 <img
@@ -351,14 +348,14 @@ function NoticePage() {
           </section>
 
           {/* 전체 목록 */}
-          <section className="notice-section">
-            <div className="notice-section-header">
+          <section className={styles.noticeSection}>
+            <div className={styles.noticeSectionHeader}>
               <h3>전체 목록</h3>
             </div>
 
             {/* 데이터가 없는 경우 */}
             {filteredNormalNotices.length === 0 ? (
-              <div className="notice-empty-box">
+              <div className={styles.noticeEmptyBox}>
                 <strong>
                   {selectedType !== '전체' || searchKeyword
                     ? '검색 조건에 맞는 공지나 메모가 없습니다.'
@@ -368,7 +365,7 @@ function NoticePage() {
             ) : (
 
               /* 데이터가 있는 경우 */
-              <div className="notice-group-list">
+              <div className={styles.noticeGroupList}>
 
                 {Object.entries(
                   groupedNotices
@@ -377,15 +374,15 @@ function NoticePage() {
 
                     <div
                       key={month}
-                      className="notice-month-group"
+                      className={styles.noticeMonthGroup}
                     >
 
                       {/* 월 */}
-                      <p className="notice-month-title">
+                      <p className={styles.noticeMonthTitle}>
                         {month}
                       </p>
 
-                      <div className="notice-list">
+                      <div className={styles.noticeList}>
 
                         {monthNotices.map(
                           (notice) => (
@@ -393,7 +390,7 @@ function NoticePage() {
                             <button
                               key={notice.id}
                               type="button"
-                              className="notice-list-item"
+                              className={styles.noticeListItem}
                               onClick={() =>
                                 openDetailModal(notice)
                               }
@@ -401,11 +398,7 @@ function NoticePage() {
 
                               {/* 유형 아이콘 */}
                               <div
-                                className={`notice-list-icon ${
-                                  notice.type === '공지'
-                                    ? 'notice'
-                                    : 'memo'
-                                }`}
+                                className={styles.noticeListIcon}
                               >
                                 <img
                                   src={getNoticeTypeIcon(notice.type)}
@@ -414,12 +407,12 @@ function NoticePage() {
                               </div>
 
                               {/* 내용 */}
-                              <div className="notice-list-content">
+                              <div className={styles.noticeListContent}>
                                 <strong>
                                   {notice.title}
                                 </strong>
 
-                                <div className="notice-list-meta">
+                                <div className={styles.noticeListMeta}>
                                   {/* 작성자 */}
                                   <span>
                                     {notice.name}
@@ -453,7 +446,7 @@ function NoticePage() {
       {/* 등록 버튼 */}
       <button
         type="button"
-        className="notice-add-button"
+        className={styles.noticeAddButton}
         aria-label="공지 또는 메모 등록"
         onClick={() =>
           setIsAddModalOpen(true)

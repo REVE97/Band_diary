@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import supabase from '../api/supabase'
+import styles from './PracticePage.module.css'
 
 import PdfPreview from '../components/common/PdfPreview'
 import MusicsheetAddModal from '../components/practice/MusicsheetAddModal'
@@ -372,7 +373,7 @@ function PracticePage() {
   }
 
   return (
-    <div className="page pdf-page">
+    <div className={`${styles.page} ${styles.pdfPage}`}>
       <PracticeFilterTabs
         activeFilter={activeSessionFilter}
         onChange={handlePracticeFilterChange}
@@ -380,24 +381,20 @@ function PracticePage() {
 
       <button
         type="button"
-        className="content-add-button"
+        className={styles.contentAddButton}
         onClick={handleOpenMusicsheetModal}
         aria-label="PDF 악보 추가"
       >
         +
       </button>
 
-      <div className="studio-list">
+      <div className={styles.studioList}>
         {filteredMusicsheetList.map((pdf) => (
           <div
             key={pdf.id}
             role="button"
             tabIndex={0}
-            className={
-              selectedPdf?.id === pdf.id
-                ? 'studio-card active'
-                : 'studio-card'
-            }
+            className={selectedPdf?.id === pdf.id ? styles.studioCard + " " + styles.active : styles.studioCard}
             onClick={() => handlePdfClick(pdf)}
             onKeyDown={(event) => {
               if (event.key === 'Enter') {
@@ -408,7 +405,7 @@ function PracticePage() {
             {isAdmin && (
               <button
                 type="button"
-                className="studio-delete-button"
+                className={styles.studioDeleteButton}
                 onClick={(event) => handleOpenMusicsheetDeleteModal(event, pdf)}
                 aria-label={`${pdf.title} 삭제`}
               >
@@ -416,7 +413,7 @@ function PracticePage() {
               </button>
             )}
 
-            <div className="studio-info">
+            <div className={styles.studioInfo}>
               <strong>{pdf.title}</strong>
               <span>{pdf.description}</span>
               <p>{pdf.session}</p>
@@ -425,7 +422,7 @@ function PracticePage() {
         ))}
 
         {filteredMusicsheetList.length === 0 && (
-          <div className="content-empty-box">
+          <div className={styles.contentEmptyBox}>
             {activeSessionFilter === '전체'
               ? '등록된 PDF 악보가 없습니다.'
               : `${activeSessionFilter} 세션의 PDF 악보가 없습니다.`}
@@ -433,7 +430,7 @@ function PracticePage() {
         )}
       </div>
 
-      <div className="pdf-box">
+      <div className={styles.pdfBox}>
         <PdfPreview pdf={selectedPdf} />
       </div>
 

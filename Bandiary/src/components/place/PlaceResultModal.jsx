@@ -1,3 +1,5 @@
+import styles from './PlaceResultModal.module.css'
+
 function PlaceResultModal({
   type,
   title,
@@ -11,12 +13,10 @@ function PlaceResultModal({
   const isConfirm = type === 'confirm'
 
   return (
-    <div className="place-result-overlay">
-      <div className="place-result-card">
+    <div className={styles.overlay}>
+      <div className={styles.card}>
         <div
-          className={
-            isSuccess ? 'place-result-icon success' : 'place-result-icon fail'
-          }
+          className={`${styles.icon} ${isSuccess ? styles.success : ''}`}
         >
           {isSuccess ? '✓' : '!'}
         </div>
@@ -25,10 +25,10 @@ function PlaceResultModal({
         <p>{message}</p>
 
         {isConfirm ? (
-          <div className="delete-confirm-button-row">
+          <div className={styles.buttonRow}>
             <button
               type="button"
-              className="delete-cancel-button"
+              className={styles.cancelButton}
               onClick={onClose}
             >
               {cancelText}
@@ -36,14 +36,14 @@ function PlaceResultModal({
 
             <button
               type="button"
-              className="delete-confirm-button"
+              className={styles.confirmButton}
               onClick={onConfirm}
             >
               {confirmText}
             </button>
           </div>
         ) : (
-          <button type="button" className="primary-button" onClick={onClose}>
+          <button type="button" className={styles.primaryButton} onClick={onClose}>
             확인
           </button>
         )}

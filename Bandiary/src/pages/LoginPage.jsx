@@ -5,6 +5,7 @@ import logo from '../assets/images/logo.svg'
 import clearIcon from '../assets/images/clear_input.svg'
 
 import supabase from '../api/supabase'
+import styles from './LoginPage.module.css'
 
 function LoginPage() {
   const navigate = useNavigate()
@@ -118,13 +119,13 @@ function LoginPage() {
   }
 
   return (
-    <div className="page login-page">
-      <div className="login-card">
-        <img src={logo} alt="Bandiary" className="login-logo" />
+    <div className={`${styles.page} ${styles.loginPage}`}>
+      <div className={styles.loginCard}>
+        <img src={logo} alt="Bandiary" className={styles.loginLogo} />
         <p>밴드를 위한 다이어리 서비스</p>
 
-        <div className="login-form">
-          <div className="login-input-wrap">
+        <div className={styles.loginForm}>
+          <div className={styles.loginInputWrap}>
             <input
               ref={userIdInputRef}
               type="text"
@@ -139,13 +140,13 @@ function LoginPage() {
             />
 
             {!loginForm.loginUserId && (
-              <span className="login-input-placeholder">아이디</span>
+              <span className={styles.loginInputPlaceholder}>아이디</span>
             )}
 
             {loginForm.loginUserId && (
               <button
                 type="button"
-                className="login-clear-button"
+                className={styles.loginClearButton}
                 tabIndex={-1}
                 onPointerDown={(event) => {
                   event.preventDefault()
@@ -158,7 +159,7 @@ function LoginPage() {
             )}
           </div>
 
-          <div className="login-input-wrap">
+          <div className={styles.loginInputWrap}>
             <input
               ref={passwordInputRef}
               type="password"
@@ -173,13 +174,13 @@ function LoginPage() {
             />
 
             {!loginForm.loginPassword && (
-              <span className="login-input-placeholder">비밀번호</span>
+              <span className={styles.loginInputPlaceholder}>비밀번호</span>
             )}
 
             {loginForm.loginPassword && (
               <button
                 type="button"
-                className="login-clear-button"
+                className={styles.loginClearButton}
                 tabIndex={-1}
                 onPointerDown={(event) => {
                   event.preventDefault()
@@ -193,11 +194,11 @@ function LoginPage() {
           </div>
         </div>
 
-        {errorMessage && <p className="login-error">{errorMessage}</p>}
+        {errorMessage && <p className={styles.loginError}>{errorMessage}</p>}
 
         <button
           type="button"
-          className="primary-button"
+          className={styles.primaryButton}
           onClick={handleLogin}
         >
           로그인
@@ -205,7 +206,7 @@ function LoginPage() {
 
         <button
           type="button"
-          className="secondary-button signup-link-button"
+          className={styles.secondaryButton + " " + styles.signupLinkButton}
           onClick={naviBlock}
         >
           회원가입

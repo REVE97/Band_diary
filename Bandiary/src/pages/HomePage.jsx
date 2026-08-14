@@ -14,6 +14,7 @@ import profile from '../assets/images/default_profile.svg'
 import editIcon from '../assets/images/edit.svg'
 import instagramIcon from '../assets/images/instagram.svg'
 import discordIcon from '../assets/images/discord.svg'
+import styles from './HomePage.module.css'
 
 const initialProfileForm = {
   name: '',
@@ -903,13 +904,13 @@ function HomePage() {
   }
 
   return (
-    <div className="page home-page">
+    <div className={styles.page}>
       {/* 프로필 정보 */}
-      <section className="user-greeting">
+      <section className={styles.userGreeting}>
 
         {/* 프로필 이미지 */}
-        <div className="profile-avatar-wrap">
-          <div className="profile-avatar">
+        <div className={styles.profileAvatarWrap}>
+          <div className={styles.profileAvatar}>
             <img
               src={profileInfo[0]?.profileImageUrl || profile}
               alt={`${profileInfo[0]?.name || 'Guest'} 프로필`}
@@ -919,7 +920,7 @@ function HomePage() {
           {/* 프로필 수정 */}
           <button
             type="button"
-            className="profile-edit-button"
+            className={styles.profileEditButton}
             aria-label="프로필 수정"
             title="프로필 수정"
             onClick={handleOpenProfileModal}
@@ -933,7 +934,7 @@ function HomePage() {
         </div>
 
         {/* 프로필 상세 정보 */}
-        <div className="profile-summary">
+        <div className={styles.profileSummary}>
           <h2>
             {profileInfo[0]?.name || 'Guest'}
           </h2>
@@ -944,7 +945,7 @@ function HomePage() {
           </p>
 
           {/* SNS */}
-          <section className="sns-list">
+          <section className={styles.snsList}>
             <a
               href="https://www.instagram.com/11f_band"
               target="_blank"
@@ -974,7 +975,7 @@ function HomePage() {
 
       <button
         type="button"
-        className="content-add-button"
+        className={styles.contentAddButton}
         onClick={handleOpenContentModal}
         aria-label="사진, 비디오 또는 오디오 추가"
       >
@@ -982,8 +983,8 @@ function HomePage() {
       </button>
 
       {/* 콘텐츠 목록 */}
-      <section className="content-list-section">
-        <div className="home-card-grid">
+      <section className={styles.contentListSection}>
+        <div className={styles.homeCardGrid}>
           {filteredContent.map((item) => (
             <ContentCard
               key={item.id}
@@ -997,7 +998,7 @@ function HomePage() {
         </div>
 
         {filteredContent.length === 0 && (
-          <div className="content-empty-box">
+          <div className={styles.contentEmptyBox}>
             {activeContentFilter === '전체'
               ? '등록된 콘텐츠가 없습니다.'
               : `${activeContentFilter} 콘텐츠가 없습니다.`}

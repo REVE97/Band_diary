@@ -4,11 +4,17 @@ import { formatDate } from '../../features/common'
 import supabase from '../../api/supabase'
 
 import commentSendIcon from '../../assets/images/comment-send.svg'
+import styles from './ContentDetailModal.module.css'
 
 function ContentDetailModal({ content, onClose }) {
   const isPicture = content.type === '사진'
   const isVideo = content.type === '비디오'
   const isAudio = content.type === '오디오'
+  const contentTypeClass = isPicture
+    ? styles.picture
+    : isAudio
+      ? styles.audio
+      : ''
 
   const [comments, setComments] = useState([])
   const [commentText, setCommentText] = useState('')
@@ -116,12 +122,12 @@ function ContentDetailModal({ content, onClose }) {
   }
 
   return (
-    <div className="place-modal-overlay">
-      <div className="place-modal-card content-detail-card">
+    <div className={styles.placeModalOverlay}>
+      <div className={styles.placeModalCard + " " + styles.contentDetailCard}>
         {/* 콘텐츠 상세 헤더 */}
-        <div className="content-detail-header">
-          <div className="content-detail-heading">
-            <span className={`content-detail-type ${content.type}`}>
+        <div className={styles.contentDetailHeader}>
+          <div className={styles.contentDetailHeading}>
+            <span className={`${styles.contentDetailType} ${contentTypeClass}`}>
               {content.type}
             </span>
 
@@ -131,7 +137,7 @@ function ContentDetailModal({ content, onClose }) {
 
           <button
             type="button"
-            className="place-modal-close"
+            className={styles.placeModalClose}
             onClick={onClose}
             aria-label="콘텐츠 상세 모달 닫기"
           >
@@ -140,7 +146,7 @@ function ContentDetailModal({ content, onClose }) {
         </div>
 
         {/* 콘텐츠 미디어 */}
-        <div className="content-detail-media">
+        <div className={styles.contentDetailMedia}>
           {isPicture && content.contentImageUrl && (
             <img src={content.contentImageUrl} alt={content.title} />
           )}
@@ -150,7 +156,7 @@ function ContentDetailModal({ content, onClose }) {
           )}
 
           {isAudio && content.contentAudioUrl && (
-            <div className="content-detail-audio">
+            <div className={styles.contentDetailAudio}>
               <p>오디오 콘텐츠입니다.</p>
               <audio controls src={content.contentAudioUrl}>
                 브라우저가 오디오 재생을 지원하지 않습니다.
@@ -159,36 +165,36 @@ function ContentDetailModal({ content, onClose }) {
           )}
 
           {isPicture && !content.contentImageUrl && (
-            <div className="content-detail-empty">
+            <div className={styles.contentDetailEmpty}>
               등록된 이미지가 없습니다.
             </div>
           )}
 
           {isVideo && !content.contentVideoUrl && (
-            <div className="content-detail-empty">
+            <div className={styles.contentDetailEmpty}>
               등록된 영상이 없습니다.
             </div>
           )}
 
           {isAudio && !content.contentAudioUrl && (
-            <div className="content-detail-empty">
+            <div className={styles.contentDetailEmpty}>
               등록된 오디오가 없습니다.
             </div>
           )}
         </div>
 
-        <div className="comment-section">
-          <div className="comment-header">
+        <div className={styles.commentSection}>
+          <div className={styles.commentHeader}>
             <h3>댓글</h3>
             <span>{comments.length}개</span>
           </div>
 
-          <div className="comment-list">
+          <div className={styles.commentList}>
             {comments.length > 0 ? (
               comments.map((comment) => (
-                <div key={comment.id} className="comment-item">
-                  <div className="comment-item-top">
-                    <div className="comment-meta">
+                <div key={comment.id} className={styles.commentItem}>
+                  <div className={styles.commentItemTop}>
+                    <div className={styles.commentMeta}>
                       <strong>{comment.name}</strong>
                       <span>{formatDate(comment.created_at)}</span>
                     </div>
@@ -196,7 +202,7 @@ function ContentDetailModal({ content, onClose }) {
                     {isAdmin && (
                       <button
                         type="button"
-                        className="comment-delete-button"
+                        className={styles.commentDeleteButton}
                         onClick={() => handleDeleteComment(comment.id)}
                         disabled={deletingCommentId === comment.id}
                         aria-label="댓글 삭제"
@@ -210,14 +216,14 @@ function ContentDetailModal({ content, onClose }) {
                 </div>
               ))
             ) : (
-              <div className="comment-empty">
+              <div className={styles.commentEmpty}>
                 아직 등록된 댓글이 없습니다.
               </div>
             )}
           </div>
 
-          <div className="comment-form">
-            <div className="comment-input-row">
+          <div className={styles.commentForm}>
+            <div className={styles.commentInputRow}>
               <textarea
                 value={commentText}
                 placeholder="댓글을 입력해주세요."
@@ -226,13 +232,13 @@ function ContentDetailModal({ content, onClose }) {
 
               <button
                 type="button"
-                className="comment-send-button"
+                className={styles.commentSendButton}
                 onClick={handleAddComment}
                 disabled={isCommentLoading}
                 aria-label="댓글 등록"
               >
                 {isCommentLoading ? (
-                  <span className="comment-send-loading">
+                  <span className={styles.commentSendLoading}>
                     ...
                   </span>
                 ) : (
@@ -246,7 +252,7 @@ function ContentDetailModal({ content, onClose }) {
             </div>
 
             {commentErrorMessage && (
-              <p className="login-error">{commentErrorMessage}</p>
+              <p className={styles.loginError}>{commentErrorMessage}</p>
             )}
           </div>
         </div>

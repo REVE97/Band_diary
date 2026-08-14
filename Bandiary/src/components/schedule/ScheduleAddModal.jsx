@@ -1,3 +1,5 @@
+import styles from './ScheduleAddModal.module.css'
+
 const scheduleTypeOptions = ['합주', '공연', '개인연습', '회의', '기타']
 
 const scheduleColorOptions = [
@@ -17,16 +19,16 @@ function ScheduleAddModal({
   onInputChange,
 }) {
   return (
-    <div className="place-modal-overlay">
-      <div className="place-modal-card schedule-modal-card">
-        <div className="place-modal-header">
+    <div className={styles.placeModalOverlay}>
+      <div className={styles.placeModalCard + " " + styles.scheduleModalCard}>
+        <div className={styles.placeModalHeader}>
           <div>
             <h2>일정 추가</h2>
             <p>합주, 공연, 개인 연습 일정을 등록해주세요.</p>
           </div>
         </div>
 
-        <div className="login-form place-form schedule-form">
+        <div className={styles.loginForm + " " + styles.placeForm + " " + styles.scheduleForm}>
           <select
             name="type"
             value={scheduleForm.type}
@@ -54,7 +56,7 @@ function ScheduleAddModal({
             onChange={onInputChange}
           />
 
-          <div className="schedule-time-row">
+          <div className={styles.scheduleTimeRow}>
             <input
               type="time"
               name="startTime"
@@ -87,18 +89,14 @@ function ScheduleAddModal({
             onChange={onInputChange}
           />
 
-          <div className="schedule-color-section">
+          <div className={styles.scheduleColorSection}>
             <span>색상</span>
 
-            <div className="schedule-color-row">
+            <div className={styles.scheduleColorRow}>
               {scheduleColorOptions.map((color) => (
                 <label
                   key={color}
-                  className={
-                    scheduleForm.color === color
-                      ? 'schedule-color-chip active'
-                      : 'schedule-color-chip'
-                  }
+                  className={scheduleForm.color === color ? styles.scheduleColorChip + " " + styles.active : styles.scheduleColorChip}
                   style={{ backgroundColor: color }}
                 >
                   <input
@@ -114,12 +112,12 @@ function ScheduleAddModal({
           </div>
         </div>
 
-        {errorMessage && <p className="login-error">{errorMessage}</p>}
+        {errorMessage && <p className={styles.loginError}>{errorMessage}</p>}
 
-        <div className="place-modal-button-row">
+        <div className={styles.placeModalButtonRow}>
           <button
             type="button"
-            className="place-prev-button"
+            className={styles.placePrevButton}
             onClick={onClose}
           >
             취소
@@ -127,7 +125,7 @@ function ScheduleAddModal({
 
           <button
             type="button"
-            className="primary-button"
+            className={styles.primaryButton}
             onClick={onSubmit}
           >
             등록하기

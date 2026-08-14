@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Document, Page, pdfjs } from 'react-pdf'
 import pdfWorker from 'pdfjs-dist/build/pdf.worker?url'
 import pdfIcon from '../../assets/images/pdf_purple.svg'
+import styles from './PdfPreview.module.css'
 
 pdfjs.GlobalWorkerOptions.workerSrc = pdfWorker
 
@@ -10,29 +11,29 @@ function PdfPreview({ pdf }) {
 
   if (!pdf) {
     return (
-      <div className="pdf-preview-empty">
-        <img src={pdfIcon} alt="" className="empty-preview-icon" />
+      <div className={styles.empty}>
+        <img src={pdfIcon} alt="" className={styles.emptyIcon} />
         <p>PDF 카드를 선택하면 미리보기가 표시됩니다.</p>
       </div>
     )
   }
 
   return (
-    <div className="pdf-preview-wrap">
-      <div className="pdf-preview-header">
+    <div className={styles.wrap}>
+      <div className={styles.header}>
         <strong>{pdf.title}</strong>
         <span>{pdf.fileName}</span>
 
         <a
           href={pdf.pdfUrl}
           download={pdf.fileName}
-          className="pdf-download-button"
+          className={styles.downloadButton}
         >
           다운로드
         </a>
       </div>
 
-      <div className="pdf-canvas-box">
+      <div className={styles.canvasBox}>
         <Document
           file={pdf.pdfUrl}
           onLoadSuccess={({ numPages }) => setNumPages(numPages)}

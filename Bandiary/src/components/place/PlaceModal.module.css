@@ -1,0 +1,326 @@
+/* Local styles for PlaceModal.jsx */
+
+.primarySmallButton,
+.primaryButton {
+  color: var(--color-white);
+  background: var(--color-primary);
+  font-weight: 900;
+  box-shadow: 0 8px 18px var(--color-primary-alpha-25);
+}
+
+.primaryButton {
+  width: 100%;
+  height: 48px;
+  border-radius: 14px;
+  font-size: 15px;
+}
+
+.primaryButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+  box-shadow: none;
+}
+
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.loginForm input,
+.loginForm select {
+  width: 100%;
+  height: 46px;
+  padding: 0 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-white);
+  color: var(--color-text-primary);
+  font-size: 16px;
+  outline: none;
+}
+
+.loginForm input:focus,
+.loginForm select:focus,
+.commentForm textarea:focus,
+.scheduleForm textarea:focus,
+.noticeSearchRow input:focus,
+.noticeFormInput:focus,
+.noticeFormTextarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-alpha-12);
+}
+
+.loginError {
+  margin: 0 0 12px;
+  color: var(--color-danger);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.placeModalOverlay,
+.placeResultOverlay {
+  position: fixed;
+  top: 64px;
+  left: 50%;
+  bottom: 72px;
+  width: 100%;
+  max-width: 430px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: var(--color-modal-overlay);
+}
+
+.placeModalOverlay {
+  z-index: 100;
+}
+
+.placeModalCard,
+.placeResultCard {
+  border-radius: 24px;
+  background: linear-gradient(135deg, var(--color-primary-background), var(--color-white));
+  box-shadow: 0 24px 70px var(--color-shell-alpha-24);
+}
+
+.placeModalCard {
+  width: 100%;
+  max-width: 390px;
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 24px 20px;
+}
+
+.placeModalHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.placeModalHeader h2 {
+  margin: 0 0 8px;
+  color: var(--color-text-primary);
+  font-size: 19px;
+  font-weight: 900;
+}
+
+.placeModalHeader p {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.placeModalClose {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--color-white);
+  color: var(--color-text-muted);
+  font-size: 24px;
+  line-height: 1;
+}
+
+.placeTypeRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.placeTypeRow label {
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: var(--color-white);
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.placeTypeRow input {
+  accent-color: var(--color-primary);
+}
+
+.placeForm {
+  margin-bottom: 12px;
+}
+
+.placeStepRow {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.placeStepRow span {
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--color-primary-soft);
+  color: var(--color-text-subtle);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.placeStepRow span.active {
+  color: var(--color-white);
+  background: var(--color-primary);
+}
+
+.placeModalButtonRow {
+  display: flex;
+  gap: 10px;
+}
+
+.placeModalButtonRow .primaryButton {
+  flex: 1;
+}
+
+.placePrevButton {
+  width: 84px;
+  height: 48px;
+  border-radius: 14px;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.placeSubmitSummary {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background: var(--color-white);
+  text-align: left;
+}
+
+.placeSubmitSummary strong {
+  color: var(--color-text-primary);
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.placeSubmitSummary span {
+  color: var(--color-text-muted);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.placeSearchRow {
+  display: flex;
+  gap: 8px;
+}
+
+.placeSearchRow input {
+  flex: 1;
+}
+
+.placeSearchButton {
+  flex: 0 0 68px;
+  height: 46px;
+  border-radius: 12px;
+  background: var(--color-primary);
+  color: var(--color-white);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.placeSearchButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.placeSearchResultList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 176px;
+  overflow-y: auto;
+}
+
+.placeSearchResultItem {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-white);
+  text-align: left;
+}
+
+.placeSearchResultItem strong {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.placeSearchResultItem span {
+  display: block;
+  color: var(--color-text-muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.selectedPlaceBox {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid var(--color-primary-border-soft);
+  border-radius: 14px;
+  background: var(--color-primary-background);
+  text-align: left;
+}
+
+.selectedPlaceBox strong {
+  color: var(--color-primary);
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.selectedPlaceBox span {
+  color: var(--color-text-muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.profileEditModalHeader .placeModalClose {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+}
+
+.contentDetailHeader .placeModalClose {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.noticeDetailCard .placeModalHeader {
+  align-items: flex-start;
+}
+
+.noticeDetailCard
+.placeModalHeader > div:first-child {
+  flex: 1;
+  min-width: 0;
+}

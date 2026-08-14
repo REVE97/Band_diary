@@ -1,0 +1,384 @@
+/* Local styles for MusicsheetAddModal.jsx */
+
+.primarySmallButton,
+.primaryButton {
+  color: var(--color-white);
+  background: var(--color-primary);
+  font-weight: 900;
+  box-shadow: 0 8px 18px var(--color-primary-alpha-25);
+}
+
+.primaryButton {
+  width: 100%;
+  height: 48px;
+  border-radius: 14px;
+  font-size: 15px;
+}
+
+.primaryButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+  box-shadow: none;
+}
+
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.loginForm input,
+.loginForm select {
+  width: 100%;
+  height: 46px;
+  padding: 0 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-white);
+  color: var(--color-text-primary);
+  font-size: 16px;
+  outline: none;
+}
+
+.loginForm input:focus,
+.loginForm select:focus,
+.commentForm textarea:focus,
+.scheduleForm textarea:focus,
+.noticeSearchRow input:focus,
+.noticeFormInput:focus,
+.noticeFormTextarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-alpha-12);
+}
+
+.loginError {
+  margin: 0 0 12px;
+  color: var(--color-danger);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.placeModalOverlay,
+.placeResultOverlay {
+  position: fixed;
+  top: 64px;
+  left: 50%;
+  bottom: 72px;
+  width: 100%;
+  max-width: 430px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: var(--color-modal-overlay);
+}
+
+.placeModalOverlay {
+  z-index: 100;
+}
+
+.placeModalCard,
+.placeResultCard {
+  border-radius: 24px;
+  background: linear-gradient(135deg, var(--color-primary-background), var(--color-white));
+  box-shadow: 0 24px 70px var(--color-shell-alpha-24);
+}
+
+.placeModalCard {
+  width: 100%;
+  max-width: 390px;
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 24px 20px;
+}
+
+.placeModalHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.placeModalHeader h2 {
+  margin: 0 0 8px;
+  color: var(--color-text-primary);
+  font-size: 19px;
+  font-weight: 900;
+}
+
+.placeModalHeader p {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.placeModalClose {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--color-white);
+  color: var(--color-text-muted);
+  font-size: 24px;
+  line-height: 1;
+}
+
+.placeForm {
+  margin-bottom: 12px;
+}
+
+.placeModalButtonRow {
+  display: flex;
+  gap: 10px;
+}
+
+.placeModalButtonRow .primaryButton {
+  flex: 1;
+}
+
+.placePrevButton {
+  width: 84px;
+  height: 48px;
+  border-radius: 14px;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.placeSubmitSummary {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background: var(--color-white);
+  text-align: left;
+}
+
+.placeSubmitSummary strong {
+  color: var(--color-text-primary);
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.placeSubmitSummary span {
+  color: var(--color-text-muted);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.profileEditModalHeader .placeModalClose {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+}
+
+.customFileRow {
+  width: 100%;
+  height: 46px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-white);
+}
+
+.customFileButton {
+  flex: 0 0 auto;
+  height: 28px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--color-primary-soft);
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.customFileName {
+  flex: 1;
+  min-width: 0;
+  color: var(--color-text-primary);
+  font-size: 15px;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.customFileInput,
+.noticeHiddenFileInput {
+  display: none;
+}
+
+.contentFileSelectBox .customFileButton {
+  flex: 0 0 auto;
+}
+
+.contentFileSelectBox .customFileName {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--color-text-muted);
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.contentDetailHeader .placeModalClose {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.musicsheetFileHelp {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.musicsheetAddModalCard {
+  max-width: 390px;
+  padding: 22px 20px 20px;
+  border-radius: 24px;
+}
+
+.musicsheetAddModalHeader {
+  margin-bottom: 18px;
+}
+
+.musicsheetAddModalHeader h2 {
+  color: var(--color-text-primary);
+  font-size: 19px;
+  font-weight: 900;
+}
+
+.musicsheetAddModalHeader p {
+  margin-top: 6px;
+  color: var(--color-text-muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.musicsheetStepRow {
+  width: 100%;
+  margin-bottom: 18px;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 8px;
+}
+
+.musicsheetStepRow span {
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 12px;
+
+  background: var(--color-primary-background);
+  color: var(--color-text-subtle);
+
+  font-size: 11px;
+  font-weight: 900;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.musicsheetStepRow span.active {
+  background: var(--color-primary);
+  color: var(--color-white);
+
+  box-shadow:
+    0 6px 14px var(--color-primary-alpha-18);
+}
+
+.musicsheetAddForm {
+  margin-bottom: 14px;
+}
+
+.musicsheetAddForm input,
+.musicsheetAddForm select {
+  height: 48px;
+  border-radius: 13px;
+}
+
+.musicsheetFileRow {
+  min-height: 48px;
+}
+
+.musicsheetFileHelp {
+  margin: 8px 0 0;
+
+  color: var(--color-text-muted);
+
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.musicsheetSubmitSummary {
+  padding: 15px;
+
+  border-color: var(--color-primary-border-soft);
+  border-radius: 16px;
+
+  background: var(--color-primary-background);
+}
+
+.musicsheetSubmitSummary strong {
+  color: var(--color-text-primary);
+
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.musicsheetSubmitSummary span {
+  color: var(--color-text-muted);
+
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.musicsheetAddError {
+  margin-bottom: 12px;
+}
+
+.musicsheetModalButtonRow {
+  margin-top: 4px;
+}
+
+.musicsheetPrevButton {
+  flex: 0 0 84px;
+}
+
+.noticeDetailCard .placeModalHeader {
+  align-items: flex-start;
+}
+
+.noticeDetailCard
+.placeModalHeader > div:first-child {
+  flex: 1;
+  min-width: 0;
+}

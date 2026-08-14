@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import styles from './PlaceModal.module.css'
 
 function PlaceModal({
   formType,
@@ -138,9 +139,9 @@ function PlaceModal({
   }
 
   return (
-    <div className="place-modal-overlay">
-      <div className="place-modal-card">
-        <div className="place-modal-header">
+    <div className={styles.placeModalOverlay}>
+      <div className={styles.placeModalCard}>
+        <div className={styles.placeModalHeader}>
           <div>
             <h2>장소 추가</h2>
             <p>{getStepTitle()}</p>
@@ -148,14 +149,14 @@ function PlaceModal({
 
           <button
             type="button"
-            className="place-modal-close"
+            className={styles.placeModalClose}
             onClick={onClose}
           >
             ×
           </button>
         </div>
 
-        <div className="place-type-row">
+        <div className={styles.placeTypeRow}>
           <label>
             <input
               type="radio"
@@ -179,17 +180,17 @@ function PlaceModal({
           </label>
         </div>
 
-        <div className="place-step-row">
-          <span className={currentStep === 1 ? 'active' : ''}>1</span>
-          <span className={currentStep === 2 ? 'active' : ''}>2</span>
-          <span className={currentStep === 3 ? 'active' : ''}>3</span>
-          <span className={currentStep === 4 ? 'active' : ''}>완료</span>
+        <div className={styles.placeStepRow}>
+          <span className={currentStep === 1 ? styles.active : ""}>1</span>
+          <span className={currentStep === 2 ? styles.active : ""}>2</span>
+          <span className={currentStep === 3 ? styles.active : ""}>3</span>
+          <span className={currentStep === 4 ? styles.active : ""}>완료</span>
         </div>
 
-        <div className="login-form place-form">
+        <div className={styles.loginForm + " " + styles.placeForm}>
           {currentStep === 1 && (
             <>
-              <div className="place-search-row">
+              <div className={styles.placeSearchRow}>
                 <input
                   type="text"
                   value={searchKeyword}
@@ -208,7 +209,7 @@ function PlaceModal({
 
                 <button
                   type="button"
-                  className="place-search-button"
+                  className={styles.placeSearchButton}
                   onClick={handleSearchButtonClick}
                   disabled={isSearchingPlace}
                 >
@@ -217,12 +218,12 @@ function PlaceModal({
               </div>
 
               {placeSearchResults.length > 0 && (
-                <div className="place-search-result-list">
+                <div className={styles.placeSearchResultList}>
                   {placeSearchResults.map((searchedPlace) => (
                     <button
                       key={searchedPlace.id}
                       type="button"
-                      className="place-search-result-item"
+                      className={styles.placeSearchResultItem}
                       onClick={() => handleSelectPlace(searchedPlace)}
                     >
                       <strong>{searchedPlace.place_name}</strong>
@@ -236,7 +237,7 @@ function PlaceModal({
               )}
 
               {hasSelectedPlace && (
-                <div className="selected-place-box">
+                <div className={styles.selectedPlaceBox}>
                   <strong>{placeForm.name}</strong>
                   <span>{placeForm.address}</span>
                 </div>
@@ -276,7 +277,7 @@ function PlaceModal({
           )}
 
           {currentStep === 4 && (
-            <div className="place-submit-summary">
+            <div className={styles.placeSubmitSummary}>
               <strong>{placeForm.name}</strong>
 
               <span>{placeForm.address}</span>
@@ -295,14 +296,14 @@ function PlaceModal({
         </div>
 
         {(stepErrorMessage || errorMessage) && (
-          <p className="login-error">{stepErrorMessage || errorMessage}</p>
+          <p className={styles.loginError}>{stepErrorMessage || errorMessage}</p>
         )}
 
-        <div className="place-modal-button-row">
+        <div className={styles.placeModalButtonRow}>
           {currentStep > 1 && (
             <button
               type="button"
-              className="place-prev-button"
+              className={styles.placePrevButton}
               onClick={handlePrevStep}
             >
               이전
@@ -312,7 +313,7 @@ function PlaceModal({
           {currentStep < 4 && (
             <button
               type="button"
-              className="primary-button"
+              className={styles.primaryButton}
               onClick={handleNextStep}
               disabled={!isCurrentStepValid()}
             >
@@ -323,7 +324,7 @@ function PlaceModal({
           {currentStep === 4 && (
             <button
               type="button"
-              className="primary-button"
+              className={styles.primaryButton}
               onClick={onSubmit}
             >
               등록하기

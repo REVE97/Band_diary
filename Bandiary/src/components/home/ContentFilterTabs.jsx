@@ -2,6 +2,7 @@ import picture_icon from '../../assets/images/picture.svg'
 import video_icon from '../../assets/images/video.svg'
 import allView_icon from '../../assets/images/allView.svg'
 import audio_icon from '../../assets/images/audio.svg'
+import styles from './ContentFilterTabs.module.css'
 
 const contentFilterOptions = [
   {
@@ -33,9 +34,9 @@ function ContentFilterTabs({ activeFilter, counts, onChange }) {
   }
 
   return (
-    <section className="content-filter-section">
+    <section className={styles.section}>
       {/* 콘텐츠 필터 */}
-      <div className="content-filter-row">
+      <div className={styles.row}>
         {contentFilterOptions.map((option) => {
           const isActive = activeFilter === option.value
           const count = getCount(option.value)
@@ -45,9 +46,8 @@ function ContentFilterTabs({ activeFilter, counts, onChange }) {
               key={option.value}
               type="button"
               className={[
-                'content-filter-button',
-                option.iconOnly ? 'icon-only' : '',
-                isActive ? 'active' : '',
+                styles.button,
+                isActive ? styles.active : '',
               ]
                 .filter(Boolean)
                 .join(' ')}
@@ -55,12 +55,12 @@ function ContentFilterTabs({ activeFilter, counts, onChange }) {
               aria-label={option.label}
               title={option.label}
             >
-              <img src={option.icon} alt="" className="content-filter-icon" />
+              <img src={option.icon} alt="" className={styles.icon} />
 
-              <span className="content-filter-text">
+              <span className={styles.text}>
                 <span>{option.label}</span>
                 {/* {option.label} */}
-                <strong className="content-filter-count">{count}</strong>
+                <strong className={styles.count}>{count}</strong>
               </span>
             </button>
           )

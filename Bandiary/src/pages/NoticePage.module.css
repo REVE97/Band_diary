@@ -1,0 +1,407 @@
+/* Local styles for NoticePage.jsx */
+
+.page {
+  padding-bottom: 20px;
+}
+
+.loginForm input:focus,
+.loginForm select:focus,
+.commentForm textarea:focus,
+.scheduleForm textarea:focus,
+.noticeSearchRow input:focus,
+.noticeFormInput:focus,
+.noticeFormTextarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-alpha-12);
+}
+
+.noticeSectionHeader h3 {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.noticePage {
+  position: relative;
+}
+
+.noticeSection {
+  margin-top: 22px;
+}
+
+.noticeSectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.noticeFilterSection {
+  width: 100%;
+  margin-top: 22px;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.noticeTypeFilterRow {
+  flex: 0 0 auto;
+
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.noticeTypeFilterButton {
+  flex: 0 0 auto;
+
+  height: 40px;
+  min-width: 46px;
+  padding: 0 10px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+
+  background: var(--color-white);
+  color: var(--color-text-muted);
+
+  font-size: 12px;
+  font-weight: 900;
+
+  white-space: nowrap;
+
+  box-shadow:
+    0 6px 16px var(--color-dark-alpha-04);
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.noticeTypeFilterButton.active,
+.noticeTypeSelector button.active {
+  border-color: var(--color-primary);
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--color-primary-gradient-start),
+      var(--color-primary-gradient-end)
+    );
+
+  color: var(--color-white);
+
+  box-shadow:
+    0 8px 18px var(--color-primary-alpha-18);
+}
+
+.noticeTypeFilterButton:active {
+  transform: scale(0.96);
+}
+
+.noticeSearchRow {
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.noticeSearchRow input {
+  flex: 1;
+  min-width: 0;
+
+  height: 40px;
+  padding: 0 10px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+
+  background: var(--color-white);
+  color: var(--color-text-primary);
+
+  font-size: 16px;
+
+  outline: none;
+}
+
+.noticeSearchRow input::placeholder {
+  color: var(--color-placeholder);
+}
+
+.noticeSearchButton {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+
+  background: var(--color-white);
+}
+
+.noticeSearchButton img {
+  display: block;
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+.noticeImportantList {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.noticeImportantCard {
+  width: 100%;
+  min-height: 76px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid var(--color-important-border);
+  border-radius: 16px;
+  background:
+    linear-gradient(
+      135deg,
+      var(--color-important-background),
+      var(--color-white)
+    );
+  color: var(--color-text-primary);
+  text-align: left;
+  box-shadow:
+    0 8px 24px var(--color-primary-alpha-08);
+}
+
+.noticeImportantIcon {
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 13px;
+
+  background: var(--color-warning-background);
+}
+
+.noticeImportantIcon img,
+.noticeListIcon img {
+  display: block;
+
+  width: 21px;
+  height: 21px;
+
+  object-fit: contain;
+}
+
+.noticeCardContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.noticeCardTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.noticeCardTitleRow strong {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--color-text-primary);
+  font-size: 14px;
+  font-weight: 900;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.noticeCardMeta {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--color-text-subtle);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.noticeGroupList {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.noticeMonthGroup {
+  width: 100%;
+}
+
+.noticeMonthTitle {
+  margin: 0 0 8px;
+  color: var(--color-text-subtle);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.noticeList {
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background: var(--color-white);
+  box-shadow:
+    0 8px 24px var(--color-dark-alpha-05);
+}
+
+.noticeListItem {
+  width: 100%;
+  min-height: 68px;
+  padding: 11px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid var(--color-divider);
+  background: var(--color-white);
+  color: var(--color-text-primary);
+  text-align: left;
+}
+
+.noticeListItem:last-child {
+  border-bottom: 0;
+}
+
+.noticeListItem:active {
+  background: var(--color-active-background);
+}
+
+.noticeListIcon {
+  flex: 0 0 auto;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 11px;
+}
+
+.noticeListContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.noticeListContent > strong {
+  display: block;
+  overflow: hidden;
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-weight: 900;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.noticeListMeta {
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.noticeListMeta > span:not(.noticeTypeBadge) {
+  color: var(--color-text-subtle);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.noticeListItem > time {
+  flex: 0 0 auto;
+  color: var(--color-text-subtle);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.noticeAddButton {
+  position: fixed;
+  right:
+    max(
+      18px,
+      calc((100vw - 430px) / 2 + 22px)
+    );
+  bottom:
+    calc(
+      112px + env(safe-area-inset-bottom)
+    );
+  z-index: 90;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: var(--color-white);
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow:
+    0 12px 28px var(--color-primary-alpha-32);
+  opacity: 0.5;
+}
+
+.noticeAddButton:active {
+  transform: scale(0.96);
+}
+
+.noticeStateBox,
+.noticeEmptyBox {
+  padding: 28px 18px;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background: var(--color-white);
+  color: var(--color-text-muted);
+  text-align: center;
+  box-shadow:
+    0 8px 24px var(--color-dark-alpha-05);
+}
+
+.noticeStateBox {
+  margin-top: 18px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.noticeStateBox.error {
+  color: var(--color-danger);
+}
+
+.noticeStateBox p {
+  margin: 0 0 12px;
+}
+
+.noticeStateBox button {
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 10px;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.noticeEmptyBox strong {
+  display: block;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  font-weight: 900;
+}

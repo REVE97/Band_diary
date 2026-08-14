@@ -9,6 +9,7 @@ import supabase from '../api/supabase'
 import ScheduleAddModal from '../components/schedule/ScheduleAddModal'
 import ScheduleDetailModal from '../components/schedule/ScheduleDetailModal'
 import PlaceResultModal from '../components/place/PlaceResultModal'
+import styles from './SchedulePage.module.css'
 
 const initialScheduleForm = {
   type: '합주',
@@ -270,17 +271,17 @@ function SchedulePage() {
   }
 
   return (
-    <div className="page schedule-page">
+    <div className={styles.page}>
       <button
         type="button"
-        className="content-add-button"
+        className={styles.contentAddButton}
         onClick={() => handleOpenScheduleModal()}
         aria-label="일정 추가"
       >
         +
       </button>
 
-      <section className="schedule-calendar-card">
+      <section className={styles.scheduleCalendarCard}>
         <FullCalendar
           plugins={[dayGridPlugin, interactionPlugin]}
           initialView="dayGridMonth"

@@ -1,0 +1,138 @@
+/* Local styles for SchedulePage.jsx */
+
+.page {
+  padding-bottom: 20px;
+}
+
+.placeAddButton,
+.contentAddButton {
+  position: fixed;
+  right: max(18px, calc((100vw - 430px) / 2 + 22px));
+  bottom: calc(112px + env(safe-area-inset-bottom));
+  z-index: 90;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  color: var(--color-white);
+  background: var(--color-primary);
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: 0 12px 28px var(--color-primary-alpha-32);
+}
+
+.contentAddButton {
+  opacity: 0.5;
+}
+
+.placeAddButton:active,
+.contentAddButton:active {
+  transform: scale(0.96);
+}
+
+.scheduleCalendarCard {
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  background: var(--color-white);
+  box-shadow: 0 8px 24px var(--color-dark-alpha-05);
+}
+
+.scheduleCalendarCard [class~="fc"] {
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-size: 12px;
+}
+
+.scheduleCalendarCard [class~="fc"] [class~="fc-toolbar"] {
+  margin-bottom: 14px;
+}
+
+.scheduleCalendarCard [class~="fc"] [class~="fc-toolbar-title"] {
+  color: var(--color-text-primary);
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.scheduleCalendarCard [class~="fc"] [class~="fc-button"] {
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-white);
+  color: var(--color-primary);
+  font-size: 12px;
+  font-weight: 900;
+  box-shadow: none;
+}
+
+.scheduleCalendarCard [class~="fc"] [class~="fc-button"]:focus {
+  box-shadow: none;
+}
+
+.scheduleCalendarCard [class~="fc"] [class~="fc-button"]:active {
+  transform: scale(0.96);
+}
+
+.scheduleCalendarCard [class~="fc-theme-standard"] td,
+.scheduleCalendarCard [class~="fc-theme-standard"] th,
+.scheduleCalendarCard [class~="fc-theme-standard"] [class~="fc-scrollgrid"] {
+  border-color: var(--color-divider);
+}
+
+.scheduleCalendarCard [class~="fc"] [class~="fc-col-header-cell"] {
+  height: 32px;
+  vertical-align: middle;
+}
+
+.scheduleCalendarCard [class~="fc"] [class~="fc-col-header-cell-cushion"] {
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.scheduleCalendarCard [class~="fc"] [class~="fc-daygrid-day"] {
+  min-height: 74px;
+}
+
+.scheduleCalendarCard [class~="fc"] [class~="fc-daygrid-day-number"] {
+  padding: 6px;
+  color: var(--color-text-primary);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.scheduleCalendarCard [class~="fc"] [class~="fc-day-today"] {
+  background: var(--color-primary-background);
+}
+
+.scheduleCalendarCard [class~="fc"] [class~="fc-day-today"] [class~="fc-daygrid-day-number"] {
+  min-width: 24px;
+  height: 24px;
+  margin: 4px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+
+.scheduleCalendarCard [class~="fc"] [class~="fc-daygrid-event"] {
+  margin: 2px 4px;
+  padding: 3px 5px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.scheduleCalendarCard [class~="fc"] [class~="fc-event-title"] {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.scheduleCalendarCard [class~="fc"] [class~="fc-daygrid-more-link"] {
+  color: var(--color-primary);
+  font-size: 10px;
+  font-weight: 900;
+}

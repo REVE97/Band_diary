@@ -1,0 +1,74 @@
+:root {
+  /* 기본 색상 */
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-red: #ff0000;
+  --color-transparent: transparent;
+
+  /* 텍스트 색상 */
+  --color-text-primary: #151515;
+  --color-text-secondary: #4f4d5d;
+  --color-text-muted: #777586;
+  --color-text-description: #7c7a88;
+  --color-text-subtle: #9a93bd;
+  --color-placeholder: #aaa4bd;
+
+  /* 브랜드 색상 */
+  --color-primary: #6b4eff;
+  --color-primary-gradient-start: #7857ff;
+  --color-primary-gradient-end: #5f3de8;
+  --color-primary-soft: #f1edff;
+  --color-primary-background: #f8f5ff;
+  --color-primary-surface: #f3f0ff;
+  --color-primary-border: #e4dcff;
+  --color-primary-border-soft: #e8e2ff;
+  --color-primary-icon-soft: #b7a6ff;
+
+  /* 상태 색상 */
+  --color-danger: #ff4d4f;
+  --color-danger-soft: #fff1f1;
+  --color-success: #2f9e44;
+  --color-warning: #ff9f1c;
+  --color-warning-background: #fff7dc;
+  --color-star-active: #ffb000;
+  --color-star-background: #f7f5ff;
+  --color-star-active-background: #fff5d9;
+
+  /* 배경 및 경계 색상 */
+  --color-body-background: #f3f1ff;
+  --color-app-background: #f7f6ff;
+  --color-surface-muted: #f0edf9;
+  --color-border: #eeeef6;
+  --color-divider: #eeeef4;
+  --color-important-border: #e5ddff;
+  --color-important-background: #fbf9ff;
+  --color-active-background: #faf9ff;
+
+  /* 미디어 및 미리보기 색상 */
+  --color-preview-green: #e8f3ec;
+  --color-preview-blue: #d8ddff;
+  --color-media-dark-start: #2b2b38;
+  --color-media-warm-end: #c59f6a;
+  --color-video-dark: #1d1d2d;
+  --color-video-purple: #8c7aff;
+
+  /* 투명 색상 */
+  --color-primary-glow: rgba(111, 76, 255, 0.15);
+  --color-primary-alpha-08: rgba(107, 78, 255, 0.08);
+  --color-primary-alpha-12: rgba(107, 78, 255, 0.12);
+  --color-primary-alpha-18: rgba(107, 78, 255, 0.18);
+  --color-primary-alpha-22: rgba(107, 78, 255, 0.22);
+  --color-primary-alpha-24: rgba(107, 78, 255, 0.24);
+  --color-primary-alpha-25: rgba(107, 78, 255, 0.25);
+  --color-primary-alpha-32: rgba(107, 78, 255, 0.32);
+  --color-dark-alpha-04: rgba(24, 20, 60, 0.04);
+  --color-dark-alpha-05: rgba(24, 20, 60, 0.05);
+  --color-black-alpha-18: rgba(0, 0, 0, 0.18);
+  --color-danger-alpha-22: rgba(255, 77, 79, 0.22);
+  --color-shell-alpha-15: rgba(38, 31, 92, 0.15);
+  --color-shell-alpha-24: rgba(38, 31, 92, 0.24);
+  --color-primary-dark-alpha-25: rgba(95, 61, 232, 0.25);
+  --color-white-alpha-92: rgba(255, 255, 255, 0.92);
+  --color-white-alpha-96: rgba(255, 255, 255, 0.96);
+  --color-modal-overlay: rgba(212, 204, 204, 0.45);
+}

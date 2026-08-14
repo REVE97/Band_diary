@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 
 import profile from '../../assets/images/default_profile.svg'
 import editIcon from '../../assets/images/edit.svg'
+import styles from './ProfileEditModal.module.css'
 
 function ProfileEditModal({
   profileForm,
@@ -35,16 +36,16 @@ function ProfileEditModal({
   }
 
   return (
-    <div className="place-modal-overlay">
-      <div className="place-modal-card profile-edit-modal-card">
+    <div className={styles.placeModalOverlay}>
+      <div className={styles.placeModalCard + " " + styles.profileEditModalCard}>
 
         {/* 프로필 수정 Modal 헤더 */}
-        <div className="place-modal-header profile-edit-modal-header">
+        <div className={styles.placeModalHeader + " " + styles.profileEditModalHeader}>
           <h2>프로필 수정</h2>
 
           <button
             type="button"
-            className="place-modal-close"
+            className={styles.placeModalClose}
             aria-label="프로필 수정 모달 닫기"
             onClick={onClose}
           >
@@ -53,10 +54,10 @@ function ProfileEditModal({
         </div>
 
         {/* 프로필 이미지 */}
-        <section className="profile-edit-image-section">
-          <div className="profile-edit-image-wrap">
+        <section className={styles.profileEditImageSection}>
+          <div className={styles.profileEditImageWrap}>
             <img
-              className="profile-edit-image"
+              className={styles.profileEditImage}
               src={profileImagePreview || profile}
               alt="프로필 이미지 미리보기"
             />
@@ -64,7 +65,7 @@ function ProfileEditModal({
             {/* 프로필 이미지 수정 */}
             <button
               type="button"
-              className="profile-edit-image-button"
+              className={styles.profileEditImageButton}
               aria-label="프로필 이미지 변경"
               onClick={handleImageButtonClick}
             >
@@ -79,13 +80,13 @@ function ProfileEditModal({
           <input
             ref={fileInputRef}
             id="profileImageFile"
-            className="custom-file-input"
+            className={styles.customFileInput}
             type="file"
             accept="image/*"
             onChange={handleFileChange}
           />
 
-          <p className="profile-edit-image-help">
+          <p className={styles.profileEditImageHelp}>
             {selectedFileName === '선택된 파일 없음'
               ? '프로필 이미지를 변경하려면 아이콘을 눌러주세요.'
               : selectedFileName}
@@ -93,10 +94,10 @@ function ProfileEditModal({
         </section>
 
         {/* 프로필 상세 항목 */}
-        <div className="profile-edit-form">
+        <div className={styles.profileEditForm}>
 
           {/* 이름 */}
-          <div className="profile-edit-field">
+          <div className={styles.profileEditField}>
             <label htmlFor="profileName">
               이름
             </label>
@@ -112,7 +113,7 @@ function ProfileEditModal({
           </div>
 
           {/* 밴드 */}
-          <div className="profile-edit-field">
+          <div className={styles.profileEditField}>
             <label htmlFor="profileBandName">
               밴드
             </label>
@@ -129,7 +130,7 @@ function ProfileEditModal({
           </div>
 
           {/* 메인 세션 */}
-          <div className="profile-edit-field">
+          <div className={styles.profileEditField}>
             <label htmlFor="profileMainSession">
               메인 세션
             </label>
@@ -152,7 +153,7 @@ function ProfileEditModal({
         </div>
 
         {errorMessage && (
-          <p className="login-error profile-edit-error">
+          <p className={styles.loginError + " " + styles.profileEditError}>
             {errorMessage}
           </p>
         )}
@@ -160,7 +161,7 @@ function ProfileEditModal({
         {/* 프로필 수정 저장 */}
         <button
           type="button"
-          className="primary-button profile-edit-submit-button"
+          className={styles.primaryButton + " " + styles.profileEditSubmitButton}
           onClick={onSubmit}
         >
           저장하기

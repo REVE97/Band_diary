@@ -1,3 +1,5 @@
+import styles from './PracticeFilterTabs.module.css'
+
 const practiceFilterOptions = [
   {
     label: '전체보기',
@@ -27,16 +29,16 @@ const practiceFilterOptions = [
 
 function PracticeFilterTabs({ activeFilter, onChange }) {
   return (
-    <section className="practice-filter-section">
-      <div className="practice-filter-row">
+    <section className={styles.section}>
+      <div className={styles.row}>
         {practiceFilterOptions.map((option) => (
           <button
             key={option.value}
             type="button"
             className={
               activeFilter === option.value
-                ? 'practice-filter-button active'
-                : 'practice-filter-button'
+                ? `${styles.button} ${styles.active}`
+                : styles.button
             }
             onClick={() => onChange(option.value)}
           >

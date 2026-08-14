@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import logo from '../assets/images/logo.svg'
 
 import supabase from '../api/supabase'
+import styles from './SignupPage.module.css'
 
 function SignupPage() {
   const navigate = useNavigate()
@@ -80,12 +81,12 @@ function SignupPage() {
   }
 
   return (
-    <div className="page login-page">
-      <div className="login-card">
-        <img src={logo} alt="Bandiary" className="login-logo" />
+    <div className={`${styles.page} ${styles.loginPage}`}>
+      <div className={styles.loginCard}>
+        <img src={logo} alt="Bandiary" className={styles.loginLogo} />
         <p>회원 정보를 입력해주세요</p>
 
-        <div className="login-form">
+        <div className={styles.loginForm}>
           <input
             type="text"
             name="userId"
@@ -111,12 +112,12 @@ function SignupPage() {
           />
         </div>
 
-        {errorMessage && <p className="login-error">{errorMessage}</p>}
-        {successMessage && <p className="signup-success">{successMessage}</p>}
+        {errorMessage && <p className={styles.loginError}>{errorMessage}</p>}
+        {successMessage && <p className={styles.signupSuccess}>{successMessage}</p>}
 
         <button
           type="button"
-          className="primary-button"
+          className={styles.primaryButton}
           onClick={handleSignup}
           disabled={isLoading}
         >
@@ -125,7 +126,7 @@ function SignupPage() {
 
         <button
           type="button"
-          className="secondary-button signup-link-button"
+          className={styles.secondaryButton + " " + styles.signupLinkButton}
           onClick={goLogin}
         >
           로그인으로 돌아가기
