@@ -1,88 +1,54 @@
 .wrap {
+  position: relative;
   width: 100%;
   height: 100%;
-  min-height: 230px;
-  display: flex;
-  flex-direction: column;
-  background: var(--color-surface);
-}
-
-.header {
-  padding: 12px 14px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  border-bottom: 1px solid var(--color-divider);
-  background: var(--color-surface);
-}
-
-.header div {
-  flex: 1;
-  min-width: 0;
-}
-
-.header strong {
-  display: block;
-  font-size: 14px;
-  font-weight: 900;
-}
-
-.header span {
-  display: block;
-  margin-top: 5px;
-  color: var(--color-text-muted);
-  font-size: 12px;
+  min-height: 420px;
+  overflow: hidden;
+  background: var(--color-surface-muted);
 }
 
 .map {
   width: 100%;
-  height: 180px;
+  height: 100%;
+  min-height: 420px;
 }
 
-.routeButton {
-  flex: 0 0 auto;
-  min-width: 62px;
-  height: 34px;
-  padding: 0 11px;
-  border-radius: 999px;
-  background: var(--color-primary);
-  color: var(--color-on-accent);
-  font-size: 12px;
-  font-weight: 900;
-  box-shadow: var(--shadow-button);
-}
-
-.routeButton:active {
-  transform: scale(0.96);
-}
-
-.empty {
-  width: 100%;
-  min-height: 230px;
-  display: flex;
-  flex-direction: column;
+.legend {
+  position: absolute;
+  left: 18px;
+  bottom: 42px;
+  z-index: 5;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 14px;
-  color: var(--color-text-muted);
-  font-size: 13px;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(8px);
+}
+
+.legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--color-text-secondary);
+  font-size: 10px;
   font-weight: 800;
 }
 
-.empty p {
-  margin: 0;
-  color: var(--color-text-muted);
-  font-size: 13px;
-  font-weight: 800;
-  line-height: 1.5;
-}
-
-.emptyIcon {
-  width: 76px;
-  height: 76px;
+.legend i {
+  width: 8px;
+  height: 8px;
   display: block;
-  object-fit: contain;
-  color: var(--color-text-subtle);
-  opacity: 0.85;
+  border-radius: 50%;
+}
+
+.studioColor {
+  background: var(--color-primary);
+}
+
+.restaurantColor {
+  background: var(--color-warning);
 }

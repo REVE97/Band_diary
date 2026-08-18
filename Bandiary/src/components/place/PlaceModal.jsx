@@ -81,6 +81,8 @@ function PlaceModal({
   }
 
   useEffect(() => {
+    // 장소 유형을 변경하면 단계별 입력 상태를 처음부터 다시 시작합니다.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCurrentStep(1)
     setStepErrorMessage('')
     setSearchKeyword('')
@@ -267,13 +269,29 @@ function PlaceModal({
           )}
 
           {currentStep === 3 && (
-            <input
-              type="text"
-              name="tags"
-              value={placeForm.tags}
-              placeholder="태그 예: 주차 가능, 넓은 공간"
-              onChange={handleChangeInput}
-            />
+            <>
+              <input
+                type="text"
+                name="tags"
+                value={placeForm.tags}
+                placeholder="태그 예: 주차 가능, 넓은 공간"
+                onChange={handleChangeInput}
+              />
+
+              <label className={styles.favoriteToggle}>
+                <input
+                  type="checkbox"
+                  name="favorite"
+                  checked={placeForm.favorite}
+                  onChange={handleChangeInput}
+                />
+
+                <span>
+                  <strong>자주 이용하는 장소</strong>
+                  <small>장소 페이지 상단에 먼저 표시합니다.</small>
+                </span>
+              </label>
+            </>
           )}
 
           {currentStep === 4 && (
@@ -291,6 +309,10 @@ function PlaceModal({
               </span>
 
               <span>태그: {placeForm.tags}</span>
+
+              {placeForm.favorite && (
+                <span>자주 이용하는 장소로 표시</span>
+              )}
             </div>
           )}
         </div>

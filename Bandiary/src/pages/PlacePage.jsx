@@ -1,8 +1,12 @@
-import { useMemo, useState, useEffect } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import KakaoMap from '../components/common/KakaoMap'
+import PlaceFilterTabs from '../components/place/PlaceFilterTabs'
 import PlaceModal from '../components/place/PlaceModal'
 import PlaceResultModal from '../components/place/PlaceResultModal'
+import restaurantPlaceIcon from '../assets/images/place-restaurant.svg'
+import searchIcon from '../assets/images/search.svg'
+import studioPlaceIcon from '../assets/images/place-studio.svg'
 import supabase from '../api/supabase'
 import styles from './PlacePage.module.css'
 
@@ -15,7 +19,10 @@ const initialForm = {
   latitude: '',
   longitude: '',
   tags: '',
+  favorite: false,
 }
+
+const getPlaceKey = (place) => `${place.type}-${place.id}`
 
 function PlacePage() {
   // 유저 데이터 호출
@@ -26,9 +33,9 @@ function PlacePage() {
   // 관리자 여부 확인
   const isAdmin = storageInfo?.userId === 'admin'
 
-  const [activeTab, setActiveTab] = useState('studio')
+  const [activeFilter, setActiveFilter] = useState('all')
+  const [searchKeyword, setSearchKeyword] = useState('')
   const [selectedPlace, setSelectedPlace] = useState(null)
-  const [currentPage, setCurrentPage] = useState(1)
 
   const [studioList, setStudioList] = useState([])
   const [restaurantList, setRestaurantList] = useState([])
@@ -59,7 +66,7 @@ function PlacePage() {
     if (error) {
       console.error(error)
     } else {
-      setStudioList(data)
+      setStudioList(data || [])
     }
   }
 
@@ -72,79 +79,105 @@ function PlacePage() {
     if (error) {
       console.error(error)
     } else {
-      setRestaurantList(data)
+      setRestaurantList(data || [])
     }
   }
 
   useEffect(() => {
+    // Supabase의 초기 장소 목록을 페이지 진입 시 한 번만 조회합니다.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     getStudio()
     getRestaurant()
   }, [])
 
-  // 페이지네이션 목록 갯수
-  const itemsPerPage = 2
+  // 서로 다른 테이블의 데이터를 지도와 목록에서 사용할 공통 형태로 합칩니다.
+  const allPlaces = useMemo(() => {
+    return [
+      ...studioList.map((place) => ({
+        ...place,
+        type: 'studio',
+      })),
+      ...restaurantList.map((place) => ({
+        ...place,
+        type: 'restaurant',
+      })),
+    ]
+  }, [restaurantList, studioList])
 
-  const currentList = useMemo(() => {
-    return activeTab === 'studio'
-      ? studioList
-      : restaurantList
-  }, [activeTab, studioList, restaurantList])
+  const placeCounts = useMemo(() => {
+    return {
+      all: allPlaces.length,
+      studio: studioList.length,
+      restaurant: restaurantList.length,
+    }
+  }, [allPlaces.length, restaurantList.length, studioList.length])
 
-  const totalPages = Math.ceil(
-    currentList.length / itemsPerPage
-  )
+  // 검색어와 장소 유형 필터를 카드 목록과 지도 마커에 함께 적용합니다.
+  const filteredPlaces = useMemo(() => {
+    const normalizedKeyword = searchKeyword.trim().toLocaleLowerCase()
 
-  const paginatedList = useMemo(() => {
-    const startIndex =
-      (currentPage - 1) * itemsPerPage
+    return allPlaces.filter((place) => {
+      const matchesType =
+        activeFilter === 'all' || place.type === activeFilter
 
-    const endIndex =
-      startIndex + itemsPerPage
+      const tagText = Array.isArray(place.tags)
+        ? place.tags.join(' ')
+        : place.tags || ''
 
-    return currentList.slice(
-      startIndex,
-      endIndex
-    )
-  }, [currentList, currentPage])
+      const searchableText = [
+        place.name,
+        place.address,
+        place.category,
+        tagText,
+      ]
+        .filter(Boolean)
+        .join(' ')
+        .toLocaleLowerCase()
 
-  const pageNumbers = useMemo(() => {
-    return Array.from(
-      { length: totalPages },
-      (_, index) => index + 1
-    )
-  }, [totalPages])
+      const matchesKeyword =
+        !normalizedKeyword || searchableText.includes(normalizedKeyword)
 
-  const handleTabClick = (tab) => {
-    setActiveTab(tab)
+      return matchesType && matchesKeyword
+    })
+  }, [activeFilter, allPlaces, searchKeyword])
+
+  const favoritePlaces = useMemo(() => {
+    return filteredPlaces.filter((place) => place.favorite === true)
+  }, [filteredPlaces])
+
+  const listTitle =
+    activeFilter === 'studio'
+      ? '합주실'
+      : activeFilter === 'restaurant'
+        ? '주변 맛집'
+        : '전체 장소'
+
+  const handleFilterChange = (filterValue) => {
+    setActiveFilter(filterValue)
     setSelectedPlace(null)
-    setCurrentPage(1)
   }
 
-  const handlePlaceClick = (place) => {
+  const handleSearchKeywordChange = (event) => {
+    setSearchKeyword(event.target.value)
+    setSelectedPlace(null)
+  }
+
+  const handlePlaceClick = useCallback((place) => {
     setSelectedPlace(place)
-  }
+  }, [])
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page)
-    setSelectedPlace(null)
-  }
+  const handleOpenKakaoRoute = (event, place) => {
+    event.stopPropagation()
 
-  const handlePrevPage = () => {
-    if (currentPage === 1) return
+    const routeUrl = `https://map.kakao.com/link/to/${encodeURIComponent(
+      place.name
+    )},${place.latitude},${place.longitude}`
 
-    setCurrentPage((prev) => prev - 1)
-    setSelectedPlace(null)
-  }
-
-  const handleNextPage = () => {
-    if (currentPage === totalPages) return
-
-    setCurrentPage((prev) => prev + 1)
-    setSelectedPlace(null)
+    window.location.href = routeUrl
   }
 
   const handleOpenModal = () => {
-    setFormType(activeTab)
+    setFormType(activeFilter === 'restaurant' ? 'restaurant' : 'studio')
     setPlaceForm(initialForm)
     setPlaceSearchResults([])
     setErrorMessage('')
@@ -175,11 +208,11 @@ function PlacePage() {
   }
 
   const handleInputChange = (event) => {
-    const { name, value } = event.target
+    const { checked, name, type, value } = event.target
 
     setPlaceForm((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: type === 'checkbox' ? checked : value,
     }))
 
     setErrorMessage('')
@@ -204,52 +237,28 @@ function PlacePage() {
         return
       }
 
-      const places =
-        new kakao.maps.services.Places()
+      const places = new kakao.maps.services.Places()
 
-      places.keywordSearch(
-        keyword,
-        (result, status) => {
-          if (
-            status ===
-            kakao.maps.services.Status.OK
-          ) {
-            resolve(result)
-            return
-          }
-
-          if (
-            status ===
-            kakao.maps.services.Status.ZERO_RESULT
-          ) {
-            reject(
-              new Error(
-                '검색 결과가 없습니다.'
-              )
-            )
-
-            return
-          }
-
-          reject(
-            new Error(
-              '장소 검색 중 오류가 발생했습니다.'
-            )
-          )
+      places.keywordSearch(keyword, (result, status) => {
+        if (status === kakao.maps.services.Status.OK) {
+          resolve(result)
+          return
         }
-      )
+
+        if (status === kakao.maps.services.Status.ZERO_RESULT) {
+          reject(new Error('검색 결과가 없습니다.'))
+          return
+        }
+
+        reject(new Error('장소 검색 중 오류가 발생했습니다.'))
+      })
     })
   }
 
   // 장소명 검색 버튼 클릭
-  const handleSearchPlaceKeyword = async (
-    keyword
-  ) => {
+  const handleSearchPlaceKeyword = async (keyword) => {
     if (!keyword.trim()) {
-      setErrorMessage(
-        '검색할 장소명을 입력해주세요.'
-      )
-
+      setErrorMessage('검색할 장소명을 입력해주세요.')
       return
     }
 
@@ -257,14 +266,9 @@ function PlacePage() {
     setErrorMessage('')
 
     try {
-      const results =
-        await searchPlacesByKeyword(
-          keyword.trim()
-        )
+      const results = await searchPlacesByKeyword(keyword.trim())
 
-      setPlaceSearchResults(
-        results.slice(0, 5)
-      )
+      setPlaceSearchResults(results.slice(0, 5))
     } catch (error) {
       console.error(error)
 
@@ -276,13 +280,9 @@ function PlacePage() {
   }
 
   // 카카오 검색 결과 선택
-  const handleSelectSearchPlace = (
-    searchedPlace
-  ) => {
+  const handleSelectSearchPlace = (searchedPlace) => {
     const address =
-      searchedPlace.road_address_name ||
-      searchedPlace.address_name ||
-      ''
+      searchedPlace.road_address_name || searchedPlace.address_name || ''
 
     setPlaceForm((prev) => ({
       ...prev,
@@ -297,10 +297,7 @@ function PlacePage() {
   }
 
   // 삭제 확인 모달 열기
-  const handleOpenDeleteModal = (
-    event,
-    place
-  ) => {
+  const handleOpenDeleteModal = (event, place) => {
     event.stopPropagation()
 
     // 관리자만 삭제 가능
@@ -338,10 +335,7 @@ function PlacePage() {
       return '장소 검색 결과를 선택해야 지도 위치가 등록됩니다.'
     }
 
-    if (
-      formType === 'restaurant' &&
-      !category.trim()
-    ) {
+    if (formType === 'restaurant' && !category.trim()) {
       return '음식점 카테고리를 입력해주세요.'
     }
 
@@ -369,8 +363,7 @@ function PlacePage() {
 
   // 합주실, 주변 맛집 데이터 입력 API 호출
   const handleAddPlace = async () => {
-    const validationMessage =
-      validateForm()
+    const validationMessage = validateForm()
 
     if (validationMessage) {
       setErrorMessage(validationMessage)
@@ -387,13 +380,10 @@ function PlacePage() {
       name: placeForm.name.trim(),
       address: placeForm.address.trim(),
       price: Number(placeForm.price),
-      latitude: Number(
-        placeForm.latitude
-      ),
-      longitude: Number(
-        placeForm.longitude
-      ),
+      latitude: Number(placeForm.latitude),
+      longitude: Number(placeForm.longitude),
       tags,
+      favorite: Boolean(placeForm.favorite),
     }
 
     const payload =
@@ -404,18 +394,12 @@ function PlacePage() {
           }
         : {
             ...commonPayload,
-            category:
-              placeForm.category.trim(),
+            category: placeForm.category.trim(),
           }
 
-    const tableName =
-      formType === 'studio'
-        ? 'studio'
-        : 'restaurant'
+    const tableName = formType === 'studio' ? 'studio' : 'restaurant'
 
-    const { error } = await supabase
-      .from(tableName)
-      .insert([payload])
+    const { error } = await supabase.from(tableName).insert([payload])
 
     if (error) {
       console.error(error)
@@ -433,13 +417,12 @@ function PlacePage() {
 
     if (formType === 'studio') {
       await getStudio()
-      setActiveTab('studio')
     } else {
       await getRestaurant()
-      setActiveTab('restaurant')
     }
 
-    setCurrentPage(1)
+    setActiveFilter(formType)
+    setSearchKeyword('')
     setSelectedPlace(null)
     handleCloseModal()
 
@@ -457,14 +440,10 @@ function PlacePage() {
   // 합주실, 주변 맛집 데이터 삭제 API 호출
   const handleDeletePlace = async () => {
     // 관리자만 삭제 가능
-    if (!isAdmin) return
-
-    if (!deleteTarget) return
+    if (!isAdmin || !deleteTarget) return
 
     const tableName =
-      deleteTarget.type === 'studio'
-        ? 'studio'
-        : 'restaurant'
+      deleteTarget.type === 'studio' ? 'studio' : 'restaurant'
 
     const { error } = await supabase
       .from(tableName)
@@ -486,74 +465,181 @@ function PlacePage() {
       return
     }
 
-    if (
-      deleteTarget.type === 'studio'
-    ) {
+    if (deleteTarget.type === 'studio') {
       await getStudio()
     } else {
       await getRestaurant()
     }
 
     if (
-      selectedPlace?.id ===
-        deleteTarget.id &&
-      selectedPlace?.type ===
-        deleteTarget.type
+      selectedPlace &&
+      getPlaceKey(selectedPlace) === getPlaceKey(deleteTarget)
     ) {
       setSelectedPlace(null)
-    }
-
-    const nextTotalItems =
-      currentList.length - 1
-
-    const nextTotalPages =
-      Math.ceil(
-        nextTotalItems / itemsPerPage
-      )
-
-    if (
-      currentPage > nextTotalPages &&
-      currentPage > 1
-    ) {
-      setCurrentPage(
-        (prev) => prev - 1
-      )
     }
 
     setResultModal({
       isOpen: true,
       type: 'success',
       title: '삭제 완료',
-      message:
-        `${deleteTarget.name} 데이터가 삭제되었습니다.`,
+      message: `${deleteTarget.name} 데이터가 삭제되었습니다.`,
     })
 
     setDeleteTarget(null)
   }
 
-  return (
-    <div className={styles.page}>
-      <div className={styles.tabRow}>
+  const getPlacePriceText = (place) => {
+    const price = Number(place.price || 0).toLocaleString()
+
+    if (place.type === 'studio') {
+      return `₩ ${price} / ${place.timeUnit || '1시간'}`
+    }
+
+    return `${place.category || '맛집'} · 평균 ₩ ${price}`
+  }
+
+  const renderPlaceCard = (place, isFavoriteSection = false) => {
+    const isSelected =
+      selectedPlace && getPlaceKey(selectedPlace) === getPlaceKey(place)
+
+    return (
+      <article
+        key={`${isFavoriteSection ? 'favorite' : 'place'}-${getPlaceKey(
+          place
+        )}`}
+        className={`${styles.placeCard} ${
+          isSelected ? styles.active : ''
+        } ${isFavoriteSection ? styles.favoriteCard : ''}`}
+      >
         <button
           type="button"
-          className={activeTab === 'studio' ? styles.active : ""}
-          onClick={() =>
-            handleTabClick('studio')
-          }
+          className={styles.cardSelectButton}
+          onClick={() => handlePlaceClick(place)}
+          aria-label={`${place.name} 지도에서 보기`}
         >
-          합주실
+          <span
+            className={`${styles.placeIcon} ${
+              place.type === 'restaurant' ? styles.restaurantIcon : ''
+            }`}
+            aria-hidden="true"
+          >
+            <img
+              src={
+                place.type === 'restaurant'
+                  ? restaurantPlaceIcon
+                  : studioPlaceIcon
+              }
+              alt=""
+              aria-hidden="true"
+            />
+          </span>
+
+          <span className={styles.placeInfo}>
+            <strong>{place.name}</strong>
+            <span className={styles.price}>{getPlacePriceText(place)}</span>
+            <span className={styles.address}>{place.address}</span>
+
+            {Array.isArray(place.tags) && place.tags.length > 0 && (
+              <span className={styles.tagRow}>
+                {place.tags.map((tag) => (
+                  <span key={tag}>{tag}</span>
+                ))}
+              </span>
+            )}
+          </span>
         </button>
 
-        <button
-          type="button"
-          className={activeTab === 'restaurant' ? styles.active : ""}
-          onClick={() =>
-            handleTabClick('restaurant')
-          }
-        >
-          주변 맛집
-        </button>
-      </div>
+        <div className={styles.cardActions}>
+          <button
+            type="button"
+            className={styles.routeButton}
+            onClick={(event) => handleOpenKakaoRoute(event, place)}
+            aria-label={`${place.name} 카카오맵 길찾기`}
+          >
+            길찾기
+          </button>
+
+          {isAdmin && (
+            <button
+              type="button"
+              className={styles.deleteButton}
+              onClick={(event) => handleOpenDeleteModal(event, place)}
+              aria-label={`${place.name} 삭제`}
+            >
+              삭제
+            </button>
+          )}
+        </div>
+      </article>
+    )
+  }
+
+  return (
+    <div className={styles.page}>
+      <section className={styles.mapExplorer} aria-label="장소 지도 탐색">
+        <div className={styles.mapControls}>
+          <label className={styles.searchField}>
+            <img src={searchIcon} alt="" aria-hidden="true" />
+            <input
+              type="search"
+              value={searchKeyword}
+              placeholder="합주실 또는 주변 맛집 검색"
+              aria-label="장소명, 주소 또는 태그 검색"
+              onChange={handleSearchKeywordChange}
+            />
+          </label>
+
+          <PlaceFilterTabs
+            activeFilter={activeFilter}
+            counts={placeCounts}
+            onChange={handleFilterChange}
+          />
+        </div>
+
+        <div className={styles.mapBox}>
+          <KakaoMap
+            places={filteredPlaces}
+            selectedPlace={selectedPlace}
+            onSelectPlace={handlePlaceClick}
+          />
+        </div>
+      </section>
+
+      <section className={styles.placeSheet} aria-label="장소 목록">
+        <div className={styles.sheetHandle} aria-hidden="true" />
+
+        <section className={styles.placeSection}>
+          <div className={styles.sectionHeader}>
+            <h2>자주 이용하는 장소</h2>
+          </div>
+
+          {favoritePlaces.length > 0 ? (
+            <div className={styles.favoriteList}>
+              {favoritePlaces.map((place) => renderPlaceCard(place, true))}
+            </div>
+          ) : (
+            <div className={styles.emptyState}>
+              현재 조건에 맞는 자주 이용하는 장소가 없습니다.
+            </div>
+          )}
+        </section>
+
+        <section className={styles.placeSection}>
+          <div className={styles.sectionHeader}>
+            <h2>{listTitle}</h2>
+          </div>
+
+          {filteredPlaces.length > 0 ? (
+            <div className={styles.placeList}>
+              {filteredPlaces.map((place) => renderPlaceCard(place))}
+            </div>
+          ) : (
+            <div className={styles.emptyState}>
+              검색 조건에 맞는 장소가 없습니다.
+            </div>
+          )}
+        </section>
+      </section>
 
       <button
         type="button"
@@ -564,159 +650,20 @@ function PlacePage() {
         +
       </button>
 
-      <div className={styles.studioList}>
-        {paginatedList.map(
-          (place) => (
-            <div
-              key={`${place.type}-${place.id}`}
-              role="button"
-              tabIndex={0}
-              className={selectedPlace?.id === place.id && selectedPlace?.type === place.type ? styles.studioCard + " " + styles.active : styles.studioCard}
-              onClick={() =>
-                handlePlaceClick(place)
-              }
-              onKeyDown={(event) => {
-                if (
-                  event.key === 'Enter'
-                ) {
-                  handlePlaceClick(
-                    place
-                  )
-                }
-              }}
-            >
-              {/* 관리자 삭제 버튼 */}
-              {isAdmin && (
-                <button
-                  type="button"
-                  className={styles.studioDeleteButton}
-                  onClick={(event) =>
-                    handleOpenDeleteModal(
-                      event,
-                      place
-                    )
-                  }
-                  aria-label={`${place.name} 삭제`}
-                >
-                  -
-                </button>
-              )}
-
-              <div className={styles.studioInfo}>
-                <strong>
-                  {place.name}
-                </strong>
-
-                {activeTab ===
-                'studio' ? (
-                  <span>
-                    ₩{' '}
-                    {place.price.toLocaleString()}{' '}
-                    / {place.timeUnit}
-                  </span>
-                ) : (
-                  <span>
-                    {place.category} ·
-                    평균 ₩{' '}
-                    {place.price.toLocaleString()}
-                  </span>
-                )}
-
-                <div className={styles.tagRow}>
-                  {place.tags?.map(
-                    (tag) => (
-                      <span key={tag}>
-                        {tag}
-                      </span>
-                    )
-                  )}
-                </div>
-              </div>
-            </div>
-          )
-        )}
-      </div>
-
-      {/* 페이지네이션 */}
-      {totalPages > 1 && (
-        <div className={styles.pagination}>
-          <button
-            type="button"
-            disabled={
-              currentPage === 1
-            }
-            onClick={handlePrevPage}
-          >
-            이전
-          </button>
-
-          {pageNumbers.map(
-            (page) => (
-              <button
-                key={page}
-                type="button"
-                className={currentPage === page ? styles.active : ""}
-                onClick={() =>
-                  handlePageChange(page)
-                }
-              >
-                {page}
-              </button>
-            )
-          )}
-
-          <button
-            type="button"
-            disabled={
-              currentPage ===
-              totalPages
-            }
-            onClick={handleNextPage}
-          >
-            다음
-          </button>
-        </div>
-      )}
-
-      {/* 카카오맵 */}
-      <div className={styles.mapBox}>
-        <KakaoMap
-          place={selectedPlace}
-        />
-      </div>
-
       {/* 합주실, 주변 맛집 추가 Modal */}
       {isModalOpen && (
         <PlaceModal
           formType={formType}
           placeForm={placeForm}
-          placeSearchResults={
-            placeSearchResults
-          }
-          isSearchingPlace={
-            isSearchingPlace
-          }
-          errorMessage={
-            errorMessage
-          }
-          onClose={
-            handleCloseModal
-          }
-          onSubmit={
-            handleAddPlace
-          }
-          onFormTypeChange={
-            handleFormTypeChange
-          }
-          onInputChange={
-            handleInputChange
-          }
-          onSearchPlace={
-            handleSearchPlaceKeyword
-          }
-          onSelectSearchPlace={
-            handleSelectSearchPlace
-          }
+          placeSearchResults={placeSearchResults}
+          isSearchingPlace={isSearchingPlace}
+          errorMessage={errorMessage}
+          onClose={handleCloseModal}
+          onSubmit={handleAddPlace}
+          onFormTypeChange={handleFormTypeChange}
+          onInputChange={handleInputChange}
+          onSearchPlace={handleSearchPlaceKeyword}
+          onSelectSearchPlace={handleSelectSearchPlace}
         />
       )}
 
@@ -725,32 +672,23 @@ function PlacePage() {
         <PlaceResultModal
           type={resultModal.type}
           title={resultModal.title}
-          message={
-            resultModal.message
-          }
-          onClose={
-            handleCloseResultModal
-          }
+          message={resultModal.message}
+          onClose={handleCloseResultModal}
         />
       )}
 
       {/* 삭제 확인 Modal */}
-      {isAdmin &&
-        deleteTarget && (
-          <PlaceResultModal
-            type="confirm"
-            title="삭제 확인"
-            message={`${deleteTarget.name} 데이터를 삭제하시겠습니까?`}
-            confirmText="삭제"
-            cancelText="취소"
-            onClose={
-              handleCloseDeleteModal
-            }
-            onConfirm={
-              handleDeletePlace
-            }
-          />
-        )}
+      {isAdmin && deleteTarget && (
+        <PlaceResultModal
+          type="confirm"
+          title="삭제 확인"
+          message={`${deleteTarget.name} 데이터를 삭제하시겠습니까?`}
+          confirmText="삭제"
+          cancelText="취소"
+          onClose={handleCloseDeleteModal}
+          onConfirm={handleDeletePlace}
+        />
+      )}
     </div>
   )
 }

@@ -1,78 +1,143 @@
 import { useEffect, useRef } from 'react'
-import mapIcon from '../../assets/images/map_purple.svg'
+
+import restaurantMarkerIcon from '../../assets/images/place-restaurant-marker.svg'
+import studioMarkerIcon from '../../assets/images/place-studio-marker.svg'
 import styles from './KakaoMap.module.css'
 
-function KakaoMap({ place }) {
-  const mapRef = useRef(null)
+const seoulCenter = {
+  latitude: 37.566826,
+  longitude: 126.9786567,
+}
 
+const getPlaceKey = (place) => `${place.type}-${place.id}`
+
+function KakaoMap({
+  places,
+  selectedPlace,
+  onSelectPlace,
+}) {
+  const mapContainerRef = useRef(null)
+  const mapInstanceRef = useRef(null)
+  const markersRef = useRef([])
+
+  // 페이지 진입 시 서울권 전체가 보이는 지도를 한 번만 생성합니다.
   useEffect(() => {
-    if (!place) return
-
     const kakao = window.kakao
 
     if (!kakao || !kakao.maps) {
       console.error('카카오맵 SDK가 로드되지 않았습니다.')
-      return
+      return undefined
     }
-
-    const container = mapRef.current
 
     const centerPosition = new kakao.maps.LatLng(
-      place.latitude,
-      place.longitude
+      seoulCenter.latitude,
+      seoulCenter.longitude
     )
 
-    const options = {
-      center: centerPosition,
-      level: 4,
+    mapInstanceRef.current = new kakao.maps.Map(
+      mapContainerRef.current,
+      {
+        center: centerPosition,
+        level: 9,
+      }
+    )
+
+    return () => {
+      markersRef.current.forEach(({ marker }) => marker.setMap(null))
+      markersRef.current = []
+      mapInstanceRef.current = null
+    }
+  }, [])
+
+  // 현재 검색 및 유형 필터에 포함된 모든 장소를 마커로 출력합니다.
+  useEffect(() => {
+    const kakao = window.kakao
+    const map = mapInstanceRef.current
+
+    if (!kakao || !kakao.maps || !map) return
+
+    markersRef.current.forEach(({ marker }) => marker.setMap(null))
+
+    const markerSize = new kakao.maps.Size(40, 50)
+    const markerOptions = {
+      offset: new kakao.maps.Point(20, 50),
     }
 
-    const map = new kakao.maps.Map(container, options)
+    markersRef.current = places
+      .filter((place) => {
+        return (
+          Number.isFinite(Number(place.latitude)) &&
+          Number.isFinite(Number(place.longitude))
+        )
+      })
+      .map((place) => {
+        const position = new kakao.maps.LatLng(
+          Number(place.latitude),
+          Number(place.longitude)
+        )
 
-    const marker = new kakao.maps.Marker({
-      position: centerPosition,
-    })
+        const markerImage = new kakao.maps.MarkerImage(
+          place.type === 'restaurant'
+            ? restaurantMarkerIcon
+            : studioMarkerIcon,
+          markerSize,
+          markerOptions
+        )
 
-    marker.setMap(map)
-  }, [place])
+        const marker = new kakao.maps.Marker({
+          map,
+          position,
+          image: markerImage,
+          title: place.name,
+        })
 
-  const handleOpenKakaoRoute = () => {
-    if (!place) return
+        kakao.maps.event.addListener(marker, 'click', () => {
+          onSelectPlace(place)
+        })
 
-    const routeUrl = `https://map.kakao.com/link/to/${encodeURIComponent(
-      place.name
-    )},${place.latitude},${place.longitude}`
+        return {
+          key: getPlaceKey(place),
+          marker,
+        }
+      })
+  }, [onSelectPlace, places])
 
-    window.location.href = routeUrl
-  }
+  // 카드 또는 마커를 선택하면 해당 좌표를 확대해 보여줍니다.
+  useEffect(() => {
+    const kakao = window.kakao
+    const map = mapInstanceRef.current
 
-  if (!place) {
-    return (
-      <div className={styles.empty}>
-        <img src={mapIcon} alt="" className={styles.emptyIcon} />
-        <p>장소를 선택하면 지도가 표시됩니다.</p>
-      </div>
+    if (!selectedPlace || !kakao || !kakao.maps || !map) return
+
+    const selectedPosition = new kakao.maps.LatLng(
+      Number(selectedPlace.latitude),
+      Number(selectedPlace.longitude)
     )
-  }
+
+    map.setLevel(4)
+    map.panTo(selectedPosition)
+
+    const selectedKey = getPlaceKey(selectedPlace)
+
+    markersRef.current.forEach(({ key, marker }) => {
+      marker.setZIndex(key === selectedKey ? 10 : 1)
+    })
+  }, [selectedPlace])
 
   return (
     <div className={styles.wrap}>
-      <div className={styles.header}>
-        <div>
-          <strong>{place.name}</strong>
-          <span>{place.address}</span>
-        </div>
+      <div ref={mapContainerRef} className={styles.map} />
 
-        <button
-          type="button"
-          className={styles.routeButton}
-          onClick={handleOpenKakaoRoute}
-        >
-          길찾기
-        </button>
+      <div className={styles.legend} aria-label="지도 마커 안내">
+        <span>
+          <i className={styles.studioColor} />
+          합주실
+        </span>
+        <span>
+          <i className={styles.restaurantColor} />
+          주변 맛집
+        </span>
       </div>
-
-      <div ref={mapRef} className={styles.map} />
     </div>
   )
 }
