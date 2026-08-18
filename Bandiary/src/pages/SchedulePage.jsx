@@ -8,6 +8,7 @@ import supabase from '../api/supabase'
 import ScheduleAddModal from '../components/schedule/ScheduleAddModal'
 import ScheduleDetailModal from '../components/schedule/ScheduleDetailModal'
 import PlaceResultModal from '../components/place/PlaceResultModal'
+import useToast from '../components/common/useToast'
 import styles from './SchedulePage.module.css'
 
 const initialScheduleForm = {
@@ -92,6 +93,7 @@ const getDDayLabel = (dateValue) => {
 }
 
 function SchedulePage() {
+  const { showToast } = useToast()
   const [scheduleList, setScheduleList] = useState([])
   const [selectedSchedule, setSelectedSchedule] = useState(null)
 
@@ -258,12 +260,7 @@ function SchedulePage() {
       await getScheduleList()
       handleCloseScheduleModal()
 
-      setResultModal({
-        isOpen: true,
-        type: 'success',
-        title: '등록 완료',
-        message: '일정이 성공적으로 등록되었습니다.',
-      })
+      showToast('일정이 등록되었습니다.')
     } catch (error) {
       console.error('일정 등록 실패:', error)
 
@@ -312,12 +309,7 @@ function SchedulePage() {
         setSelectedSchedule(null)
       }
 
-      setResultModal({
-        isOpen: true,
-        type: 'success',
-        title: '삭제 완료',
-        message: `${deleteScheduleTarget.title} 일정이 삭제되었습니다.`,
-      })
+      showToast('일정이 삭제되었습니다.')
 
       setDeleteScheduleTarget(null)
     } catch (error) {
@@ -394,6 +386,7 @@ function SchedulePage() {
       <button
         type="button"
         className={styles.contentAddButton}
+        data-floating-add-button
         onClick={() => handleOpenScheduleModal()}
         aria-label="일정 추가"
       >

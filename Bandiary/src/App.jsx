@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import MobileLayout from './components/layout/MobileLayout'
+import ToastProvider from './components/common/ToastProvider'
 
 import HomePage from './pages/HomePage'
 import PlacePage from './pages/PlacePage'
@@ -16,8 +17,9 @@ import './App.css'
 function App() {
   return (
     <BrowserRouter>
-      <MobileLayout>
-        <Routes>
+      <ToastProvider>
+        <MobileLayout>
+          <Routes>
           <Route path='/' element={<Navigate to="/login" replace />}></Route>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
@@ -46,8 +48,9 @@ function App() {
               <NoticePage />
             </ProtectedRoute>
             } />
-        </Routes>
-      </MobileLayout>
+          </Routes>
+        </MobileLayout>
+      </ToastProvider>
     </BrowserRouter>
   )
 }

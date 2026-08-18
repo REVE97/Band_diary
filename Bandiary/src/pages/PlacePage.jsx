@@ -4,6 +4,7 @@ import KakaoMap from '../components/common/KakaoMap'
 import PlaceFilterTabs from '../components/place/PlaceFilterTabs'
 import PlaceModal from '../components/place/PlaceModal'
 import PlaceResultModal from '../components/place/PlaceResultModal'
+import useToast from '../components/common/useToast'
 import restaurantPlaceIcon from '../assets/images/place-restaurant.svg'
 import searchIcon from '../assets/images/search.svg'
 import studioPlaceIcon from '../assets/images/place-studio.svg'
@@ -25,6 +26,7 @@ const initialForm = {
 const getPlaceKey = (place) => `${place.type}-${place.id}`
 
 function PlacePage() {
+  const { showToast } = useToast()
   // 유저 데이터 호출
   const storageInfo = JSON.parse(
     sessionStorage.getItem('bandiaryLoginUser')
@@ -461,15 +463,11 @@ function PlacePage() {
     setSelectedPlace(null)
     handleCloseModal()
 
-    setResultModal({
-      isOpen: true,
-      type: 'success',
-      title: '등록 완료',
-      message:
-        formType === 'studio'
-          ? '합주실 데이터가 성공적으로 등록되었습니다.'
-          : '주변 맛집 데이터가 성공적으로 등록되었습니다.',
-    })
+    showToast(
+      formType === 'studio'
+        ? '합주실이 등록되었습니다.'
+        : '주변 맛집이 등록되었습니다.',
+    )
   }
 
   // 합주실, 주변 맛집 데이터 삭제 API 호출
@@ -513,12 +511,7 @@ function PlacePage() {
       setSelectedPlace(null)
     }
 
-    setResultModal({
-      isOpen: true,
-      type: 'success',
-      title: '삭제 완료',
-      message: `${deleteTarget.name} 데이터가 삭제되었습니다.`,
-    })
+    showToast('장소가 삭제되었습니다.')
 
     setDeleteTarget(null)
   }
@@ -750,6 +743,7 @@ function PlacePage() {
       <button
         type="button"
         className={styles.placeAddButton}
+        data-floating-add-button
         onClick={handleOpenModal}
         aria-label="장소 추가"
       >

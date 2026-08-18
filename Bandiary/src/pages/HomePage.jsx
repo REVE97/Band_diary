@@ -9,6 +9,7 @@ import ProfileEditModal from '../components/home/ProfileEditModal'
 import ContentAddModal from '../components/home/ContentAddModal'
 import ContentDetailModal from '../components/home/ContentDetailModal'
 import PlaceResultModal from '../components/place/PlaceResultModal'
+import useToast from '../components/common/useToast'
 
 import profile from '../assets/images/default_profile.svg'
 import editIcon from '../assets/images/edit.svg'
@@ -27,6 +28,7 @@ const initialContentForm = {
 }
 
 function HomePage() {
+  const { showToast } = useToast()
   const [selectedContent, setSelectedContent] = useState(null)
 
   // 프로필 데이터 상태값
@@ -458,12 +460,7 @@ function HomePage() {
       await getUsers()
       handleCloseProfileModal()
 
-      setResultModal({
-        isOpen: true,
-        type: 'success',
-        title: '수정 완료',
-        message: '프로필 정보가 성공적으로 수정되었습니다.',
-      })
+      showToast('프로필이 수정되었습니다.')
     } catch (error) {
       console.error('프로필 수정 실패:', {
         message: error.message,
@@ -751,19 +748,7 @@ function HomePage() {
       await getContent()
       handleCloseContentModal()
 
-      setResultModal({
-        isOpen: true,
-        type: 'success',
-        title: '등록 완료',
-        message:
-          contentType === '사진'
-            ? '사진 콘텐츠가 성공적으로 등록되었습니다.'
-            : contentType === '비디오'
-              ? '비디오 콘텐츠가 성공적으로 등록되었습니다.'
-              : isVideoFile(contentFile)
-                ? '영상에서 오디오를 추출해 오디오 콘텐츠로 등록했습니다.'
-                : '오디오 콘텐츠가 성공적으로 등록되었습니다.',
-      })
+      showToast(`${contentType} 콘텐츠가 등록되었습니다.`)
     } catch (error) {
       console.error('콘텐츠 업로드 실패:', {
         message: error.message,
@@ -880,12 +865,7 @@ function HomePage() {
         setDetailContent(null)
       }
 
-      setResultModal({
-        isOpen: true,
-        type: 'success',
-        title: '삭제 완료',
-        message: `${deleteContentTarget.title} 콘텐츠가 삭제되었습니다.`,
-      })
+      showToast('콘텐츠가 삭제되었습니다.')
 
       setDeleteContentTarget(null)
     } catch (error) {
@@ -976,6 +956,7 @@ function HomePage() {
       <button
         type="button"
         className={styles.contentAddButton}
+        data-floating-add-button
         onClick={handleOpenContentModal}
         aria-label="사진, 비디오 또는 오디오 추가"
       >

@@ -6,6 +6,7 @@ import PdfPreview from '../components/common/PdfPreview'
 import MusicsheetAddModal from '../components/musicsheet/MusicsheetAddModal'
 import MusicsheetFilterTabs from '../components/musicsheet/MusicsheetFilterTabs'
 import PlaceResultModal from '../components/place/PlaceResultModal'
+import useToast from '../components/common/useToast'
 import downloadIcon from '../assets/images/download.svg'
 import bassPdfIcon from '../assets/images/PdfIcon-bass.svg'
 import drumPdfIcon from '../assets/images/PdfIcon-drum.svg'
@@ -43,6 +44,7 @@ const getSessionPdfIcon = (session) => {
 }
 
 function MusicsheetPage() {
+  const { showToast } = useToast()
   const previewSectionRef = useRef(null)
   const [musicsheetList, setMusicsheetList] = useState([])
   const [selectedPdf, setSelectedPdf] = useState(null)
@@ -367,12 +369,7 @@ function MusicsheetPage() {
       await getMusicsheetList()
       handleCloseMusicsheetModal()
 
-      setResultModal({
-        isOpen: true,
-        type: 'success',
-        title: '등록 완료',
-        message: 'PDF 악보가 성공적으로 등록되었습니다.',
-      })
+      showToast('악보가 등록되었습니다.')
     } catch (error) {
       console.error('악보 등록 실패:', {
         message: error.message,
@@ -442,12 +439,7 @@ function MusicsheetPage() {
         setSelectedPdf(null)
       }
 
-      setResultModal({
-        isOpen: true,
-        type: 'success',
-        title: '삭제 완료',
-        message: `${deleteMusicsheetTarget.title} 악보가 삭제되었습니다.`,
-      })
+      showToast('악보가 삭제되었습니다.')
 
       setDeleteMusicsheetTarget(null)
     } catch (error) {
@@ -489,6 +481,7 @@ function MusicsheetPage() {
       <button
         type="button"
         className={styles.contentAddButton}
+        data-floating-add-button
         onClick={handleOpenMusicsheetModal}
         aria-label="PDF 악보 추가"
       >

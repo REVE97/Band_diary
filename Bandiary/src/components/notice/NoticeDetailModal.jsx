@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import ModalPortal from '../common/ModalPortal'
+import useToast from '../common/useToast'
 import PlaceResultModal from '../place/PlaceResultModal'
 
 import supabase from '../../api/supabase'
@@ -13,6 +14,7 @@ function NoticeDetailModal({
   onDeleted,
   onEdit
 }) {
+  const { showToast } = useToast()
   const [deleting, setDeleting] =
     useState(false)
 
@@ -84,12 +86,9 @@ function NoticeDetailModal({
         throw error
       }
 
-      setResultModal({
-        type: 'success',
-        title: '삭제 완료',
-        message:
-          '게시글이 삭제되었습니다.'
-      })
+      showToast(`${notice.type}가 삭제되었습니다.`)
+      onClose()
+      await onDeleted?.()
     } catch (error) {
       console.error(
         '공지 삭제 실패:',
@@ -108,16 +107,8 @@ function NoticeDetailModal({
   }
 
   // 결과 Modal 닫기
-  const closeResultModal = async () => {
-    const isSuccess =
-      resultModal?.type === 'success'
-
+  const closeResultModal = () => {
     setResultModal(null)
-
-    if (isSuccess) {
-      await onDeleted?.()
-      onClose()
-    }
   }
 
   return (

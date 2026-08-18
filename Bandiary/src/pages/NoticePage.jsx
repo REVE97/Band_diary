@@ -460,6 +460,7 @@ function NoticePage() {
       <button
         type="button"
         className={styles.noticeAddButton}
+        data-floating-add-button
         aria-label="공지 또는 메모 등록"
         onClick={() =>
           setIsAddModalOpen(true)

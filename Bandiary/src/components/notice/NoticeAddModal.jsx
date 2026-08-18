@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 
 import ModalPortal from '../common/ModalPortal'
+import useToast from '../common/useToast'
 import PlaceResultModal from '../place/PlaceResultModal'
 
 import cameraIcon from '../../assets/images/notice-camera-black.svg'
@@ -17,6 +18,7 @@ function NoticeAddModal({
   onUpdated,
   onCancelEdit
 }) {
+  const { showToast } = useToast()
   const fileInputRef = useRef(null)
 
   // 수정 모드 여부
@@ -309,13 +311,9 @@ function NoticeAddModal({
           throw error
         }
 
-        // 수정 성공
-        setResultModal({
-          type: 'success',
-          title: '수정 완료',
-          message:
-            '공지사항 및 메모가 수정되었습니다.'
-        })
+        onClose()
+        showToast(`${type}가 수정되었습니다.`)
+        await onUpdated?.()
 
         return
       }
@@ -340,15 +338,9 @@ function NoticeAddModal({
         throw error
       }
 
-      // 등록 성공
-      setResultModal({
-        type: 'success',
-        title: '등록 완료',
-        message:
-          important
-            ? '중요 공지로 등록되었습니다.'
-            : `${type}가 등록되었습니다.`
-      })
+      onClose()
+      showToast(`${type}가 등록되었습니다.`)
+      await onAdded?.()
     } catch (error) { // 등록 실패
       console.error(
         isEditMode
@@ -374,30 +366,8 @@ function NoticeAddModal({
   }
 
   // 결과 모달 닫기
-  const handleResultClose = async () => {
-    const isSuccess =
-      resultModal?.type === 'success'
-
+  const handleResultClose = () => {
     setResultModal(null)
-
-    // 수정 성공일 경우 1. NoticePage 목록 재조회 2. NoticeAddModal 닫기
-    if (
-      isSuccess &&
-      isEditMode
-    ) {
-      await onUpdated?.()
-
-      onClose()
-
-      return
-    }
-
-    // 등록 성공일 경우 1. NoticePage 목록 재조회 2. NoticeAddModal 닫기
-    if (isSuccess) {
-      await onAdded?.()
-
-      onClose()
-    }
   }
 
   // 수정 취소
