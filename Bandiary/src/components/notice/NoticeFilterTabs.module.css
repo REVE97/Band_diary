@@ -1,0 +1,57 @@
+.row {
+  display: flex;
+  gap: 8px;
+  padding: 1px 0 3px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.row::-webkit-scrollbar {
+  display: none;
+}
+
+.button {
+  flex: 0 0 auto;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 13px;
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 800;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.count {
+  color: var(--color-primary);
+  font-weight: 900;
+}
+
+.button.active {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-on-accent);
+}
+
+.button.active .count {
+  color: var(--color-on-accent);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.button:active {
+  transform: scale(0.97);
+}

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import NoticeAddModal from '../components/notice/NoticeAddModal'
 import NoticeDetailModal from '../components/notice/NoticeDetailModal'
+import NoticeFilterTabs from '../components/notice/NoticeFilterTabs'
 
 import importantIcon from '../assets/images/notice-important.svg'
 import noticeIcon from '../assets/images/notice-announcement.svg'
@@ -76,8 +77,10 @@ function NoticePage() {
 
   // notice 테이블 api 호출
   useEffect(() => {
+    // Supabase의 초기 공지 목록을 페이지 진입 시 한 번만 조회합니다.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchNotices()
-  }, [])
+  }, [fetchNotices])
 
   // 중요 공지 important === true 인 데이터만 출력
   const importantNotices = useMemo(() => {
@@ -92,6 +95,26 @@ function NoticePage() {
       (notice) => !notice.important
     )
   }, [notices])
+
+  // 공지 및 메모 유형별 개수
+  const noticeCounts = useMemo(() => {
+    return normalNotices.reduce(
+      (counts, notice) => {
+        counts.전체 += 1
+
+        if (counts[notice.type] !== undefined) {
+          counts[notice.type] += 1
+        }
+
+        return counts
+      },
+      {
+        전체: 0,
+        공지: 0,
+        메모: 0,
+      }
+    )
+  }, [normalNotices])
 
   // 전체 목록 유형 및 제목 검색 조건 적용
   const filteredNormalNotices = useMemo(() => {
@@ -181,6 +204,11 @@ function NoticePage() {
     )
   }
 
+  // 공지 및 메모 유형 필터 변경
+  const handleNoticeFilterChange = (filterValue) => {
+    setSelectedType(filterValue)
+  }
+
   // 상세 모달 열기
   const openDetailModal = (notice) => {
     setSelectedNotice(notice)
@@ -242,6 +270,40 @@ function NoticePage() {
       {!loading && !errorMessage && (
         <>
 
+          {/* 유형 및 제목 검색 */}
+          <section
+            className={styles.noticeControls}
+            aria-label="공지 검색"
+          >
+            <form onSubmit={handleSearch}>
+              <label className={styles.searchField}>
+                <img
+                  src={searchIcon}
+                  alt=""
+                  aria-hidden="true"
+                />
+
+                <input
+                  type="search"
+                  value={searchInput}
+                  placeholder="공지 제목 검색"
+                  aria-label="공지사항 제목 검색"
+                  onChange={(event) => {
+                    setSearchInput(event.target.value)
+                    setSearchKeyword(event.target.value)
+                  }}
+                />
+              </label>
+            </form>
+
+            {/* 공지 및 메모 유형 필터 */}
+            <NoticeFilterTabs
+              activeFilter={selectedType}
+              counts={noticeCounts}
+              onChange={handleNoticeFilterChange}
+            />
+          </section>
+
           {/* 중요 공지 */}
           {importantNotices.length > 0 && (
             <section className={styles.noticeSection}>
@@ -297,55 +359,6 @@ function NoticePage() {
               </div>
             </section>
           )}
-
-          {/* 유형 및 제목 검색 */}
-          <section className={styles.noticeFilterSection}>
-
-            <div className={styles.noticeTypeFilterRow}>
-              {['전체', '공지', '메모'].map((type) => (
-                <button
-                  key={type}
-                  type="button"
-                  className={selectedType === type ? styles.noticeTypeFilterButton + " " + styles.active : styles.noticeTypeFilterButton}
-                  onClick={() =>
-                    setSelectedType(type)
-                  }
-                >
-                  {type}
-                </button>
-              ))}
-            </div>
-
-            <form
-              className={styles.noticeSearchRow}
-              onSubmit={handleSearch}
-            >
-              <input
-                type="text"
-                value={searchInput}
-                placeholder="제목 검색"
-                aria-label="공지사항 제목 검색"
-                onChange={(event) =>
-                  setSearchInput(
-                    event.target.value
-                  )
-                }
-              />
-
-              <button
-                type="submit"
-                className={styles.noticeSearchButton}
-                aria-label="검색"
-              >
-                <img
-                  src={searchIcon}
-                  alt=""
-                  aria-hidden="true"
-                />
-              </button>
-            </form>
-
-          </section>
 
           {/* 전체 목록 */}
           <section className={styles.noticeSection}>
