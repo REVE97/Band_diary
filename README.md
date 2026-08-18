@@ -1,7 +1,16 @@
-APP : <a href="https://band-diary.vercel.app">Bandiary</a>  
-TEST ACCOUNT : test / 1234
+<table width="100%">
+  <tr>
+    <td>
+      <strong>APP :</strong> <a href="https://band-diary.vercel.app">Bandiary</a><br>
+      <strong>TEST ACCOUNT :</strong> test / 1234
+    </td>
+    <td align="right">
+      <img width="120" height="120" alt="Bandiary QR Code" src="https://github.com/user-attachments/assets/eb46ad2e-ff4d-4bb9-a73a-e70b89236276">
+    </td>
+  </tr>
+</table>
 
-<img width="800" height="450" alt="인트로" src="https://github.com/user-attachments/assets/b2a8f441-3a84-4422-bda7-d83d2db18117" />
+<img width="800" height="450" alt="인트로" src="https://github.com/user-attachments/assets/b2a8f441-3a84-4422-bda7-d83d2db18117">
 
 # 🎸 Bandiary
 
