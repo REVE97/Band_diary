@@ -1,4 +1,7 @@
 import { useState } from 'react'
+
+import ModalPortal from '../common/ModalPortal'
+
 import styles from './MusicsheetAddModal.module.css'
 
 const sessionOptions = ['Vocal', 'Guitar', 'Bass', 'Keyboard', 'Drum']
@@ -100,7 +103,7 @@ function MusicsheetAddModal({
   }
 
   return (
-    <div className={styles.modalOverlay}>
+    <ModalPortal onEscapeKey={onClose}>
       <section
         className={styles.modalCard}
         role="dialog"
@@ -272,7 +275,7 @@ function MusicsheetAddModal({
           )}
         </div>
       </section>
-    </div>
+    </ModalPortal>
   )
 }
 

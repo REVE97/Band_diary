@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
-import { createPortal } from 'react-dom'
+import { useEffect, useState } from 'react'
+
+import ModalPortal from '../common/ModalPortal'
 
 import { formatDate } from '../../features/common'
 import supabase from '../../api/supabase'
@@ -29,7 +30,6 @@ function ContentDetailModal({ content, onClose }) {
   const [commentErrorMessage, setCommentErrorMessage] = useState('')
   const [isCommentLoading, setIsCommentLoading] = useState(false)
   const [deletingCommentId, setDeletingCommentId] = useState(null)
-  const closeButtonRef = useRef(null)
 
   const storageInfo = JSON.parse(sessionStorage.getItem('bandiaryLoginUser'))
 
@@ -71,61 +71,6 @@ function ContentDetailModal({ content, onClose }) {
       isCancelled = true
     }
   }, [content?.id])
-
-  // 상세 모달이 열려 있는 동안 배경 스크롤과 상호작용 잠금
-  useEffect(() => {
-    const pageScrollContainer = document.querySelector(
-      '[data-page-scroll-container]',
-    )
-    const mobileShell = document.querySelector('[data-mobile-shell]')
-    const previouslyFocusedElement = document.activeElement
-
-    const previousPageOverflow = pageScrollContainer?.style.overflow
-    const previousPageOverscrollBehavior =
-      pageScrollContainer?.style.overscrollBehavior
-    const wasMobileShellInert = mobileShell?.inert
-
-    if (pageScrollContainer) {
-      pageScrollContainer.style.overflow = 'hidden'
-      pageScrollContainer.style.overscrollBehavior = 'none'
-    }
-
-    if (mobileShell) {
-      mobileShell.inert = true
-    }
-
-    closeButtonRef.current?.focus()
-
-    return () => {
-      if (pageScrollContainer) {
-        pageScrollContainer.style.overflow = previousPageOverflow || ''
-        pageScrollContainer.style.overscrollBehavior =
-          previousPageOverscrollBehavior || ''
-      }
-
-      if (mobileShell) {
-        mobileShell.inert = wasMobileShellInert || false
-      }
-
-      if (previouslyFocusedElement instanceof HTMLElement) {
-        previouslyFocusedElement.focus()
-      }
-    }
-  }, [])
-
-  useEffect(() => {
-    const handleEscapeKey = (event) => {
-      if (event.key === 'Escape') {
-        onClose()
-      }
-    }
-
-    document.addEventListener('keydown', handleEscapeKey)
-
-    return () => {
-      document.removeEventListener('keydown', handleEscapeKey)
-    }
-  }, [onClose])
 
   const handleCommentInputChange = (event) => {
     setCommentText(event.target.value)
@@ -199,8 +144,8 @@ function ContentDetailModal({ content, onClose }) {
     await getComments()
   }
 
-  return createPortal(
-    <div className={styles.placeModalOverlay}>
+  return (
+    <ModalPortal onEscapeKey={onClose}>
       <div
         className={`${styles.placeModalCard} ${styles.contentDetailCard}`}
         role="dialog"
@@ -219,7 +164,6 @@ function ContentDetailModal({ content, onClose }) {
           </div>
 
           <button
-            ref={closeButtonRef}
             type="button"
             className={styles.placeModalClose}
             onClick={onClose}
@@ -341,8 +285,7 @@ function ContentDetailModal({ content, onClose }) {
           </div>
         </div>
       </div>
-    </div>,
-    document.body,
+    </ModalPortal>
   )
 }
 

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
+import ModalPortal from '../common/ModalPortal'
 import PlaceResultModal from '../place/PlaceResultModal'
 
 import cameraIcon from '../../assets/images/notice-camera-black.svg'
@@ -412,24 +413,26 @@ function NoticeAddModal({
 
   return (
     <>
-      <div
-        className={styles.placeModalOverlay}
-        onMouseDown={(event) => {
+      <ModalPortal
+        onBackdropMouseDown={() => {
           // Modal 바깥 영역 클릭 시 닫기 - 등록 중에는 닫지 않음
-          if (
-            event.target === event.currentTarget &&
-            !submitting
-          ) {
+          if (!submitting) {
             handleModalClose()
           }
         }}
+        onEscapeKey={submitting ? undefined : handleModalClose}
       >
-        <div className={styles.placeModalCard + " " + styles.noticeAddModalCard}>
+        <div
+          className={`${styles.placeModalCard} ${styles.noticeAddModalCard}`}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="notice-add-modal-title"
+        >
 
           {/* 등록 Modal 헤더 */}
           <header className={styles.placeModalHeader}>
             <div>
-              <h2>
+              <h2 id="notice-add-modal-title">
                 {isEditMode
                   ? '공지사항 or 메모 수정'
                   : '공지사항 or 메모 추가'}
@@ -683,7 +686,7 @@ function NoticeAddModal({
           </form>
 
         </div>
-      </div>
+      </ModalPortal>
 
       {/* 결과 모달 */}
       {resultModal && (

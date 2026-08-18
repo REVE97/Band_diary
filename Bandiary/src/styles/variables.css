@@ -29,7 +29,10 @@
   --color-divider: #ededf0;
   --color-media-background: #1e1e22;
   --color-transparent: transparent;
-  --color-modal-overlay: rgba(17, 17, 19, 0.42);
+  --color-modal-backdrop: rgba(25, 24, 31, 0.34);
+  --color-modal-backdrop-nested: rgba(25, 24, 31, 0.1);
+  --color-modal-overlay: var(--color-modal-backdrop);
+  --modal-backdrop-blur: 3px;
 
   /* 포커스와 그림자 */
   --focus-ring-primary: 0 0 0 3px rgba(107, 78, 255, 0.16);

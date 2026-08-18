@@ -1,5 +1,7 @@
 import { useRef, useState } from 'react'
 
+import ModalPortal from '../common/ModalPortal'
+
 import profile from '../../assets/images/default_profile.svg'
 import editIcon from '../../assets/images/edit.svg'
 import styles from './ProfileEditModal.module.css'
@@ -36,12 +38,17 @@ function ProfileEditModal({
   }
 
   return (
-    <div className={styles.placeModalOverlay}>
-      <div className={styles.placeModalCard + " " + styles.profileEditModalCard}>
+    <ModalPortal onEscapeKey={onClose}>
+      <div
+        className={`${styles.placeModalCard} ${styles.profileEditModalCard}`}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="profile-edit-modal-title"
+      >
 
         {/* 프로필 수정 Modal 헤더 */}
         <div className={styles.placeModalHeader + " " + styles.profileEditModalHeader}>
-          <h2>프로필 수정</h2>
+          <h2 id="profile-edit-modal-title">프로필 수정</h2>
 
           <button
             type="button"
@@ -167,7 +174,7 @@ function ProfileEditModal({
           저장하기
         </button>
       </div>
-    </div>
+    </ModalPortal>
   )
 }
 

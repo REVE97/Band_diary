@@ -26,25 +26,6 @@
   box-shadow: var(--focus-ring-primary);
 }
 
-.placeModalOverlay {
-  position: fixed;
-  top: 64px;
-  left: 50%;
-  bottom: 72px;
-  width: 100%;
-  max-width: 430px;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 18px;
-  background: var(--color-modal-overlay);
-}
-
-.placeModalOverlay {
-  z-index: 100;
-}
-
 .placeModalCard {
   border-radius: 24px;
   background: var(--color-surface);

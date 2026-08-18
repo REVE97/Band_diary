@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import ModalPortal from '../common/ModalPortal'
 import PlaceResultModal from '../place/PlaceResultModal'
 
 import supabase from '../../api/supabase'
@@ -121,23 +122,26 @@ function NoticeDetailModal({
 
   return (
     <>
-      <div
-        className={styles.placeModalOverlay}
-        onMouseDown={(event) => {
-          if (
-            event.target === event.currentTarget &&
-            !deleting
-          ) {
-            onClose()
-          }
+      <ModalPortal
+        onBackdropMouseDown={() => {
+          if (!deleting) onClose()
         }}
+        onEscapeKey={deleting ? undefined : onClose}
       >
-        <article className={styles.placeModalCard + " " + styles.noticeDetailCard}>
+        <article
+          className={`${styles.placeModalCard} ${styles.noticeDetailCard}`}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="notice-detail-modal-title"
+        >
 
           {/* 헤더 */}
           <header className={styles.placeModalHeader}>
             <div>
-              <h2 className={styles.noticeDetailTitle}>
+              <h2
+                id="notice-detail-modal-title"
+                className={styles.noticeDetailTitle}
+              >
                 {notice.title}
               </h2>
             </div>
@@ -248,7 +252,7 @@ function NoticeDetailModal({
           </div>
 
         </article>
-      </div>
+      </ModalPortal>
 
       {/* 삭제 확인 / 결과 */}
       {isAdmin && resultModal && (

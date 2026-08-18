@@ -9,24 +9,6 @@
   font-size: 12px;
   font-weight: 800;
 }
-.placeModalOverlay {
-  position: fixed;
-  top: 64px;
-  left: 50%;
-  height: calc(100vh - 64px - 72px);
-  height: calc(100dvh - 64px - 72px);
-  width: 100%;
-  max-width: 430px;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 18px;
-  overflow: hidden;
-  overscroll-behavior: none;
-  background: var(--color-modal-overlay);
-  z-index: 100;
-}
 .placeModalCard {
   width: 100%;
   max-width: 390px;
@@ -319,12 +301,4 @@
 .contentDetailAudio audio {
   width: 100%;
   display: block;
-}
-
-@media (min-width: 431px) {
-  .placeModalOverlay {
-    top: 88px;
-    height: calc(100vh - 48px - 64px - 72px);
-    height: calc(100dvh - 48px - 64px - 72px);
-  }
 }

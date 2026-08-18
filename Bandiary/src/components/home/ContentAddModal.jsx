@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 
+import ModalPortal from '../common/ModalPortal'
+
 import pictureTypeIcon from '../../assets/images/content-type-picture.svg'
 import videoTypeIcon from '../../assets/images/content-type-video.svg'
 import audioTypeIcon from '../../assets/images/content-type-audio.svg'
@@ -133,11 +135,18 @@ function ContentAddModal({
   }
 
   return (
-    <div className={styles.placeModalOverlay}>
-      <div className={styles.placeModalCard + " " + styles.contentAddModalCard}>
+    <ModalPortal
+      onEscapeKey={isContentUploading ? undefined : onClose}
+    >
+      <div
+        className={`${styles.placeModalCard} ${styles.contentAddModalCard}`}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="content-add-modal-title"
+      >
         <div className={styles.placeModalHeader + " " + styles.contentAddModalHeader}>
           <div>
-            <h2>콘텐츠 추가</h2>
+            <h2 id="content-add-modal-title">콘텐츠 추가</h2>
             <p>{getStepTitle()}</p>
           </div>
 
@@ -371,7 +380,7 @@ function ContentAddModal({
           )}
         </div>
       </div>
-    </div>
+    </ModalPortal>
   )
 }
 

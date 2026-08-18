@@ -1,3 +1,5 @@
+import ModalPortal from '../common/ModalPortal'
+
 import styles from './PlaceResultModal.module.css'
 
 function PlaceResultModal({
@@ -13,16 +15,22 @@ function PlaceResultModal({
   const isConfirm = type === 'confirm'
 
   return (
-    <div className={styles.overlay}>
-      <div className={styles.card}>
+    <ModalPortal onEscapeKey={onClose}>
+      <div
+        className={styles.card}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="place-result-modal-title"
+        aria-describedby="place-result-modal-message"
+      >
         <div
           className={`${styles.icon} ${isSuccess ? styles.success : ''}`}
         >
           {isSuccess ? '✓' : '!'}
         </div>
 
-        <h2>{title}</h2>
-        <p>{message}</p>
+        <h2 id="place-result-modal-title">{title}</h2>
+        <p id="place-result-modal-message">{message}</p>
 
         {isConfirm ? (
           <div className={styles.buttonRow}>
@@ -48,7 +56,7 @@ function PlaceResultModal({
           </button>
         )}
       </div>
-    </div>
+    </ModalPortal>
   )
 }
 

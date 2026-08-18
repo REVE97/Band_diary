@@ -1,21 +1,5 @@
 /* Local styles for MusicsheetAddModal.jsx */
 
-.modalOverlay {
-  position: fixed;
-  top: 64px;
-  left: 50%;
-  bottom: 72px;
-  z-index: 100;
-  width: 100%;
-  max-width: 430px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 18px;
-  transform: translateX(-50%);
-  background: var(--color-modal-overlay);
-}
-
 .modalCard {
   width: 100%;
   max-width: 390px;

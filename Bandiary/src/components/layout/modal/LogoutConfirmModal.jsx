@@ -1,19 +1,16 @@
+import ModalPortal from '../../common/ModalPortal'
+
 import styles from './LogoutConfirmModal.module.css'
 
 function LogoutConfirmModal({ onClose, onConfirm }) {
   return (
-    <div
-      className={styles.overlay}
-      role="presentation"
-      onClick={onClose}
-    >
+    <ModalPortal onBackdropClick={onClose} onEscapeKey={onClose}>
       <div
         className={styles.card}
         role="dialog"
         aria-modal="true"
         aria-labelledby="logout-modal-title"
         aria-describedby="logout-modal-description"
-        onClick={(event) => event.stopPropagation()}
       >
         <h2 id="logout-modal-title">로그아웃</h2>
 
@@ -39,7 +36,7 @@ function LogoutConfirmModal({ onClose, onConfirm }) {
           </button>
         </div>
       </div>
-    </div>
+    </ModalPortal>
   )
 }
 

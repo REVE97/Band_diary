@@ -1,4 +1,7 @@
 import { useEffect, useState } from 'react'
+
+import ModalPortal from '../common/ModalPortal'
+
 import styles from './PlaceModal.module.css'
 
 function PlaceModal({
@@ -153,11 +156,16 @@ function PlaceModal({
   }
 
   return (
-    <div className={styles.placeModalOverlay}>
-      <div className={styles.placeModalCard}>
+    <ModalPortal onEscapeKey={onClose}>
+      <div
+        className={styles.placeModalCard}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="place-add-modal-title"
+      >
         <div className={styles.placeModalHeader}>
           <div>
-            <h2>장소 추가</h2>
+            <h2 id="place-add-modal-title">장소 추가</h2>
             <p>{getStepTitle()}</p>
           </div>
 
@@ -386,7 +394,7 @@ function PlaceModal({
           )}
         </div>
       </div>
-    </div>
+    </ModalPortal>
   )
 }
 

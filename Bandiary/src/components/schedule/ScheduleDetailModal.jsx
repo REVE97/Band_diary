@@ -1,3 +1,5 @@
+import ModalPortal from '../common/ModalPortal'
+
 import styles from './ScheduleDetailModal.module.css'
 
 const getTimeValue = (value) => {
@@ -15,11 +17,16 @@ const formatDate = (value) => {
 
 function ScheduleDetailModal({ schedule, onClose, onDelete }) {
   return (
-    <div className={styles.placeModalOverlay}>
-      <div className={styles.placeModalCard + " " + styles.scheduleDetailCard}>
+    <ModalPortal onEscapeKey={onClose}>
+      <div
+        className={`${styles.placeModalCard} ${styles.scheduleDetailCard}`}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="schedule-detail-modal-title"
+      >
         <div className={styles.placeModalHeader}>
           <div>
-            <h2>일정 상세</h2>
+            <h2 id="schedule-detail-modal-title">일정 상세</h2>
             <p>{schedule.type}</p>
           </div>
 
@@ -74,7 +81,7 @@ function ScheduleDetailModal({ schedule, onClose, onDelete }) {
           삭제
         </button>
       </div>
-    </div>
+    </ModalPortal>
   )
 }
 

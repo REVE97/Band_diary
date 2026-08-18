@@ -1,0 +1,35 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  width: 100%;
+  max-width: 430px;
+  height: 100vh;
+  height: 100dvh;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  overscroll-behavior: none;
+  transform: translateX(-50%);
+  background: var(--color-modal-backdrop);
+  backdrop-filter: blur(var(--modal-backdrop-blur));
+  -webkit-backdrop-filter: blur(var(--modal-backdrop-blur));
+  isolation: isolate;
+}
+
+.nested {
+  background: var(--color-modal-backdrop-nested);
+  backdrop-filter: blur(1px);
+  -webkit-backdrop-filter: blur(1px);
+}
+
+@media (min-width: 431px) {
+  .overlay {
+    top: 24px;
+    height: calc(100vh - 48px);
+    height: calc(100dvh - 48px);
+    border-radius: 34px;
+  }
+}

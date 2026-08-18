@@ -1,3 +1,5 @@
+import ModalPortal from '../common/ModalPortal'
+
 import styles from './ScheduleAddModal.module.css'
 
 const scheduleTypeOptions = ['합주', '공연', '개인연습', '회의', '기타']
@@ -19,11 +21,16 @@ function ScheduleAddModal({
   onInputChange,
 }) {
   return (
-    <div className={styles.placeModalOverlay}>
-      <div className={styles.placeModalCard + " " + styles.scheduleModalCard}>
+    <ModalPortal onEscapeKey={onClose}>
+      <div
+        className={`${styles.placeModalCard} ${styles.scheduleModalCard}`}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="schedule-add-modal-title"
+      >
         <div className={styles.placeModalHeader}>
           <div>
-            <h2>일정 추가</h2>
+            <h2 id="schedule-add-modal-title">일정 추가</h2>
             <p>합주, 공연, 개인 연습 일정을 등록해주세요.</p>
           </div>
         </div>
@@ -132,7 +139,7 @@ function ScheduleAddModal({
           </button>
         </div>
       </div>
-    </div>
+    </ModalPortal>
   )
 }
 
