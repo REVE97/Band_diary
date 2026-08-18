@@ -1,10 +1,18 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 
 import { formatDate } from '../../features/common'
 import supabase from '../../api/supabase'
 
 import commentSendIcon from '../../assets/images/comment-send.svg'
 import styles from './ContentDetailModal.module.css'
+
+const fetchComments = (contentId) =>
+  supabase
+    .from('comment')
+    .select('*')
+    .eq('content_id', contentId)
+    .order('created_at', { ascending: true })
 
 function ContentDetailModal({ content, onClose }) {
   const isPicture = content.type === '사진'
@@ -21,6 +29,7 @@ function ContentDetailModal({ content, onClose }) {
   const [commentErrorMessage, setCommentErrorMessage] = useState('')
   const [isCommentLoading, setIsCommentLoading] = useState(false)
   const [deletingCommentId, setDeletingCommentId] = useState(null)
+  const closeButtonRef = useRef(null)
 
   const storageInfo = JSON.parse(sessionStorage.getItem('bandiaryLoginUser'))
 
@@ -30,11 +39,7 @@ function ContentDetailModal({ content, onClose }) {
   const getComments = async () => {
     if (!content?.id) return
 
-    const { data, error } = await supabase
-      .from('comment')
-      .select('*')
-      .eq('content_id', content.id)
-      .order('created_at', { ascending: true })
+    const { data, error } = await fetchComments(content.id)
 
     if (error) {
       console.error(error)
@@ -46,8 +51,81 @@ function ContentDetailModal({ content, onClose }) {
   }
 
   useEffect(() => {
-    getComments()
+    if (!content?.id) return undefined
+
+    let isCancelled = false
+
+    void fetchComments(content.id).then(({ data, error }) => {
+      if (isCancelled) return
+
+      if (error) {
+        console.error(error)
+        setCommentErrorMessage('댓글을 불러오지 못했습니다.')
+        return
+      }
+
+      setComments(data || [])
+    })
+
+    return () => {
+      isCancelled = true
+    }
   }, [content?.id])
+
+  // 상세 모달이 열려 있는 동안 배경 스크롤과 상호작용 잠금
+  useEffect(() => {
+    const pageScrollContainer = document.querySelector(
+      '[data-page-scroll-container]',
+    )
+    const mobileShell = document.querySelector('[data-mobile-shell]')
+    const previouslyFocusedElement = document.activeElement
+
+    const previousPageOverflow = pageScrollContainer?.style.overflow
+    const previousPageOverscrollBehavior =
+      pageScrollContainer?.style.overscrollBehavior
+    const wasMobileShellInert = mobileShell?.inert
+
+    if (pageScrollContainer) {
+      pageScrollContainer.style.overflow = 'hidden'
+      pageScrollContainer.style.overscrollBehavior = 'none'
+    }
+
+    if (mobileShell) {
+      mobileShell.inert = true
+    }
+
+    closeButtonRef.current?.focus()
+
+    return () => {
+      if (pageScrollContainer) {
+        pageScrollContainer.style.overflow = previousPageOverflow || ''
+        pageScrollContainer.style.overscrollBehavior =
+          previousPageOverscrollBehavior || ''
+      }
+
+      if (mobileShell) {
+        mobileShell.inert = wasMobileShellInert || false
+      }
+
+      if (previouslyFocusedElement instanceof HTMLElement) {
+        previouslyFocusedElement.focus()
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    const handleEscapeKey = (event) => {
+      if (event.key === 'Escape') {
+        onClose()
+      }
+    }
+
+    document.addEventListener('keydown', handleEscapeKey)
+
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKey)
+    }
+  }, [onClose])
 
   const handleCommentInputChange = (event) => {
     setCommentText(event.target.value)
@@ -121,9 +199,14 @@ function ContentDetailModal({ content, onClose }) {
     await getComments()
   }
 
-  return (
+  return createPortal(
     <div className={styles.placeModalOverlay}>
-      <div className={styles.placeModalCard + " " + styles.contentDetailCard}>
+      <div
+        className={`${styles.placeModalCard} ${styles.contentDetailCard}`}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="content-detail-title"
+      >
         {/* 콘텐츠 상세 헤더 */}
         <div className={styles.contentDetailHeader}>
           <div className={styles.contentDetailHeading}>
@@ -131,11 +214,12 @@ function ContentDetailModal({ content, onClose }) {
               {content.type}
             </span>
 
-            <h2>{content.title}</h2>
+            <h2 id="content-detail-title">{content.title}</h2>
             <time>{formatDate(content.created_at)}</time>
           </div>
 
           <button
+            ref={closeButtonRef}
             type="button"
             className={styles.placeModalClose}
             onClick={onClose}
@@ -257,7 +341,8 @@ function ContentDetailModal({ content, onClose }) {
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }
 

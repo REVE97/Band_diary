@@ -11,11 +11,12 @@ function MobileLayout({ children }) {
 
   return (
     <div className={styles.appRoot}>
-      <div className={styles.mobileShell}>
+      <div className={styles.mobileShell} data-mobile-shell>
         {!isLoginPage && <Header />}
 
         <main
           className={`${styles.pageContent} ${isLoginPage ? styles.loginOnly : ''}`}
+          data-page-scroll-container
         >
           {children}
         </main>

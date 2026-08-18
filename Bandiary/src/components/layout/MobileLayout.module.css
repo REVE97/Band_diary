@@ -1,6 +1,7 @@
 .appRoot {
   width: 100%;
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   justify-content: center;
   background: var(--color-canvas);
@@ -11,6 +12,7 @@
   width: 100%;
   max-width: 430px;
   min-height: 100vh;
+  min-height: 100dvh;
   overflow: hidden;
   background: var(--color-surface);
   box-shadow: var(--shadow-shell);
@@ -18,6 +20,7 @@
 
 .pageContent {
   height: calc(100vh - 64px - 72px);
+  height: calc(100dvh - 64px - 72px);
   padding: 0 18px 24px;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -25,20 +28,24 @@
 
 .loginOnly {
   height: 100vh;
+  height: 100dvh;
 }
 
 @media (min-width: 431px) {
   .mobileShell {
     min-height: calc(100vh - 48px);
+    min-height: calc(100dvh - 48px);
     margin: 24px 0;
     border-radius: 34px;
   }
 
   .pageContent {
     height: calc(100vh - 48px - 64px - 72px);
+    height: calc(100dvh - 48px - 64px - 72px);
   }
 
   .loginOnly {
     height: calc(100vh - 48px);
+    height: calc(100dvh - 48px);
   }
 }
