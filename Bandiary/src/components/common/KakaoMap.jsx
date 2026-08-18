@@ -15,10 +15,16 @@ function KakaoMap({
   places,
   selectedPlace,
   onSelectPlace,
+  onClearSelection,
 }) {
   const mapContainerRef = useRef(null)
   const mapInstanceRef = useRef(null)
   const markersRef = useRef([])
+  const clearSelectionRef = useRef(onClearSelection)
+
+  useEffect(() => {
+    clearSelectionRef.current = onClearSelection
+  }, [onClearSelection])
 
   // 페이지 진입 시 서울권 전체가 보이는 지도를 한 번만 생성합니다.
   useEffect(() => {
@@ -34,7 +40,7 @@ function KakaoMap({
       seoulCenter.longitude
     )
 
-    mapInstanceRef.current = new kakao.maps.Map(
+    const map = new kakao.maps.Map(
       mapContainerRef.current,
       {
         center: centerPosition,
@@ -42,7 +48,15 @@ function KakaoMap({
       }
     )
 
+    const handleMapClick = () => {
+      clearSelectionRef.current?.()
+    }
+
+    mapInstanceRef.current = map
+    kakao.maps.event.addListener(map, 'click', handleMapClick)
+
     return () => {
+      kakao.maps.event.removeListener(map, 'click', handleMapClick)
       markersRef.current.forEach(({ marker }) => marker.setMap(null))
       markersRef.current = []
       mapInstanceRef.current = null
@@ -107,7 +121,12 @@ function KakaoMap({
     const kakao = window.kakao
     const map = mapInstanceRef.current
 
-    if (!selectedPlace || !kakao || !kakao.maps || !map) return
+    if (!kakao || !kakao.maps || !map) return
+
+    if (!selectedPlace) {
+      markersRef.current.forEach(({ marker }) => marker.setZIndex(1))
+      return
+    }
 
     const selectedPosition = new kakao.maps.LatLng(
       Number(selectedPlace.latitude),
@@ -128,16 +147,18 @@ function KakaoMap({
     <div className={styles.wrap}>
       <div ref={mapContainerRef} className={styles.map} />
 
-      <div className={styles.legend} aria-label="지도 마커 안내">
-        <span>
-          <i className={styles.studioColor} />
-          합주실
-        </span>
-        <span>
-          <i className={styles.restaurantColor} />
-          주변 맛집
-        </span>
-      </div>
+      {!selectedPlace && (
+        <div className={styles.legend} aria-label="지도 마커 안내">
+          <span>
+            <i className={styles.studioColor} />
+            합주실
+          </span>
+          <span>
+            <i className={styles.restaurantColor} />
+            주변 맛집
+          </span>
+        </div>
+      )}
     </div>
   )
 }

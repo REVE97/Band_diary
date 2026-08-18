@@ -79,6 +79,125 @@
   height: 420px;
 }
 
+.selectedMapCard {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 42px;
+  z-index: 12;
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 12px 30px rgba(25, 24, 31, 0.18);
+  backdrop-filter: blur(10px);
+}
+
+.selectedMapCloseButton {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--color-surface-muted);
+  color: var(--color-text-muted);
+  font-size: 19px;
+  line-height: 1;
+}
+
+.selectedMapSummary {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  align-items: center;
+  gap: 11px;
+  padding-right: 28px;
+}
+
+.selectedMapIcon {
+  width: 46px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 13px;
+  background: var(--color-primary-soft);
+}
+
+.selectedMapIcon img {
+  width: 28px;
+  height: 28px;
+  display: block;
+  object-fit: contain;
+}
+
+.selectedMapInfo {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.selectedMapInfo strong,
+.selectedMapInfo span,
+.selectedMapInfo small {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.selectedMapInfo strong {
+  color: var(--color-text-primary);
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.selectedMapInfo span {
+  margin-top: 4px;
+  color: var(--color-text-primary);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.selectedMapInfo small {
+  margin-top: 3px;
+  color: var(--color-text-muted);
+  font-size: 10px;
+  font-weight: 650;
+}
+
+.selectedMapActions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 8px;
+  margin-top: 11px;
+}
+
+.showInListButton,
+.selectedMapRouteButton {
+  height: 36px;
+  border-radius: 11px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.showInListButton {
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+}
+
+.selectedMapRouteButton {
+  background: var(--color-primary);
+  color: var(--color-on-accent);
+}
+
 .placeSheet {
   position: relative;
   z-index: 15;
@@ -285,6 +404,9 @@
 .cardSelectButton:focus-visible,
 .routeButton:focus-visible,
 .deleteButton:focus-visible,
+.selectedMapCloseButton:focus-visible,
+.showInListButton:focus-visible,
+.selectedMapRouteButton:focus-visible,
 .placeAddButton:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
@@ -325,6 +447,11 @@
 
 @media (max-width: 360px) {
   .mapControls {
+    left: 14px;
+    right: 14px;
+  }
+
+  .selectedMapCard {
     left: 14px;
     right: 14px;
   }

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import KakaoMap from '../components/common/KakaoMap'
 import PlaceFilterTabs from '../components/place/PlaceFilterTabs'
@@ -36,6 +36,7 @@ function PlacePage() {
   const [activeFilter, setActiveFilter] = useState('all')
   const [searchKeyword, setSearchKeyword] = useState('')
   const [selectedPlace, setSelectedPlace] = useState(null)
+  const placeCardRefs = useRef(new Map())
 
   const [studioList, setStudioList] = useState([])
   const [restaurantList, setRestaurantList] = useState([])
@@ -165,6 +166,40 @@ function PlacePage() {
   const handlePlaceClick = useCallback((place) => {
     setSelectedPlace(place)
   }, [])
+
+  const handleClearSelectedPlace = useCallback(() => {
+    setSelectedPlace(null)
+  }, [])
+
+  const setPlaceCardRef = useCallback((place, element) => {
+    const placeKey = getPlaceKey(place)
+
+    if (element) {
+      placeCardRefs.current.set(placeKey, element)
+      return
+    }
+
+    placeCardRefs.current.delete(placeKey)
+  }, [])
+
+  const handleShowSelectedPlaceInList = () => {
+    if (!selectedPlace) return
+
+    const placeCard = placeCardRefs.current.get(
+      getPlaceKey(selectedPlace)
+    )
+
+    if (!placeCard) return
+
+    placeCard.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+    })
+
+    placeCard.focus({
+      preventScroll: true,
+    })
+  }
 
   const handleOpenKakaoRoute = (event, place) => {
     event.stopPropagation()
@@ -507,6 +542,12 @@ function PlacePage() {
         key={`${isFavoriteSection ? 'favorite' : 'place'}-${getPlaceKey(
           place
         )}`}
+        ref={
+          isFavoriteSection
+            ? undefined
+            : (element) => setPlaceCardRef(place, element)
+        }
+        tabIndex={isFavoriteSection ? undefined : -1}
         className={`${styles.placeCard} ${
           isSelected ? styles.active : ''
         } ${isFavoriteSection ? styles.favoriteCard : ''}`}
@@ -601,8 +642,73 @@ function PlacePage() {
             places={filteredPlaces}
             selectedPlace={selectedPlace}
             onSelectPlace={handlePlaceClick}
+            onClearSelection={handleClearSelectedPlace}
           />
         </div>
+
+        {selectedPlace && (
+          <aside
+            className={styles.selectedMapCard}
+            aria-label="선택한 장소"
+            aria-live="polite"
+          >
+            <button
+              type="button"
+              className={styles.selectedMapCloseButton}
+              onClick={handleClearSelectedPlace}
+              aria-label="선택한 장소 닫기"
+            >
+              ×
+            </button>
+
+            <div className={styles.selectedMapSummary}>
+              <span
+                className={`${styles.selectedMapIcon} ${
+                  selectedPlace.type === 'restaurant'
+                    ? styles.restaurantIcon
+                    : ''
+                }`}
+                aria-hidden="true"
+              >
+                <img
+                  src={
+                    selectedPlace.type === 'restaurant'
+                      ? restaurantPlaceIcon
+                      : studioPlaceIcon
+                  }
+                  alt=""
+                  aria-hidden="true"
+                />
+              </span>
+
+              <div className={styles.selectedMapInfo}>
+                <strong>{selectedPlace.name}</strong>
+                <span>{getPlacePriceText(selectedPlace)}</span>
+                <small>{selectedPlace.address}</small>
+              </div>
+            </div>
+
+            <div className={styles.selectedMapActions}>
+              <button
+                type="button"
+                className={styles.showInListButton}
+                onClick={handleShowSelectedPlaceInList}
+              >
+                목록에서 보기
+              </button>
+
+              <button
+                type="button"
+                className={styles.selectedMapRouteButton}
+                onClick={(event) =>
+                  handleOpenKakaoRoute(event, selectedPlace)
+                }
+              >
+                길찾기
+              </button>
+            </div>
+          </aside>
+        )}
       </section>
 
       <section className={styles.placeSheet} aria-label="장소 목록">
