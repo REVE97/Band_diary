@@ -133,6 +133,18 @@ function PlaceModal({
     setStepErrorMessage('')
   }
 
+  const getStepClassName = (step) => {
+    if (currentStep === step) {
+      return `${styles.placeStepItem} ${styles.active}`
+    }
+
+    if (currentStep > step) {
+      return `${styles.placeStepItem} ${styles.complete}`
+    }
+
+    return styles.placeStepItem
+  }
+
   const getStepTitle = () => {
     if (currentStep === 1) return '장소를 검색하고 선택해주세요.'
     if (currentStep === 2) return '가격 정보를 입력해주세요.'
@@ -182,11 +194,31 @@ function PlaceModal({
           </label>
         </div>
 
-        <div className={styles.placeStepRow}>
-          <span className={currentStep === 1 ? styles.active : ""}>1</span>
-          <span className={currentStep === 2 ? styles.active : ""}>2</span>
-          <span className={currentStep === 3 ? styles.active : ""}>3</span>
-          <span className={currentStep === 4 ? styles.active : ""}>완료</span>
+        <div className={styles.placeStepRow} aria-label="장소 등록 단계">
+          <span
+            className={getStepClassName(1)}
+            aria-current={currentStep === 1 ? 'step' : undefined}
+          >
+            1
+          </span>
+          <span
+            className={getStepClassName(2)}
+            aria-current={currentStep === 2 ? 'step' : undefined}
+          >
+            2
+          </span>
+          <span
+            className={getStepClassName(3)}
+            aria-current={currentStep === 3 ? 'step' : undefined}
+          >
+            3
+          </span>
+          <span
+            className={getStepClassName(4)}
+            aria-current={currentStep === 4 ? 'step' : undefined}
+          >
+            완료
+          </span>
         </div>
 
         <div className={styles.loginForm + " " + styles.placeForm}>

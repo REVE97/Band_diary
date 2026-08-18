@@ -246,39 +246,54 @@
 
 .contentAddModalCard .contentStepRow {
   position: relative;
-  margin-bottom: 18px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
+  align-items: center;
+  margin: 28px 4px 26px;
 }
 
-.contentAddModalCard .contentStepRow span {
-  height: 42px;
-  display: flex;
-  flex-direction: column;
+.contentAddModalCard .contentStepRow::before {
+  position: absolute;
+  top: 50%;
+  left: 16.66%;
+  right: 16.66%;
+  height: 1px;
+  content: '';
+  background: var(--color-divider);
+  transform: translateY(-50%);
+}
+
+.contentAddModalCard .contentStepItem {
+  position: relative;
+  z-index: 1;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 1px;
-  border-radius: 12px;
-  background: var(--color-surface-subtle);
-  color: var(--color-text-subtle);
-}
-
-.contentAddModalCard .contentStepRow span strong {
+  justify-self: center;
+  border: 1px solid var(--color-divider);
+  border-radius: 50%;
+  background: var(--color-surface-muted);
+  color: var(--color-text-muted);
   font-size: 12px;
-  line-height: 1;
+  font-weight: 900;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease;
 }
 
-.contentAddModalCard .contentStepRow span small {
-  font-size: 9px;
-  font-weight: 800;
-  line-height: 1;
-}
-
-.contentAddModalCard .contentStepRow span.active {
+.contentAddModalCard .contentStepItem.active {
+  border-color: var(--color-primary);
   background: var(--color-primary);
   color: var(--color-on-accent);
-  box-shadow: var(--shadow-button);
+}
+
+.contentAddModalCard .contentStepItem.complete {
+  border-color: var(--color-primary-border);
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
 }
 
 .contentTypeRow {

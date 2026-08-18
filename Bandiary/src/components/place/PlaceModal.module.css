@@ -149,27 +149,55 @@
 }
 
 .placeStepRow {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 6px;
-  margin-bottom: 14px;
+  align-items: center;
+  margin: 28px 4px 26px;
 }
 
-.placeStepRow span {
-  height: 28px;
-  display: flex;
+.placeStepRow::before {
+  position: absolute;
+  top: 50%;
+  left: 12.5%;
+  right: 12.5%;
+  height: 1px;
+  content: '';
+  background: var(--color-divider);
+  transform: translateY(-50%);
+}
+
+.placeStepItem {
+  position: relative;
+  z-index: 1;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 999px;
-  background: var(--color-primary-soft);
-  color: var(--color-text-subtle);
-  font-size: 11px;
+  justify-self: center;
+  border: 1px solid var(--color-divider);
+  border-radius: 50%;
+  background: var(--color-surface-muted);
+  color: var(--color-text-muted);
+  font-size: 12px;
   font-weight: 900;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease;
 }
 
-.placeStepRow span.active {
-  color: var(--color-on-accent);
+.placeStepItem.active {
+  border-color: var(--color-primary);
   background: var(--color-primary);
+  color: var(--color-on-accent);
+}
+
+.placeStepItem.complete {
+  border-color: var(--color-primary-border);
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
 }
 
 .placeModalButtonRow {

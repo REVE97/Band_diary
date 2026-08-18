@@ -27,6 +27,8 @@ function ContentAddModal({
   const isAudio = contentType === '오디오'
 
   useEffect(() => {
+    // 콘텐츠 유형을 변경하면 단계별 입력 상태를 처음부터 다시 시작합니다.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCurrentStep(1)
     setStepErrorMessage('')
   }, [contentType])
@@ -112,6 +114,18 @@ function ContentAddModal({
     setStepErrorMessage('')
   }
 
+  const getStepClassName = (step) => {
+    if (currentStep === step) {
+      return `${styles.contentStepItem} ${styles.active}`
+    }
+
+    if (currentStep > step) {
+      return `${styles.contentStepItem} ${styles.complete}`
+    }
+
+    return styles.contentStepItem
+  }
+
   const getFileAcceptValue = () => {
     if (isPicture) return 'image/*'
     if (isVideo) return 'video/mp4,video/quicktime,video/webm,video/x-m4v'
@@ -138,18 +152,24 @@ function ContentAddModal({
         </div>
 
         {/* 콘텐츠 등록 단계 */}
-        <div className={styles.contentStepRow}>
-          <span className={currentStep === 1 ? styles.active : ""}>
-            <strong>1</strong>
-            <small>정보</small>
+        <div className={styles.contentStepRow} aria-label="콘텐츠 등록 단계">
+          <span
+            className={getStepClassName(1)}
+            aria-current={currentStep === 1 ? 'step' : undefined}
+          >
+            1
           </span>
-          <span className={currentStep === 2 ? styles.active : ""}>
-            <strong>2</strong>
-            <small>파일</small>
+          <span
+            className={getStepClassName(2)}
+            aria-current={currentStep === 2 ? 'step' : undefined}
+          >
+            2
           </span>
-          <span className={currentStep === 3 ? styles.active : ""}>
-            <strong>3</strong>
-            <small>확인</small>
+          <span
+            className={getStepClassName(3)}
+            aria-current={currentStep === 3 ? 'step' : undefined}
+          >
+            완료
           </span>
         </div>
 
