@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
-import interactionPlugin from '@fullcalendar/interaction'
 import koLocale from '@fullcalendar/core/locales/ko'
 
 import supabase from '../api/supabase'
@@ -34,6 +33,62 @@ const getScheduleTypeColor = (type) => {
 const getTimeValue = (value) => {
   if (!value) return ''
   return String(value).slice(0, 5)
+}
+
+const getLocalDateKey = (date) => {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+
+  return `${year}-${month}-${day}`
+}
+
+const createLocalDate = (dateValue) => {
+  if (!dateValue) return null
+
+  const [year, month, day] = String(dateValue).split('-').map(Number)
+
+  if (!year || !month || !day) return null
+
+  return new Date(year, month - 1, day)
+}
+
+const getScheduleDateParts = (dateValue) => {
+  const date = createLocalDate(dateValue)
+
+  if (!date) {
+    return {
+      month: '-',
+      day: '-',
+      weekday: '-',
+    }
+  }
+
+  return {
+    month: `${date.getMonth() + 1}월`,
+    day: date.getDate(),
+    weekday: new Intl.DateTimeFormat('ko-KR', {
+      weekday: 'short',
+    }).format(date),
+  }
+}
+
+const getDDayLabel = (dateValue) => {
+  const scheduleDate = createLocalDate(dateValue)
+
+  if (!scheduleDate) return ''
+
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  const difference = Math.round(
+    (scheduleDate.getTime() - today.getTime()) / 86400000
+  )
+
+  if (difference === 0) return '오늘'
+  if (difference > 0) return `D-${difference}`
+
+  return `D+${Math.abs(difference)}`
 }
 
 function SchedulePage() {
@@ -77,33 +132,44 @@ function SchedulePage() {
   }
 
   useEffect(() => {
+    // Supabase의 초기 일정 목록을 페이지 진입 시 한 번만 조회합니다.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     getScheduleList()
   }, [])
 
-  const calendarEvents = scheduleList.map((schedule) => {
-    const startTime = getTimeValue(schedule.start_time)
-    const endTime = getTimeValue(schedule.end_time)
-    const eventColor = schedule.color || getScheduleTypeColor(schedule.type)
+  const upcomingSchedules = useMemo(() => {
+    const todayKey = getLocalDateKey(new Date())
 
-    return {
-      id: String(schedule.id),
-      title: schedule.title,
-      start: `${schedule.schedule_date}T${startTime}`,
-      end: `${schedule.schedule_date}T${endTime}`,
-      backgroundColor: eventColor,
-      borderColor: eventColor,
-      textColor: '#151515',
-      extendedProps: {
-        schedule,
-      },
-    }
-  })
+    return scheduleList
+      .filter((schedule) => schedule.schedule_date >= todayKey)
+      .slice(0, 2)
+  }, [scheduleList])
 
-  const handleOpenScheduleModal = (dateStr = '') => {
-    setScheduleForm({
-      ...initialScheduleForm,
-      scheduleDate: dateStr,
+  const calendarEvents = useMemo(() => {
+    return scheduleList.map((schedule) => {
+      const startTime = getTimeValue(schedule.start_time)
+      const endTime = getTimeValue(schedule.end_time)
+      const eventColor =
+        schedule.color || getScheduleTypeColor(schedule.type)
+
+      return {
+        id: String(schedule.id),
+        title: schedule.title,
+        start: `${schedule.schedule_date}T${startTime}`,
+        end: `${schedule.schedule_date}T${endTime}`,
+        backgroundColor: 'transparent',
+        borderColor: 'transparent',
+        textColor: '#19181f',
+        extendedProps: {
+          schedule,
+          eventColor,
+        },
+      }
     })
+  }, [scheduleList])
+
+  const handleOpenScheduleModal = () => {
+    setScheduleForm(initialScheduleForm)
     setErrorMessage('')
     setIsScheduleModalOpen(true)
   }
@@ -179,7 +245,8 @@ function SchedulePage() {
         end_time: scheduleForm.endTime,
         location: scheduleForm.location.trim() || null,
         description: scheduleForm.description.trim() || null,
-        color: scheduleForm.color || getScheduleTypeColor(scheduleForm.type),
+        color:
+          scheduleForm.color || getScheduleTypeColor(scheduleForm.type),
       }
 
       const { error } = await supabase.from('schedule').insert([payload])
@@ -204,13 +271,10 @@ function SchedulePage() {
         isOpen: true,
         type: 'fail',
         title: '등록 실패',
-        message: '일정 등록 중 오류가 발생했습니다. Supabase 설정을 확인해주세요.',
+        message:
+          '일정 등록 중 오류가 발생했습니다. Supabase 설정을 확인해주세요.',
       })
     }
-  }
-
-  const handleDateClick = (info) => {
-    handleOpenScheduleModal(info.dateStr)
   }
 
   const handleEventClick = (info) => {
@@ -263,11 +327,66 @@ function SchedulePage() {
         isOpen: true,
         type: 'fail',
         title: '삭제 실패',
-        message: '일정 삭제 중 오류가 발생했습니다. Supabase 설정을 확인해주세요.',
+        message:
+          '일정 삭제 중 오류가 발생했습니다. Supabase 설정을 확인해주세요.',
       })
 
       setDeleteScheduleTarget(null)
     }
+  }
+
+  const renderCalendarEvent = (eventInfo) => {
+    return (
+      <span className={styles.calendarEventContent}>
+        <i
+          style={{
+            backgroundColor: eventInfo.event.extendedProps.eventColor,
+          }}
+        />
+        <span>{eventInfo.event.title}</span>
+      </span>
+    )
+  }
+
+  const renderScheduleCard = (schedule) => {
+    const dateParts = getScheduleDateParts(schedule.schedule_date)
+    const scheduleColor =
+      schedule.color || getScheduleTypeColor(schedule.type)
+
+    return (
+      <button
+        key={schedule.id}
+        type="button"
+        className={styles.scheduleCard}
+        onClick={() => setSelectedSchedule(schedule)}
+      >
+        <span className={styles.scheduleDateBox}>
+          <small>{dateParts.month}</small>
+          <strong>{dateParts.day}</strong>
+          <span>{dateParts.weekday}</span>
+        </span>
+
+        <span className={styles.scheduleCardContent}>
+          <span className={styles.scheduleTypeRow}>
+            <i style={{ backgroundColor: scheduleColor }} />
+            <span>{schedule.type}</span>
+            <small>{getDDayLabel(schedule.schedule_date)}</small>
+          </span>
+
+          <strong>{schedule.title}</strong>
+
+          <span className={styles.scheduleMeta}>
+            {getTimeValue(schedule.start_time)} ~{' '}
+            {getTimeValue(schedule.end_time)}
+            {schedule.location && ` · ${schedule.location}`}
+          </span>
+        </span>
+
+        <span className={styles.scheduleChevron} aria-hidden="true">
+          ›
+        </span>
+      </button>
+    )
   }
 
   return (
@@ -281,22 +400,33 @@ function SchedulePage() {
         +
       </button>
 
+      <section className={styles.upcomingSection} aria-label="다가오는 일정">
+        {upcomingSchedules.length > 0 ? (
+          <div className={styles.scheduleList}>
+            {upcomingSchedules.map(renderScheduleCard)}
+          </div>
+        ) : (
+          <div className={styles.emptyState}>
+            예정된 일정이 없습니다.
+          </div>
+        )}
+      </section>
+
       <section className={styles.scheduleCalendarCard}>
         <FullCalendar
-          plugins={[dayGridPlugin, interactionPlugin]}
+          plugins={[dayGridPlugin]}
           initialView="dayGridMonth"
           locale={koLocale}
           events={calendarEvents}
-          dateClick={handleDateClick}
           eventClick={handleEventClick}
+          eventContent={renderCalendarEvent}
           headerToolbar={{
             left: 'prev',
             center: 'title',
             right: 'next',
           }}
-          buttonText={{
-            today: '오늘',
-          }}
+          fixedWeekCount={false}
+          showNonCurrentDates={false}
           dayMaxEvents={2}
           height="auto"
         />

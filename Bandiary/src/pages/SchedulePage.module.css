@@ -1,35 +1,12 @@
 /* Local styles for SchedulePage.jsx */
 
 .page {
-  padding-bottom: 20px;
-}
-
-.contentAddButton {
-  position: fixed;
-  right: max(18px, calc((100vw - 430px) / 2 + 22px));
-  bottom: calc(112px + env(safe-area-inset-bottom));
-  z-index: 90;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  color: var(--color-on-accent);
-  background: var(--color-primary);
-  font-size: 30px;
-  font-weight: 700;
-  line-height: 1;
-  box-shadow: var(--shadow-floating);
-}
-
-.contentAddButton {
-  opacity: 0.5;
-}
-
-.contentAddButton:active {
-  transform: scale(0.96);
+  padding: 10px 0 32px;
 }
 
 .scheduleCalendarCard {
-  padding: 12px;
+  margin-top: 22px;
+  padding: 14px 10px 10px;
   border: 1px solid var(--color-border);
   border-radius: 20px;
   background: var(--color-surface);
@@ -43,22 +20,23 @@
 }
 
 .scheduleCalendarCard [class~="fc"] [class~="fc-toolbar"] {
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 }
 
 .scheduleCalendarCard [class~="fc"] [class~="fc-toolbar-title"] {
   color: var(--color-text-primary);
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 900;
 }
 
 .scheduleCalendarCard [class~="fc"] [class~="fc-button"] {
+  width: 36px;
+  height: 36px;
+  padding: 0;
   border: 1px solid var(--color-border);
   border-radius: 12px;
   background: var(--color-surface);
   color: var(--color-primary);
-  font-size: 12px;
-  font-weight: 900;
   box-shadow: none;
 }
 
@@ -76,26 +54,37 @@
   border-color: var(--color-divider);
 }
 
+.scheduleCalendarCard [class~="fc-theme-standard"] [class~="fc-scrollgrid"] {
+  overflow: hidden;
+  border-radius: 14px;
+}
+
 .scheduleCalendarCard [class~="fc"] [class~="fc-col-header-cell"] {
-  height: 32px;
+  height: 34px;
   vertical-align: middle;
+  background: var(--color-surface-subtle);
 }
 
 .scheduleCalendarCard [class~="fc"] [class~="fc-col-header-cell-cushion"] {
   color: var(--color-text-secondary);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 900;
 }
 
 .scheduleCalendarCard [class~="fc"] [class~="fc-daygrid-day"] {
-  min-height: 74px;
+  min-height: 68px;
+  background: var(--color-surface);
 }
 
 .scheduleCalendarCard [class~="fc"] [class~="fc-daygrid-day-number"] {
   padding: 6px;
   color: var(--color-text-primary);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
+}
+
+.scheduleCalendarCard [class~="fc"] [class~="fc-day-other"] {
+  background: var(--color-surface-subtle);
 }
 
 .scheduleCalendarCard [class~="fc"] [class~="fc-day-today"] {
@@ -105,7 +94,7 @@
 .scheduleCalendarCard [class~="fc"] [class~="fc-day-today"] [class~="fc-daygrid-day-number"] {
   min-width: 24px;
   height: 24px;
-  margin: 4px;
+  margin: 3px;
   padding: 0;
   display: inline-flex;
   align-items: center;
@@ -116,21 +105,222 @@
 }
 
 .scheduleCalendarCard [class~="fc"] [class~="fc-daygrid-event"] {
-  margin: 2px 4px;
-  padding: 3px 5px;
-  border-radius: 6px;
-  font-size: 10px;
-  font-weight: 900;
-  line-height: 1.2;
+  margin: 1px 3px;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
 }
 
-.scheduleCalendarCard [class~="fc"] [class~="fc-event-title"] {
+.calendarEventContent {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 3px;
   overflow: hidden;
+  border-radius: 5px;
+  background: var(--color-surface-subtle);
+}
+
+.calendarEventContent i {
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.calendarEventContent span {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--color-text-primary);
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1.2;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .scheduleCalendarCard [class~="fc"] [class~="fc-daygrid-more-link"] {
   color: var(--color-primary);
+  font-size: 9px;
+  font-weight: 900;
+}
+
+.upcomingSection {
+  margin-top: 0;
+}
+
+.scheduleList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.scheduleCard {
+  width: 100%;
+  min-height: 90px;
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) 16px;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  text-align: left;
+  box-shadow: var(--shadow-card);
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.scheduleCard:active {
+  transform: scale(0.99);
+}
+
+.scheduleDateBox {
+  width: 52px;
+  min-height: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+}
+
+.scheduleDateBox small,
+.scheduleDateBox span {
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.scheduleDateBox strong {
+  margin: 3px 0;
+  font-size: 21px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.scheduleCardContent {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.scheduleTypeRow {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.scheduleTypeRow i {
+  flex: 0 0 auto;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.scheduleTypeRow > span {
+  color: var(--color-text-muted);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.scheduleTypeRow > small {
+  margin-left: auto;
+  color: var(--color-primary);
   font-size: 10px;
   font-weight: 900;
+}
+
+.scheduleCardContent > strong {
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--color-text-primary);
+  font-size: 14px;
+  font-weight: 900;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scheduleMeta {
+  max-width: 100%;
+  margin-top: 5px;
+  overflow: hidden;
+  color: var(--color-text-muted);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scheduleChevron {
+  color: var(--color-text-subtle);
+  font-size: 20px;
+  line-height: 1;
+}
+
+.emptyState {
+  padding: 28px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background: var(--color-surface-subtle);
+  color: var(--color-text-muted);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.contentAddButton {
+  position: fixed;
+  right: max(18px, calc((100vw - 430px) / 2 + 22px));
+  bottom: calc(112px + env(safe-area-inset-bottom));
+  z-index: 90;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  color: var(--color-on-accent);
+  background: var(--color-primary);
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: var(--shadow-floating);
+  opacity: 0.5;
+}
+
+.contentAddButton:active {
+  transform: scale(0.96);
+}
+
+.scheduleCard:focus-visible,
+.contentAddButton:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+@media (max-width: 360px) {
+  .scheduleCalendarCard {
+    padding: 12px 7px 8px;
+  }
+
+  .scheduleCard {
+    grid-template-columns: 48px minmax(0, 1fr) 12px;
+    gap: 9px;
+    padding: 10px;
+  }
+
+  .scheduleDateBox {
+    width: 48px;
+  }
 }
