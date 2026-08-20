@@ -163,27 +163,6 @@ function HomePage() {
       contentList.map((item) => {
         const savedAudioFiles = audioFilesByContentId.get(item.id) || []
 
-        if (
-          item.type === '오디오' &&
-          savedAudioFiles.length === 0 &&
-          item.contentAudioUrl
-        ) {
-          return {
-            ...item,
-            audioFiles: [
-              {
-                id: `legacy-${item.id}`,
-                content_id: item.id,
-                title: item.title,
-                file_url: item.contentAudioUrl,
-                storage_path: '',
-                original_file_name: '',
-                sort_order: 0,
-              },
-            ],
-          }
-        }
-
         return {
           ...item,
           audioFiles: savedAudioFiles,
@@ -866,7 +845,6 @@ function HomePage() {
         title: contentForm.title.trim(),
         contentImageUrl: null,
         contentVideoUrl: null,
-        contentAudioUrl: null,
       }
 
       const uploadedAudioFiles = []
@@ -1090,15 +1068,6 @@ function HomePage() {
 
           if (filePath) storageFilePaths.push(filePath)
         })
-
-        if (audioFiles.length === 0 && deleteContentTarget.contentAudioUrl) {
-          const legacyFilePath = getStorageFilePathFromUrl(
-            'content-files',
-            deleteContentTarget.contentAudioUrl
-          )
-
-          if (legacyFilePath) storageFilePaths.push(legacyFilePath)
-        }
       }
 
       if (storageFilePaths.length > 0) {
