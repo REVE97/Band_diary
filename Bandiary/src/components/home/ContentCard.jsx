@@ -61,6 +61,9 @@ function ContentCard({ item, isActive, isAdmin, onClick, onDeleteClick }) {
         <div className={styles.top}>
           <p className={styles.title}>
             {item.type}
+            {isAudio && item.audioFiles?.length > 0
+              ? ` · ${item.audioFiles.length}개`
+              : ''}
           </p>
 
           {isAdmin && (

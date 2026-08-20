@@ -479,3 +479,145 @@
   font-weight: 700;
   line-height: 1.55;
 }
+
+.contentAudioEditor {
+  margin-top: 14px;
+}
+
+.contentAudioEditorHeader {
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.contentAudioEditorHeader strong {
+  color: var(--color-text-primary);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.contentAudioEditorHeader span {
+  color: var(--color-text-muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.contentAudioEditorList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.contentAudioEditorItem {
+  padding: 11px;
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr) 28px;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: var(--color-surface);
+}
+
+.contentAudioEditorNumber {
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.contentAudioEditorFields {
+  min-width: 0;
+}
+
+.contentAudioEditorFields label {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--color-text-muted);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.contentAudioEditorFields input {
+  width: 100%;
+  height: 38px;
+  padding: 0 10px;
+  border-radius: 10px;
+  background: var(--color-surface-subtle);
+  font-size: 12px;
+}
+
+.contentAudioEditorFields small {
+  display: block;
+  margin-top: 5px;
+  overflow: hidden;
+  color: var(--color-text-subtle);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.contentAudioRemoveButton {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.contentAudioRemoveButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.contentAudioSummaryList {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.contentAudioSummaryList > div {
+  min-width: 0;
+  padding: 9px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 11px;
+  background: var(--color-surface);
+}
+
+.contentAudioSummaryList strong,
+.contentAudioSummaryList span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.contentAudioSummaryList strong {
+  color: var(--color-text-primary);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.contentAudioSummaryList span {
+  margin-top: 3px;
+  color: var(--color-text-muted);
+  font-size: 10px;
+  font-weight: 700;
+}

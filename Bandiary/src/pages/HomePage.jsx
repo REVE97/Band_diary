@@ -50,6 +50,7 @@ function HomePage() {
   const [contentForm, setContentForm] = useState(initialContentForm)
   const [contentFile, setContentFile] = useState(null)
   const [contentFileName, setContentFileName] = useState('선택된 파일 없음')
+  const [contentAudioFiles, setContentAudioFiles] = useState([])
   const [contentPreview, setContentPreview] = useState('')
   const [isContentUploading, setIsContentUploading] = useState(false)
   const [convertMessage, setConvertMessage] = useState('')
@@ -124,14 +125,78 @@ function HomePage() {
 
     if (error) {
       console.error(error)
-    } else {
-      setContent(data)
+      return
     }
+
+    const contentList = data || []
+    const audioContentIds = contentList
+      .filter((item) => item.type === '오디오')
+      .map((item) => item.id)
+
+    const audioFilesByContentId = new Map()
+
+    if (audioContentIds.length > 0) {
+      const { data: audioData, error: audioError } = await supabase
+        .from('content_audio')
+        .select(
+          'id, content_id, title, file_url, storage_path, original_file_name, mime_type, file_size, sort_order, created_at'
+        )
+        .in('content_id', audioContentIds)
+        .order('sort_order', { ascending: true })
+
+      if (audioError) {
+        console.error('오디오 목록 조회 실패:', audioError)
+      } else {
+        const audioFileList = audioData || []
+
+        audioFileList.forEach((audioFile) => {
+          const currentAudioFiles =
+            audioFilesByContentId.get(audioFile.content_id) || []
+
+          currentAudioFiles.push(audioFile)
+          audioFilesByContentId.set(audioFile.content_id, currentAudioFiles)
+        })
+      }
+    }
+
+    setContent(
+      contentList.map((item) => {
+        const savedAudioFiles = audioFilesByContentId.get(item.id) || []
+
+        if (
+          item.type === '오디오' &&
+          savedAudioFiles.length === 0 &&
+          item.contentAudioUrl
+        ) {
+          return {
+            ...item,
+            audioFiles: [
+              {
+                id: `legacy-${item.id}`,
+                content_id: item.id,
+                title: item.title,
+                file_url: item.contentAudioUrl,
+                storage_path: '',
+                original_file_name: '',
+                sort_order: 0,
+              },
+            ],
+          }
+        }
+
+        return {
+          ...item,
+          audioFiles: savedAudioFiles,
+        }
+      })
+    )
   }
 
   useEffect(() => {
-    getUsers()
-    getContent()
+    // 초기 화면 진입 시 프로필과 콘텐츠 데이터를 함께 조회합니다.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void Promise.all([getUsers(), getContent()])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Storage public URL에서 bucket 내부 path만 추출
@@ -498,6 +563,7 @@ function HomePage() {
     setContentForm(initialContentForm)
     setContentFile(null)
     setContentFileName('선택된 파일 없음')
+    setContentAudioFiles([])
     setConvertMessage('')
 
     if (contentPreview) {
@@ -517,6 +583,7 @@ function HomePage() {
     setContentForm(initialContentForm)
     setContentFile(null)
     setContentFileName('선택된 파일 없음')
+    setContentAudioFiles([])
     setConvertMessage('')
 
     if (contentPreview) {
@@ -531,6 +598,7 @@ function HomePage() {
     setContentType(event.target.value)
     setContentFile(null)
     setContentFileName('선택된 파일 없음')
+    setContentAudioFiles([])
     setConvertMessage('')
 
     if (contentPreview) {
@@ -553,23 +621,88 @@ function HomePage() {
   }
 
   const handleContentFileChange = (event) => {
-    const file = event.target.files?.[0]
+    const selectedFiles = Array.from(event.target.files || [])
 
-    if (!file) {
-      setContentFile(null)
-      setContentFileName('선택된 파일 없음')
+    if (selectedFiles.length === 0) return
 
-      if (contentPreview) {
-        URL.revokeObjectURL(contentPreview)
+    const maxImageSize = 10 * 1024 * 1024
+    const maxVideoUploadSize = 30 * 1024 * 1024
+    const maxVideoConvertSourceSize = 200 * 1024 * 1024
+    const maxAudioSize = 20 * 1024 * 1024
+
+    if (contentType === '오디오') {
+      const existingFileKeys = new Set(
+        contentAudioFiles.map(
+          (audioFile) =>
+            `${audioFile.file.name}-${audioFile.file.size}-${audioFile.file.lastModified}`
+        )
+      )
+      const nextAudioFiles = []
+
+      for (const file of selectedFiles) {
+        const isSelectedFileVideo = isVideoFile(file)
+        const isSelectedFileAudio = isAudioFile(file)
+
+        if (!isSelectedFileAudio && !isSelectedFileVideo) {
+          setErrorMessage(
+            '오디오 콘텐츠는 오디오 파일 또는 변환할 영상 파일만 업로드할 수 있습니다.'
+          )
+          event.target.value = ''
+          return
+        }
+
+        if (isSelectedFileVideo && file.size > maxVideoConvertSourceSize) {
+          setErrorMessage(
+            '오디오 변환용 영상 파일은 파일별 200MB 이하만 선택할 수 있습니다.'
+          )
+          event.target.value = ''
+          return
+        }
+
+        if (isSelectedFileAudio && file.size > maxAudioSize) {
+          setErrorMessage(
+            '오디오 파일은 파일별 20MB 이하만 업로드할 수 있습니다.'
+          )
+          event.target.value = ''
+          return
+        }
+
+        const fileKey = `${file.name}-${file.size}-${file.lastModified}`
+
+        if (existingFileKeys.has(fileKey)) continue
+
+        existingFileKeys.add(fileKey)
+        nextAudioFiles.push({
+          id: createSafeId(),
+          file,
+          title: file.name?.replace(/\.[^/.]+$/, '') || '오디오',
+          originalFileName: file.name || '오디오 파일',
+        })
       }
 
+      const updatedAudioFiles = [...contentAudioFiles, ...nextAudioFiles]
+
+      setContentAudioFiles(updatedAudioFiles)
+      setContentFile(null)
+      setContentFileName(
+        updatedAudioFiles.length > 0
+          ? `${updatedAudioFiles.length}개 파일 선택됨`
+          : '선택된 파일 없음'
+      )
       setContentPreview('')
+      setConvertMessage('')
+      setErrorMessage(
+        nextAudioFiles.length === 0
+          ? '이미 선택한 파일입니다.'
+          : ''
+      )
+      event.target.value = ''
       return
     }
 
+    const file = selectedFiles[0]
     const isSelectedFileImage = isImageFile(file)
     const isSelectedFileVideo = isVideoFile(file)
-    const isSelectedFileAudio = isAudioFile(file)
 
     if (contentType === '사진' && !isSelectedFileImage) {
       setErrorMessage('사진 콘텐츠는 이미지 파일만 업로드할 수 있습니다.')
@@ -583,23 +716,6 @@ function HomePage() {
       return
     }
 
-    if (
-      contentType === '오디오' &&
-      !isSelectedFileAudio &&
-      !isSelectedFileVideo
-    ) {
-      setErrorMessage(
-        '오디오 콘텐츠는 오디오 파일 또는 변환할 영상 파일만 업로드할 수 있습니다.'
-      )
-      event.target.value = ''
-      return
-    }
-
-    const maxImageSize = 10 * 1024 * 1024
-    const maxVideoUploadSize = 30 * 1024 * 1024
-    const maxVideoConvertSourceSize = 200 * 1024 * 1024
-    const maxAudioSize = 20 * 1024 * 1024
-
     if (contentType === '사진' && file.size > maxImageSize) {
       setErrorMessage('이미지 파일은 10MB 이하만 업로드할 수 있습니다.')
       event.target.value = ''
@@ -608,28 +724,6 @@ function HomePage() {
 
     if (contentType === '비디오' && file.size > maxVideoUploadSize) {
       setErrorMessage('비디오 파일은 30MB 이하만 업로드할 수 있습니다.')
-      event.target.value = ''
-      return
-    }
-
-    if (
-      contentType === '오디오' &&
-      isSelectedFileVideo &&
-      file.size > maxVideoConvertSourceSize
-    ) {
-      setErrorMessage(
-        '오디오 변환용 영상 파일은 200MB 이하만 선택할 수 있습니다.'
-      )
-      event.target.value = ''
-      return
-    }
-
-    if (
-      contentType === '오디오' &&
-      isSelectedFileAudio &&
-      file.size > maxAudioSize
-    ) {
-      setErrorMessage('오디오 파일은 20MB 이하만 업로드할 수 있습니다.')
       event.target.value = ''
       return
     }
@@ -647,6 +741,36 @@ function HomePage() {
     } else {
       setContentPreview('')
     }
+
+    setErrorMessage('')
+  }
+
+  const handleContentAudioTitleChange = (audioFileId, title) => {
+    setContentAudioFiles((prev) =>
+      prev.map((audioFile) =>
+        audioFile.id === audioFileId
+          ? {
+              ...audioFile,
+              title,
+            }
+          : audioFile
+      )
+    )
+
+    setErrorMessage('')
+  }
+
+  const handleRemoveContentAudioFile = (audioFileId) => {
+    const nextAudioFiles = contentAudioFiles.filter(
+      (audioFile) => audioFile.id !== audioFileId
+    )
+
+    setContentAudioFiles(nextAudioFiles)
+    setContentFileName(
+      nextAudioFiles.length > 0
+        ? `${nextAudioFiles.length}개 파일 선택됨`
+        : '선택된 파일 없음'
+    )
 
     setErrorMessage('')
   }
@@ -682,7 +806,10 @@ function HomePage() {
       .from('content-files')
       .getPublicUrl(filePath)
 
-    return data.publicUrl
+    return {
+      publicUrl: data.publicUrl,
+      filePath,
+    }
   }
 
   const validateContentForm = () => {
@@ -690,10 +817,29 @@ function HomePage() {
       return '제목을 입력해주세요.'
     }
 
+    if (contentType === '오디오') {
+      if (contentAudioFiles.length === 0) {
+        return '오디오 파일을 한 개 이상 첨부해주세요.'
+      }
+
+      if (contentAudioFiles.some((audioFile) => !audioFile.title.trim())) {
+        return '모든 오디오 제목을 입력해주세요.'
+      }
+
+      if (
+        contentAudioFiles.some(
+          (audioFile) => audioFile.title.trim().length > 100
+        )
+      ) {
+        return '오디오 제목은 100자 이하로 입력해주세요.'
+      }
+
+      return ''
+    }
+
     if (!contentFile) {
       if (contentType === '사진') return '이미지 파일을 첨부해주세요.'
       if (contentType === '비디오') return '영상 파일을 첨부해주세요.'
-      if (contentType === '오디오') return '오디오 파일을 첨부해주세요.'
     }
 
     return ''
@@ -711,38 +857,97 @@ function HomePage() {
     setErrorMessage('')
     setConvertMessage('')
 
+    const uploadedStoragePaths = []
+    let createdContentId = null
+
     try {
-      let uploadFile = contentFile
-      let uploadType = contentType
-      const isAudioSourceVideo =
-        contentType === '오디오' && isVideoFile(contentFile)
-
-      if (contentType === '오디오' && isAudioSourceVideo) {
-        uploadFile = await convertVideoToM4a(contentFile)
-        uploadType = '오디오'
-        setConvertMessage('변환된 오디오 파일을 업로드하는 중입니다.')
-      } else if (contentType === '오디오') {
-        setConvertMessage('오디오 파일을 업로드하는 중입니다.')
-      } else if (contentType === '비디오') {
-        setConvertMessage('비디오 파일을 업로드하는 중입니다.')
-      } else if (contentType === '사진') {
-        setConvertMessage('이미지 파일을 업로드하는 중입니다.')
-      }
-
-      const contentFileUrl = await uploadContentFile(uploadFile, uploadType)
-
       const payload = {
         type: contentType,
         title: contentForm.title.trim(),
-        contentImageUrl: contentType === '사진' ? contentFileUrl : null,
-        contentVideoUrl: contentType === '비디오' ? contentFileUrl : null,
-        contentAudioUrl: contentType === '오디오' ? contentFileUrl : null,
+        contentImageUrl: null,
+        contentVideoUrl: null,
+        contentAudioUrl: null,
       }
 
-      const { error } = await supabase.from('content').insert([payload])
+      const uploadedAudioFiles = []
+
+      if (contentType === '오디오') {
+        for (let index = 0; index < contentAudioFiles.length; index += 1) {
+          const audioFile = contentAudioFiles[index]
+          const progressText = `${index + 1}/${contentAudioFiles.length}`
+          const isAudioSourceVideo = isVideoFile(audioFile.file)
+
+          let uploadFile = audioFile.file
+
+          if (isAudioSourceVideo) {
+            setConvertMessage(
+              `${progressText} 영상에서 오디오를 추출하는 중입니다.`
+            )
+            uploadFile = await convertVideoToM4a(audioFile.file)
+          }
+
+          setConvertMessage(
+            `${progressText} ${audioFile.title.trim()} 오디오를 업로드하는 중입니다.`
+          )
+
+          const uploadedFile = await uploadContentFile(uploadFile, '오디오')
+
+          uploadedStoragePaths.push(uploadedFile.filePath)
+          uploadedAudioFiles.push({
+            title: audioFile.title.trim(),
+            file_url: uploadedFile.publicUrl,
+            storage_path: uploadedFile.filePath,
+            original_file_name: audioFile.originalFileName,
+            mime_type: uploadFile.type || null,
+            file_size: uploadFile.size,
+            sort_order: index,
+          })
+        }
+      } else {
+        setConvertMessage(
+          contentType === '비디오'
+            ? '비디오 파일을 업로드하는 중입니다.'
+            : '이미지 파일을 업로드하는 중입니다.'
+        )
+
+        const uploadedFile = await uploadContentFile(contentFile, contentType)
+
+        uploadedStoragePaths.push(uploadedFile.filePath)
+
+        if (contentType === '사진') {
+          payload.contentImageUrl = uploadedFile.publicUrl
+        }
+
+        if (contentType === '비디오') {
+          payload.contentVideoUrl = uploadedFile.publicUrl
+        }
+      }
+
+      const { data: createdContent, error } = await supabase
+        .from('content')
+        .insert([payload])
+        .select('id')
+        .single()
 
       if (error) {
         throw error
+      }
+
+      createdContentId = createdContent.id
+
+      if (contentType === '오디오') {
+        const { error: audioInsertError } = await supabase
+          .from('content_audio')
+          .insert(
+            uploadedAudioFiles.map((audioFile) => ({
+              ...audioFile,
+              content_id: createdContent.id,
+            }))
+          )
+
+        if (audioInsertError) {
+          throw audioInsertError
+        }
       }
 
       await getContent()
@@ -750,23 +955,50 @@ function HomePage() {
 
       showToast(`${contentType} 콘텐츠가 등록되었습니다.`)
     } catch (error) {
+      if (createdContentId) {
+        const { error: removeContentError } = await supabase
+          .from('content')
+          .delete()
+          .eq('id', createdContentId)
+
+        if (removeContentError) {
+          console.error('실패한 콘텐츠 데이터 정리 실패:', removeContentError)
+        }
+      }
+
+      if (uploadedStoragePaths.length > 0) {
+        const { error: removeFilesError } = await supabase.storage
+          .from('content-files')
+          .remove(uploadedStoragePaths)
+
+        if (removeFilesError) {
+          console.error('실패한 콘텐츠 파일 정리 실패:', removeFilesError)
+        }
+      }
+
       console.error('콘텐츠 업로드 실패:', {
         message: error.message,
         name: error.name,
         statusCode: error.statusCode,
         error,
         contentType,
-        fileName: contentFile?.name,
-        fileType: contentFile?.type,
-        fileSize: contentFile?.size,
+        fileNames:
+          contentType === '오디오'
+            ? contentAudioFiles.map((audioFile) => audioFile.originalFileName)
+            : [contentFile?.name],
       })
+
+      const isContentAudioPermissionError =
+        error.code === '42501' ||
+        error.message?.includes('permission denied for table content_audio')
 
       setResultModal({
         isOpen: true,
         type: 'fail',
         title: '등록 실패',
-        message:
-          '콘텐츠 등록 중 오류가 발생했습니다. 파일 용량, 형식, 네트워크 상태, 변환 가능 여부 또는 Supabase 설정을 확인해주세요.',
+        message: isContentAudioPermissionError
+          ? 'content_audio 테이블의 Supabase 접근 정책을 확인해주세요.'
+          : '콘텐츠 등록 중 오류가 발생했습니다. 파일 용량, 형식, 네트워크 상태, 변환 가능 여부 또는 Supabase 설정을 확인해주세요.',
       })
     } finally {
       setIsContentUploading(false)
@@ -828,22 +1060,55 @@ function HomePage() {
     }
 
     try {
-      let fileUrl = ''
+      const storageFilePaths = []
 
       if (deleteContentTarget.type === '사진') {
-        fileUrl = deleteContentTarget.contentImageUrl
+        const filePath = getStorageFilePathFromUrl(
+          'content-files',
+          deleteContentTarget.contentImageUrl
+        )
+
+        if (filePath) storageFilePaths.push(filePath)
       }
 
       if (deleteContentTarget.type === '비디오') {
-        fileUrl = deleteContentTarget.contentVideoUrl
+        const filePath = getStorageFilePathFromUrl(
+          'content-files',
+          deleteContentTarget.contentVideoUrl
+        )
+
+        if (filePath) storageFilePaths.push(filePath)
       }
 
       if (deleteContentTarget.type === '오디오') {
-        fileUrl = deleteContentTarget.contentAudioUrl
+        const audioFiles = deleteContentTarget.audioFiles || []
+
+        audioFiles.forEach((audioFile) => {
+          const filePath =
+            audioFile.storage_path ||
+            getStorageFilePathFromUrl('content-files', audioFile.file_url)
+
+          if (filePath) storageFilePaths.push(filePath)
+        })
+
+        if (audioFiles.length === 0 && deleteContentTarget.contentAudioUrl) {
+          const legacyFilePath = getStorageFilePathFromUrl(
+            'content-files',
+            deleteContentTarget.contentAudioUrl
+          )
+
+          if (legacyFilePath) storageFilePaths.push(legacyFilePath)
+        }
       }
 
-      if (fileUrl) {
-        await deleteStorageFileByUrl('content-files', fileUrl)
+      if (storageFilePaths.length > 0) {
+        const { error: removeFilesError } = await supabase.storage
+          .from('content-files')
+          .remove([...new Set(storageFilePaths)])
+
+        if (removeFilesError) {
+          throw removeFilesError
+        }
       }
 
       const { error } = await supabase
@@ -1004,6 +1269,7 @@ function HomePage() {
           contentType={contentType}
           contentForm={contentForm}
           contentFileName={contentFileName}
+          contentAudioFiles={contentAudioFiles}
           contentPreview={contentPreview}
           errorMessage={errorMessage}
           convertMessage={convertMessage}
@@ -1013,6 +1279,8 @@ function HomePage() {
           onContentTypeChange={handleContentTypeChange}
           onInputChange={handleContentInputChange}
           onFileChange={handleContentFileChange}
+          onAudioTitleChange={handleContentAudioTitleChange}
+          onAudioFileRemove={handleRemoveContentAudioFile}
         />
       )}
 

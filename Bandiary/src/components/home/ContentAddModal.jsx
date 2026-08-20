@@ -11,6 +11,7 @@ function ContentAddModal({
   contentType,
   contentForm,
   contentFileName,
+  contentAudioFiles,
   contentPreview,
   errorMessage,
   convertMessage,
@@ -20,6 +21,8 @@ function ContentAddModal({
   onContentTypeChange,
   onInputChange,
   onFileChange,
+  onAudioTitleChange,
+  onAudioFileRemove,
 }) {
   const [currentStep, setCurrentStep] = useState(1)
   const [stepErrorMessage, setStepErrorMessage] = useState('')
@@ -44,7 +47,7 @@ function ContentAddModal({
         return '업로드할 비디오 파일을 선택해주세요. (30MB 이하)'
       }
 
-      return '업로드할 오디오 파일을 선택해주세요. 비디오 파일을 선택하면 m4a 오디오로 변환됩니다.'
+      return '오디오 파일을 선택하고 파일별 제목을 입력해주세요.'
     }
 
     return '입력한 정보를 확인해주세요.'
@@ -58,11 +61,21 @@ function ContentAddModal({
     }
 
     if (currentStep === 2) {
+      if (isAudio) {
+        if (contentAudioFiles.length === 0) {
+          return '오디오 파일을 한 개 이상 첨부해주세요.'
+        }
+
+        if (contentAudioFiles.some((audioFile) => !audioFile.title.trim())) {
+          return '모든 오디오 제목을 입력해주세요.'
+        }
+
+        return ''
+      }
+
       if (contentFileName === '선택된 파일 없음') {
         if (isPicture) return '이미지 파일을 첨부해주세요.'
         if (isVideo) return '영상 파일을 첨부해주세요.'
-
-        return '오디오 파일을 첨부해주세요.'
       }
     }
 
@@ -75,6 +88,13 @@ function ContentAddModal({
     }
 
     if (currentStep === 2) {
+      if (isAudio) {
+        return (
+          contentAudioFiles.length > 0 &&
+          contentAudioFiles.every((audioFile) => audioFile.title.trim())
+        )
+      }
+
       return contentFileName !== '선택된 파일 없음'
     }
 
@@ -113,6 +133,16 @@ function ContentAddModal({
 
   const handleChangeFile = (event) => {
     onFileChange(event)
+    setStepErrorMessage('')
+  }
+
+  const handleAudioTitleChange = (audioFileId, title) => {
+    onAudioTitleChange(audioFileId, title)
+    setStepErrorMessage('')
+  }
+
+  const handleAudioFileRemove = (audioFileId) => {
+    onAudioFileRemove(audioFileId)
     setStepErrorMessage('')
   }
 
@@ -291,8 +321,8 @@ function ContentAddModal({
                 <div className={styles.contentUploadGuide}>
                   <strong>오디오 업로드 안내</strong>
                   <p>
-                    mp3, m4a, wav, webm 등의 오디오 파일은 그대로 저장되고,
-                    mp4, mov 등의 영상 파일은 m4a 오디오로 변환되어
+                    여러 파일을 한 번에 선택할 수 있습니다. 오디오 파일은
+                    파일별 20MB 이하이며, 영상 파일은 m4a 오디오로 변환되어
                     저장됩니다.
                   </p>
                 </div>
@@ -301,7 +331,7 @@ function ContentAddModal({
               {/* 파일 선택 */}
               <div className={styles.contentFileSelectBox}>
                 <label htmlFor="contentFile" className={styles.customFileButton}>
-                  파일 선택
+                  {isAudio ? '오디오 파일 추가' : '파일 선택'}
                 </label>
 
                 <span className={styles.customFileName}>{contentFileName}</span>
@@ -311,10 +341,84 @@ function ContentAddModal({
                   className={styles.customFileInput}
                   type="file"
                   accept={getFileAcceptValue()}
+                  multiple={isAudio}
                   onChange={handleChangeFile}
                   disabled={isContentUploading}
                 />
               </div>
+
+              {/* 선택한 오디오 파일 및 제목 */}
+              {isAudio && contentAudioFiles.length > 0 && (
+                <div className={styles.contentAudioEditor}>
+                  <div className={styles.contentAudioEditorHeader}>
+                    <strong>
+                      선택한 오디오 {contentAudioFiles.length}개
+                    </strong>
+                    <span>
+                      총{' '}
+                      {(
+                        contentAudioFiles.reduce(
+                          (totalSize, audioFile) =>
+                            totalSize + audioFile.file.size,
+                          0
+                        ) /
+                        (1024 * 1024)
+                      ).toFixed(1)}
+                      MB
+                    </span>
+                  </div>
+
+                  <div className={styles.contentAudioEditorList}>
+                    {contentAudioFiles.map((audioFile, index) => (
+                      <div
+                        key={audioFile.id}
+                        className={styles.contentAudioEditorItem}
+                      >
+                        <span className={styles.contentAudioEditorNumber}>
+                          {index + 1}
+                        </span>
+
+                        <div className={styles.contentAudioEditorFields}>
+                          <label htmlFor={`contentAudioTitle-${audioFile.id}`}>
+                            오디오 제목
+                          </label>
+                          <input
+                            id={`contentAudioTitle-${audioFile.id}`}
+                            type="text"
+                            value={audioFile.title}
+                            maxLength={100}
+                            placeholder="오디오 제목을 입력해주세요"
+                            onChange={(event) =>
+                              handleAudioTitleChange(
+                                audioFile.id,
+                                event.target.value
+                              )
+                            }
+                            disabled={isContentUploading}
+                          />
+                          <small>
+                            {audioFile.originalFileName} ·{' '}
+                            {(audioFile.file.size / (1024 * 1024)).toFixed(1)}
+                            MB
+                          </small>
+                        </div>
+
+                        <button
+                          type="button"
+                          className={styles.contentAudioRemoveButton}
+                          onClick={() =>
+                            handleAudioFileRemove(audioFile.id)
+                          }
+                          disabled={isContentUploading}
+                          aria-label={`${audioFile.title || audioFile.originalFileName} 제거`}
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </>
           )}
 
@@ -325,15 +429,30 @@ function ContentAddModal({
                 <strong>{contentForm.title}</strong>
               </div>
 
-              <span>파일명: {contentFileName}</span>
+              {!isAudio && <span>파일명: {contentFileName}</span>}
 
               {isVideo && <span>저장 방식: 비디오 파일 그대로 저장</span>}
 
               {isAudio && (
-                <span>
-                  저장 방식: 오디오 파일은 그대로 저장 / 영상 파일은 m4a
-                  오디오로 변환 저장
-                </span>
+                <>
+                  <span>오디오 {contentAudioFiles.length}개</span>
+
+                  <div className={styles.contentAudioSummaryList}>
+                    {contentAudioFiles.map((audioFile, index) => (
+                      <div key={audioFile.id}>
+                        <strong>
+                          {index + 1}. {audioFile.title}
+                        </strong>
+                        <span>{audioFile.originalFileName}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <span>
+                    저장 방식: 오디오 파일은 그대로 저장 / 영상 파일은 m4a
+                    오디오로 변환 저장
+                  </span>
+                </>
               )}
             </div>
           )}
