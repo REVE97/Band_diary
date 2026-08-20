@@ -566,6 +566,14 @@
   opacity: 0.45;
 }
 
+.audioFeedbackInputGuide {
+  margin: 6px 5px 0;
+  color: var(--color-text-muted);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
 .audioFeedbackDeleteButton {
   flex: 0 0 auto;
   width: 24px;

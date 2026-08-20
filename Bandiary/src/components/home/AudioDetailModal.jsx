@@ -130,7 +130,13 @@ function AudioDetailModal({ content, onClose }) {
   }, [activeAudioIndex])
 
   const handleFeedbackTimeChange = (event) => {
-    setFeedbackTime(event.target.value)
+    const timeDigits = event.target.value.replace(/\D/g, '').slice(0, 4)
+    const formattedTime =
+      timeDigits.length > 2
+        ? `${timeDigits.slice(0, 2)}:${timeDigits.slice(2)}`
+        : timeDigits
+
+    setFeedbackTime(formattedTime)
     setFeedbackErrorMessage('')
   }
 
@@ -526,7 +532,7 @@ function AudioDetailModal({ content, onClose }) {
                       inputMode="numeric"
                       value={feedbackTime}
                       placeholder="MM:SS"
-                      maxLength={7}
+                      maxLength={5}
                       onChange={handleFeedbackTimeChange}
                       aria-label="피드백 시간"
                     />
@@ -557,6 +563,10 @@ function AudioDetailModal({ content, onClose }) {
                       )}
                     </button>
                   </div>
+
+                  <p className={styles.audioFeedbackInputGuide}>
+                    숫자 4자리 입력 · 예: 0130 → 01:30
+                  </p>
 
                   {feedbackErrorMessage && (
                     <p className={styles.audioFeedbackError}>
