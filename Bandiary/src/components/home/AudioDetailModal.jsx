@@ -474,6 +474,12 @@ function AudioDetailModal({ content, onClose }) {
                   <span>{audioFeedbacks.length}개</span>
                 </div>
 
+                {!isFeedbackLoading && audioFeedbacks.length > 0 && (
+                  <p className={styles.audioFeedbackPlayGuide}>
+                    타임 라인을 누르면 해당 시점부터 재생돼요.
+                  </p>
+                )}
+
                 <div className={styles.audioFeedbackList}>
                   {isFeedbackLoading ? (
                     <div className={styles.audioFeedbackEmpty}>
