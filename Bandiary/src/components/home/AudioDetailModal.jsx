@@ -1,6 +1,8 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 import ModalPortal from '../common/ModalPortal'
+import useToast from '../common/useToast'
+import PlaceResultModal from '../place/PlaceResultModal'
 
 import { formatDate } from '../../features/common'
 import supabase from '../../api/supabase'
@@ -39,6 +41,7 @@ const parseAudioTime = (timeText) => {
 }
 
 function AudioDetailModal({ content, onClose }) {
+  const { showToast } = useToast()
   const audioPlayerRef = useRef(null)
   const shouldAutoPlayAudioRef = useRef(false)
   const audioFiles = Array.isArray(content.audioFiles)
@@ -59,6 +62,7 @@ function AudioDetailModal({ content, onClose }) {
   const [isFeedbackLoading, setIsFeedbackLoading] = useState(true)
   const [isFeedbackSubmitting, setIsFeedbackSubmitting] = useState(false)
   const [deletingFeedbackId, setDeletingFeedbackId] = useState(null)
+  const [deleteFeedbackTarget, setDeleteFeedbackTarget] = useState(null)
 
   const activeAudio = audioFiles[activeAudioIndex] || audioFiles[0]
   const audioProgress = audioDuration
@@ -297,46 +301,57 @@ function AudioDetailModal({ content, onClose }) {
     await getAudioFeedbacks(activeAudio.id)
   }
 
+  const handleOpenFeedbackDeleteModal = (feedback) => {
+    if (!isAdmin) return
+
+    setDeleteFeedbackTarget(feedback)
+    setFeedbackErrorMessage('')
+  }
+
+  const handleCloseFeedbackDeleteModal = () => {
+    if (deletingFeedbackId !== null) return
+
+    setDeleteFeedbackTarget(null)
+  }
+
   // 구간 피드백 삭제 기능 (관리자용)
-  const handleDeleteFeedback = async (feedbackId) => {
-    if (!isAdmin) {
-      setFeedbackErrorMessage('관리자만 구간 피드백을 삭제할 수 있습니다.')
-      return
-    }
+  const handleDeleteFeedback = async () => {
+    if (!isAdmin || !deleteFeedbackTarget) return
 
-    const isConfirmed = window.confirm('구간 피드백을 삭제하시겠습니까?')
-
-    if (!isConfirmed) return
-
-    setDeletingFeedbackId(feedbackId)
+    setDeletingFeedbackId(deleteFeedbackTarget.id)
     setFeedbackErrorMessage('')
 
     const { error } = await supabase
       .from('content_audio_comment')
       .delete()
-      .eq('id', feedbackId)
+      .eq('id', deleteFeedbackTarget.id)
       .eq('content_audio_id', activeAudio.id)
 
     if (error) {
       console.error(error)
       setFeedbackErrorMessage('구간 피드백 삭제에 실패했습니다.')
       setDeletingFeedbackId(null)
+      setDeleteFeedbackTarget(null)
       return
     }
 
     setDeletingFeedbackId(null)
+    setDeleteFeedbackTarget(null)
 
     await getAudioFeedbacks(activeAudio.id)
+
+    showToast('구간 피드백이 삭제되었습니다.')
   }
 
   return (
-    <ModalPortal onEscapeKey={onClose}>
-      <div
-        className={`${styles.placeModalCard} ${styles.audioDetailCard}`}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="audio-detail-title"
-      >
+    <>
+      <ModalPortal onEscapeKey={onClose}>
+        <div
+          className={`${styles.placeModalCard} ${styles.audioDetailCard}`}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="audio-detail-title"
+        >
         {/* 오디오 상세 헤더 */}
         <div className={styles.audioDetailHeader}>
           <div className={styles.audioDetailHeading}>
@@ -483,7 +498,9 @@ function AudioDetailModal({ content, onClose }) {
                           <button
                             type="button"
                             className={styles.audioFeedbackDeleteButton}
-                            onClick={() => handleDeleteFeedback(feedback.id)}
+                            onClick={() =>
+                              handleOpenFeedbackDeleteModal(feedback)
+                            }
                             disabled={deletingFeedbackId === feedback.id}
                             aria-label="구간 피드백 삭제"
                           >
@@ -516,7 +533,7 @@ function AudioDetailModal({ content, onClose }) {
 
                     <textarea
                       value={feedbackText}
-                      placeholder="피드백 내용을 입력해주세요."
+                      placeholder="이 구간에 피드백 남기기"
                       onChange={handleFeedbackTextChange}
                       aria-label="피드백 내용"
                     />
@@ -601,8 +618,21 @@ function AudioDetailModal({ content, onClose }) {
             </div>
           )}
         </div>
-      </div>
-    </ModalPortal>
+        </div>
+      </ModalPortal>
+
+      {deleteFeedbackTarget && (
+        <PlaceResultModal
+          type="confirm"
+          title="삭제 확인"
+          message="선택한 구간 피드백을 삭제하시겠습니까?"
+          confirmText="삭제"
+          cancelText="취소"
+          onClose={handleCloseFeedbackDeleteModal}
+          onConfirm={handleDeleteFeedback}
+        />
+      )}
+    </>
   )
 }
 

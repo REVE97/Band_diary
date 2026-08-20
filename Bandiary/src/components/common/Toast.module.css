@@ -2,7 +2,7 @@
   position: fixed;
   left: 50%;
   bottom: calc(84px + env(safe-area-inset-bottom));
-  z-index: 900;
+  z-index: 2000;
   width: calc(100% - 36px);
   max-width: 394px;
   min-height: 60px;
