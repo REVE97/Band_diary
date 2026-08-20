@@ -424,6 +424,71 @@
   font-weight: 800;
 }
 
+.audioFeedbackTitleGroup {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.audioFeedbackGuideWrap {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.audioFeedbackGuideButton {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-primary-border);
+  border-radius: 50%;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-size: 11px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.audioFeedbackGuideButton:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.audioFeedbackTooltip {
+  position: absolute;
+  top: calc(100% + 7px);
+  left: -8px;
+  z-index: 2;
+  width: max-content;
+  max-width: 240px;
+  padding: 8px 10px;
+  border: 1px solid var(--color-primary-border);
+  border-radius: 10px;
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  box-shadow: var(--shadow-card);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.4;
+  word-break: keep-all;
+}
+
+.audioFeedbackTooltip::before {
+  position: absolute;
+  top: -5px;
+  left: 13px;
+  width: 8px;
+  height: 8px;
+  border-top: 1px solid var(--color-primary-border);
+  border-left: 1px solid var(--color-primary-border);
+  background: var(--color-surface);
+  content: '';
+  transform: rotate(45deg);
+}
+
 .audioFeedbackList {
   display: flex;
   flex-direction: column;
@@ -465,16 +530,6 @@
   font-weight: 750;
   line-height: 1.5;
   word-break: break-word;
-}
-
-.audioFeedbackPlayGuide {
-  display: block;
-  margin: 0 2px 8px;
-  color: var(--color-text-muted);
-  font-size: 10px;
-  font-weight: 700;
-  line-height: 1.4;
-  word-break: keep-all;
 }
 
 .audioFeedbackEmpty {

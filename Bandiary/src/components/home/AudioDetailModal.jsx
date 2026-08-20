@@ -63,6 +63,7 @@ function AudioDetailModal({ content, onClose }) {
   const [isFeedbackSubmitting, setIsFeedbackSubmitting] = useState(false)
   const [deletingFeedbackId, setDeletingFeedbackId] = useState(null)
   const [deleteFeedbackTarget, setDeleteFeedbackTarget] = useState(null)
+  const [isFeedbackGuideOpen, setIsFeedbackGuideOpen] = useState(false)
 
   const activeAudio = audioFiles[activeAudioIndex] || audioFiles[0]
   const audioProgress = audioDuration
@@ -161,6 +162,7 @@ function AudioDetailModal({ content, onClose }) {
     setFeedbackText('')
     setFeedbackErrorMessage('')
     setIsFeedbackLoading(true)
+    setIsFeedbackGuideOpen(false)
   }
 
   const handleAudioPlayPause = () => {
@@ -343,6 +345,7 @@ function AudioDetailModal({ content, onClose }) {
 
     setDeletingFeedbackId(null)
     setDeleteFeedbackTarget(null)
+    setIsFeedbackGuideOpen(false)
 
     await getAudioFeedbacks(activeAudio.id)
 
@@ -470,15 +473,39 @@ function AudioDetailModal({ content, onClose }) {
                 aria-labelledby="audio-feedback-title"
               >
                 <div className={styles.audioFeedbackHeader}>
-                  <h3 id="audio-feedback-title">구간 피드백</h3>
+                  <div className={styles.audioFeedbackTitleGroup}>
+                    <h3 id="audio-feedback-title">구간 피드백</h3>
+
+                    {!isFeedbackLoading && audioFeedbacks.length > 0 && (
+                      <div className={styles.audioFeedbackGuideWrap}>
+                        <button
+                          type="button"
+                          className={styles.audioFeedbackGuideButton}
+                          onClick={() =>
+                            setIsFeedbackGuideOpen((isOpen) => !isOpen)
+                          }
+                          aria-label="구간 피드백 사용법"
+                          aria-expanded={isFeedbackGuideOpen}
+                          aria-controls="audio-feedback-play-guide"
+                        >
+                          i
+                        </button>
+
+                        {isFeedbackGuideOpen && (
+                          <div
+                            id="audio-feedback-play-guide"
+                            className={styles.audioFeedbackTooltip}
+                            role="tooltip"
+                          >
+                            타임라인을 누르면 해당 시점부터 재생돼요.
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
                   <span>{audioFeedbacks.length}개</span>
                 </div>
-
-                {!isFeedbackLoading && audioFeedbacks.length > 0 && (
-                  <p className={styles.audioFeedbackPlayGuide}>
-                    타임 라인을 누르면 해당 시점부터 재생돼요.
-                  </p>
-                )}
 
                 <div className={styles.audioFeedbackList}>
                   {isFeedbackLoading ? (
