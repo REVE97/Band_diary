@@ -552,7 +552,7 @@
   padding: 0 10px;
   border-radius: 10px;
   background: var(--color-surface-subtle);
-  font-size: 12px;
+  font-size: 16px;
 }
 
 .contentAudioEditorFields small {
