@@ -38,7 +38,7 @@ function PlacePage() {
   const [activeFilter, setActiveFilter] = useState('all')
   const [searchKeyword, setSearchKeyword] = useState('')
   const [selectedPlace, setSelectedPlace] = useState(null)
-  const placeCardRefs = useRef(new Map())
+  const mapExplorerRef = useRef(null)
 
   const [studioList, setStudioList] = useState([])
   const [restaurantList, setRestaurantList] = useState([])
@@ -169,39 +169,18 @@ function PlacePage() {
     setSelectedPlace(place)
   }, [])
 
+  // 목록에서 장소를 선택하면 해당 마커를 표시하고 지도 영역으로 이동합니다.
+  const handlePlaceCardClick = useCallback((place) => {
+    setSelectedPlace(place)
+    mapExplorerRef.current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    })
+  }, [])
+
   const handleClearSelectedPlace = useCallback(() => {
     setSelectedPlace(null)
   }, [])
-
-  const setPlaceCardRef = useCallback((place, element) => {
-    const placeKey = getPlaceKey(place)
-
-    if (element) {
-      placeCardRefs.current.set(placeKey, element)
-      return
-    }
-
-    placeCardRefs.current.delete(placeKey)
-  }, [])
-
-  const handleShowSelectedPlaceInList = () => {
-    if (!selectedPlace) return
-
-    const placeCard = placeCardRefs.current.get(
-      getPlaceKey(selectedPlace)
-    )
-
-    if (!placeCard) return
-
-    placeCard.scrollIntoView({
-      behavior: 'smooth',
-      block: 'center',
-    })
-
-    placeCard.focus({
-      preventScroll: true,
-    })
-  }
 
   const handleOpenKakaoRoute = (event, place) => {
     event.stopPropagation()
@@ -535,12 +514,6 @@ function PlacePage() {
         key={`${isFavoriteSection ? 'favorite' : 'place'}-${getPlaceKey(
           place
         )}`}
-        ref={
-          isFavoriteSection
-            ? undefined
-            : (element) => setPlaceCardRef(place, element)
-        }
-        tabIndex={isFavoriteSection ? undefined : -1}
         className={`${styles.placeCard} ${
           isSelected ? styles.active : ''
         } ${isFavoriteSection ? styles.favoriteCard : ''}`}
@@ -548,7 +521,7 @@ function PlacePage() {
         <button
           type="button"
           className={styles.cardSelectButton}
-          onClick={() => handlePlaceClick(place)}
+          onClick={() => handlePlaceCardClick(place)}
           aria-label={`${place.name} 지도에서 보기`}
         >
           <span
@@ -610,7 +583,11 @@ function PlacePage() {
 
   return (
     <div className={styles.page}>
-      <section className={styles.mapExplorer} aria-label="장소 지도 탐색">
+      <section
+        ref={mapExplorerRef}
+        className={styles.mapExplorer}
+        aria-label="장소 지도 탐색"
+      >
         <div className={styles.mapControls}>
           <label className={styles.searchField}>
             <img src={searchIcon} alt="" aria-hidden="true" />
@@ -682,14 +659,6 @@ function PlacePage() {
             </div>
 
             <div className={styles.selectedMapActions}>
-              <button
-                type="button"
-                className={styles.showInListButton}
-                onClick={handleShowSelectedPlaceInList}
-              >
-                목록에서 보기
-              </button>
-
               <button
                 type="button"
                 className={styles.selectedMapRouteButton}
