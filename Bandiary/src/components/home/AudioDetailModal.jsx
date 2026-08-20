@@ -8,12 +8,14 @@ import supabase from '../../api/supabase'
 import commentSendIcon from '../../assets/images/comment-send.svg'
 import styles from './AudioDetailModal.module.css'
 
-const fetchComments = (contentId) =>
+const fetchAudioFeedbacks = (audioId) =>
   supabase
-    .from('comment')
-    .select('*')
-    .eq('content_id', contentId)
-    .order('created_at', { ascending: true })
+    .from('content_audio_comment')
+    .select(
+      'id, content_audio_id, feedback_time, description, created_at'
+    )
+    .eq('content_audio_id', audioId)
+    .order('feedback_time', { ascending: true })
 
 const formatAudioTime = (seconds) => {
   if (!Number.isFinite(seconds) || seconds < 0) return '00:00'
@@ -24,6 +26,16 @@ const formatAudioTime = (seconds) => {
   return `${String(minutes).padStart(2, '0')}:${String(
     remainingSeconds
   ).padStart(2, '0')}`
+}
+
+const parseAudioTime = (timeText) => {
+  const normalizedTime = timeText.trim()
+
+  if (!/^\d{1,4}:[0-5]\d$/.test(normalizedTime)) return null
+
+  const [minutes, seconds] = normalizedTime.split(':').map(Number)
+
+  return minutes * 60 + seconds
 }
 
 function AudioDetailModal({ content, onClose }) {
@@ -40,11 +52,13 @@ function AudioDetailModal({ content, onClose }) {
   const [isAudioPlaying, setIsAudioPlaying] = useState(false)
   const [audioCurrentTime, setAudioCurrentTime] = useState(0)
   const [audioDuration, setAudioDuration] = useState(0)
-  const [comments, setComments] = useState([])
-  const [commentText, setCommentText] = useState('')
-  const [commentErrorMessage, setCommentErrorMessage] = useState('')
-  const [isCommentLoading, setIsCommentLoading] = useState(false)
-  const [deletingCommentId, setDeletingCommentId] = useState(null)
+  const [audioFeedbacks, setAudioFeedbacks] = useState([])
+  const [feedbackTime, setFeedbackTime] = useState('')
+  const [feedbackText, setFeedbackText] = useState('')
+  const [feedbackErrorMessage, setFeedbackErrorMessage] = useState('')
+  const [isFeedbackLoading, setIsFeedbackLoading] = useState(true)
+  const [isFeedbackSubmitting, setIsFeedbackSubmitting] = useState(false)
+  const [deletingFeedbackId, setDeletingFeedbackId] = useState(null)
 
   const activeAudio = audioFiles[activeAudioIndex] || audioFiles[0]
   const audioProgress = audioDuration
@@ -55,42 +69,50 @@ function AudioDetailModal({ content, onClose }) {
 
   const isAdmin = storageInfo?.userId === 'admin'
 
-  // 유저 데이터 불러오기
-  const getComments = async () => {
-    if (!content?.id) return
+  // 선택한 오디오의 구간 피드백 불러오기
+  const getAudioFeedbacks = async (audioId = activeAudio?.id) => {
+    if (!audioId) return
 
-    const { data, error } = await fetchComments(content.id)
+    setIsFeedbackLoading(true)
+
+    const { data, error } = await fetchAudioFeedbacks(audioId)
 
     if (error) {
       console.error(error)
-      setCommentErrorMessage('댓글을 불러오지 못했습니다.')
+      setFeedbackErrorMessage('구간 피드백을 불러오지 못했습니다.')
+      setIsFeedbackLoading(false)
       return
     }
 
-    setComments(data || [])
+    setAudioFeedbacks(data || [])
+    setIsFeedbackLoading(false)
   }
 
   useEffect(() => {
-    if (!content?.id) return undefined
+    const audioId = activeAudio?.id
+
+    if (!audioId) return undefined
 
     let isCancelled = false
 
-    void fetchComments(content.id).then(({ data, error }) => {
+    void fetchAudioFeedbacks(audioId).then(({ data, error }) => {
       if (isCancelled) return
 
       if (error) {
         console.error(error)
-        setCommentErrorMessage('댓글을 불러오지 못했습니다.')
+        setFeedbackErrorMessage('구간 피드백을 불러오지 못했습니다.')
+        setIsFeedbackLoading(false)
         return
       }
 
-      setComments(data || [])
+      setAudioFeedbacks(data || [])
+      setIsFeedbackLoading(false)
     })
 
     return () => {
       isCancelled = true
     }
-  }, [content?.id])
+  }, [activeAudio?.id])
 
   useLayoutEffect(() => {
     if (!shouldAutoPlayAudioRef.current) return
@@ -103,9 +125,14 @@ function AudioDetailModal({ content, onClose }) {
     })
   }, [activeAudioIndex])
 
-  const handleCommentInputChange = (event) => {
-    setCommentText(event.target.value)
-    setCommentErrorMessage('')
+  const handleFeedbackTimeChange = (event) => {
+    setFeedbackTime(event.target.value)
+    setFeedbackErrorMessage('')
+  }
+
+  const handleFeedbackTextChange = (event) => {
+    setFeedbackText(event.target.value)
+    setFeedbackErrorMessage('')
   }
 
   // 선택한 오디오를 단일 플레이어에 연결합니다.
@@ -119,6 +146,11 @@ function AudioDetailModal({ content, onClose }) {
     setAudioCurrentTime(0)
     setAudioDuration(0)
     setIsAudioPlaying(false)
+    setAudioFeedbacks([])
+    setFeedbackTime('')
+    setFeedbackText('')
+    setFeedbackErrorMessage('')
+    setIsFeedbackLoading(true)
   }
 
   const handleAudioPlayPause = () => {
@@ -191,71 +223,110 @@ function AudioDetailModal({ content, onClose }) {
     setIsAudioPlaying(false)
   }
 
-  // 댓글 추가 기능
-  const handleAddComment = async () => {
+  // 피드백 시간부터 오디오 재생
+  const handlePlayFeedback = (feedbackTimeInSeconds) => {
+    const audioPlayer = audioPlayerRef.current
+    const nextTime = Number(feedbackTimeInSeconds)
+
+    if (!audioPlayer || !Number.isFinite(nextTime)) return
+
+    const safeTime = audioDuration ? Math.min(nextTime, audioDuration) : nextTime
+
+    audioPlayer.currentTime = safeTime
+    setAudioCurrentTime(safeTime)
+
+    void audioPlayer.play().catch((error) => {
+      console.error('피드백 구간 재생 실패:', error)
+      setIsAudioPlaying(false)
+    })
+  }
+
+  // 구간 피드백 추가 기능
+  const handleAddFeedback = async (event) => {
+    event.preventDefault()
+
     if (!storageInfo?.userId) {
-      setCommentErrorMessage('로그인 사용자 정보를 찾을 수 없습니다.')
+      setFeedbackErrorMessage('로그인 사용자 정보를 찾을 수 없습니다.')
       return
     }
 
-    if (!commentText.trim()) {
-      setCommentErrorMessage('댓글 내용을 입력해주세요.')
+    if (!activeAudio?.id) {
+      setFeedbackErrorMessage('피드백을 등록할 오디오를 찾을 수 없습니다.')
       return
     }
 
-    setIsCommentLoading(true)
+    const feedbackTimeInSeconds = parseAudioTime(feedbackTime)
 
-    const { error } = await supabase.from('comment').insert([
+    if (feedbackTimeInSeconds === null) {
+      setFeedbackErrorMessage('피드백 시간을 MM:SS 형식으로 입력해주세요.')
+      return
+    }
+
+    if (audioDuration && feedbackTimeInSeconds > audioDuration) {
+      setFeedbackErrorMessage('오디오 재생 시간 안의 구간을 입력해주세요.')
+      return
+    }
+
+    if (!feedbackText.trim()) {
+      setFeedbackErrorMessage('피드백 내용을 입력해주세요.')
+      return
+    }
+
+    setIsFeedbackSubmitting(true)
+
+    const { error } = await supabase.from('content_audio_comment').insert([
       {
-        content_id: content.id,
-        name: storageInfo.userId,
-        description: commentText.trim(),
+        content_audio_id: activeAudio.id,
+        feedback_time: feedbackTimeInSeconds,
+        description: feedbackText.trim(),
       },
     ])
 
     if (error) {
       console.error(error)
-      setCommentErrorMessage('댓글 등록에 실패했습니다.')
-      setIsCommentLoading(false)
+      setFeedbackErrorMessage('구간 피드백 등록에 실패했습니다.')
+      setIsFeedbackSubmitting(false)
       return
     }
 
-    setCommentText('')
-    setCommentErrorMessage('')
-    setIsCommentLoading(false)
+    setFeedbackTime('')
+    setFeedbackText('')
+    setFeedbackErrorMessage('')
+    setIsFeedbackSubmitting(false)
 
-    await getComments()
+    await getAudioFeedbacks(activeAudio.id)
   }
 
-  // 댓글 삭제 기능 (관리자용)
-  const handleDeleteComment = async (commentId) => {
+  // 구간 피드백 삭제 기능 (관리자용)
+  const handleDeleteFeedback = async (feedbackId) => {
     if (!isAdmin) {
-      setCommentErrorMessage('관리자만 댓글을 삭제할 수 있습니다.')
+      setFeedbackErrorMessage('관리자만 구간 피드백을 삭제할 수 있습니다.')
       return
     }
 
-    const isConfirmed = window.confirm('댓글을 삭제하시겠습니까?')
+    const isConfirmed = window.confirm('구간 피드백을 삭제하시겠습니까?')
 
     if (!isConfirmed) return
 
-    setDeletingCommentId(commentId)
-    setCommentErrorMessage('')
+    setDeletingFeedbackId(feedbackId)
+    setFeedbackErrorMessage('')
 
     const { error } = await supabase
-      .from('comment')
+      .from('content_audio_comment')
       .delete()
-      .eq('id', commentId)
+      .eq('id', feedbackId)
+      .eq('content_audio_id', activeAudio.id)
 
     if (error) {
       console.error(error)
-      setCommentErrorMessage('댓글 삭제에 실패했습니다.')
-      setDeletingCommentId(null)
+      setFeedbackErrorMessage('구간 피드백 삭제에 실패했습니다.')
+      setDeletingFeedbackId(null)
       return
     }
 
-    setDeletingCommentId(null)
+    setDeletingFeedbackId(null)
 
-    await getComments()
+    await getAudioFeedbacks(activeAudio.id)
   }
 
   return (
@@ -269,8 +340,6 @@ function AudioDetailModal({ content, onClose }) {
         {/* 오디오 상세 헤더 */}
         <div className={styles.audioDetailHeader}>
           <div className={styles.audioDetailHeading}>
-            <span className={styles.audioDetailType}>{content.type}</span>
-
             <h2 id="audio-detail-title">{content.title}</h2>
             <time>{formatDate(content.created_at)}</time>
           </div>
@@ -374,6 +443,112 @@ function AudioDetailModal({ content, onClose }) {
                 </div>
               </section>
 
+              {/* 선택한 오디오의 구간 피드백 */}
+              <section
+                className={styles.audioFeedbackSection}
+                aria-labelledby="audio-feedback-title"
+              >
+                <div className={styles.audioFeedbackHeader}>
+                  <h3 id="audio-feedback-title">구간 피드백</h3>
+                  <span>{audioFeedbacks.length}개</span>
+                </div>
+
+                <div className={styles.audioFeedbackList}>
+                  {isFeedbackLoading ? (
+                    <div className={styles.audioFeedbackEmpty}>
+                      구간 피드백을 불러오는 중입니다.
+                    </div>
+                  ) : audioFeedbacks.length > 0 ? (
+                    audioFeedbacks.map((feedback) => (
+                      <div
+                        key={feedback.id}
+                        className={styles.audioFeedbackItem}
+                      >
+                        <button
+                          type="button"
+                          className={styles.audioFeedbackTime}
+                          onClick={() =>
+                            handlePlayFeedback(feedback.feedback_time)
+                          }
+                          aria-label={`${formatAudioTime(
+                            Number(feedback.feedback_time)
+                          )}부터 재생`}
+                        >
+                          {formatAudioTime(Number(feedback.feedback_time))}
+                        </button>
+
+                        <p>{feedback.description}</p>
+
+                        {isAdmin && (
+                          <button
+                            type="button"
+                            className={styles.audioFeedbackDeleteButton}
+                            onClick={() => handleDeleteFeedback(feedback.id)}
+                            disabled={deletingFeedbackId === feedback.id}
+                            aria-label="구간 피드백 삭제"
+                          >
+                            {deletingFeedbackId === feedback.id ? '...' : '−'}
+                          </button>
+                        )}
+                      </div>
+                    ))
+                  ) : (
+                    <div className={styles.audioFeedbackEmpty}>
+                      아직 등록된 구간 피드백이 없습니다.
+                    </div>
+                  )}
+                </div>
+
+                <form
+                  className={styles.audioFeedbackForm}
+                  onSubmit={handleAddFeedback}
+                >
+                  <div className={styles.audioFeedbackInputRow}>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      value={feedbackTime}
+                      placeholder="MM:SS"
+                      maxLength={7}
+                      onChange={handleFeedbackTimeChange}
+                      aria-label="피드백 시간"
+                    />
+
+                    <textarea
+                      value={feedbackText}
+                      placeholder="피드백 내용을 입력해주세요."
+                      onChange={handleFeedbackTextChange}
+                      aria-label="피드백 내용"
+                    />
+
+                    <button
+                      type="submit"
+                      className={styles.audioFeedbackSendButton}
+                      disabled={isFeedbackSubmitting}
+                      aria-label="구간 피드백 등록"
+                    >
+                      {isFeedbackSubmitting ? (
+                        <span className={styles.audioFeedbackSendLoading}>
+                          ...
+                        </span>
+                      ) : (
+                        <img
+                          src={commentSendIcon}
+                          alt=""
+                          aria-hidden="true"
+                        />
+                      )}
+                    </button>
+                  </div>
+
+                  {feedbackErrorMessage && (
+                    <p className={styles.audioFeedbackError}>
+                      {feedbackErrorMessage}
+                    </p>
+                  )}
+                </form>
+              </section>
+
               <div className={styles.audioListHeader}>
                 <strong>오디오 목록</strong>
                 <span>{audioFiles.length}개</span>
@@ -425,74 +600,6 @@ function AudioDetailModal({ content, onClose }) {
               등록된 오디오가 없습니다.
             </div>
           )}
-        </div>
-
-        <div className={styles.commentSection}>
-          <div className={styles.commentHeader}>
-            <h3>댓글</h3>
-            <span>{comments.length}개</span>
-          </div>
-
-          <div className={styles.commentList}>
-            {comments.length > 0 ? (
-              comments.map((comment) => (
-                <div key={comment.id} className={styles.commentItem}>
-                  <div className={styles.commentItemTop}>
-                    <div className={styles.commentMeta}>
-                      <strong>{comment.name}</strong>
-                      <span>{formatDate(comment.created_at)}</span>
-                    </div>
-
-                    {isAdmin && (
-                      <button
-                        type="button"
-                        className={styles.commentDeleteButton}
-                        onClick={() => handleDeleteComment(comment.id)}
-                        disabled={deletingCommentId === comment.id}
-                        aria-label="댓글 삭제"
-                      >
-                        {deletingCommentId === comment.id ? '...' : '-'}
-                      </button>
-                    )}
-                  </div>
-
-                  <p>{comment.description}</p>
-                </div>
-              ))
-            ) : (
-              <div className={styles.commentEmpty}>
-                아직 등록된 댓글이 없습니다.
-              </div>
-            )}
-          </div>
-
-          <div className={styles.commentForm}>
-            <div className={styles.commentInputRow}>
-              <textarea
-                value={commentText}
-                placeholder="댓글을 입력해주세요."
-                onChange={handleCommentInputChange}
-              />
-
-              <button
-                type="button"
-                className={styles.commentSendButton}
-                onClick={handleAddComment}
-                disabled={isCommentLoading}
-                aria-label="댓글 등록"
-              >
-                {isCommentLoading ? (
-                  <span className={styles.commentSendLoading}>...</span>
-                ) : (
-                  <img src={commentSendIcon} alt="" aria-hidden="true" />
-                )}
-              </button>
-            </div>
-
-            {commentErrorMessage && (
-              <p className={styles.loginError}>{commentErrorMessage}</p>
-            )}
-          </div>
         </div>
       </div>
     </ModalPortal>

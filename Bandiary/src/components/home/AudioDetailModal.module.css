@@ -1,16 +1,4 @@
 /* Local styles for AudioDetailModal.jsx */
-.commentForm textarea:focus {
-  border-color: var(--color-primary);
-  box-shadow: var(--focus-ring-primary);
-}
-
-.loginError {
-  margin: 0 0 12px;
-  color: var(--color-danger);
-  font-size: 12px;
-  font-weight: 800;
-}
-
 .placeModalCard {
   width: 100%;
   max-width: 390px;
@@ -54,18 +42,6 @@
 .audioDetailHeading {
   min-width: 0;
   flex: 1;
-}
-
-.audioDetailType {
-  display: inline-flex;
-  align-items: center;
-  min-height: 24px;
-  padding: 0 9px;
-  border-radius: 999px;
-  background: var(--color-danger-soft);
-  color: var(--color-danger);
-  font-size: 10px;
-  font-weight: 900;
 }
 
 .audioDetailHeading h2 {
@@ -268,7 +244,10 @@
 .audioProgress input:focus-visible,
 .audioTransportButton:focus-visible,
 .audioPlayButton:focus-visible,
-.audioListItem:focus-visible {
+.audioListItem:focus-visible,
+.audioFeedbackTime:focus-visible,
+.audioFeedbackDeleteButton:focus-visible,
+.audioFeedbackSendButton:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
@@ -420,86 +399,76 @@
   animation-delay: -0.5s;
 }
 
-.commentSection {
-  margin-top: 0;
-  padding-top: 18px;
-  border-top: 1px solid var(--color-divider);
+.audioFeedbackSection {
+  margin-top: 16px;
 }
 
-.commentHeader {
+.audioFeedbackHeader {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   gap: 6px;
-  margin-bottom: 12px;
+  margin: 0 2px 8px;
 }
 
-.commentHeader h3 {
+.audioFeedbackHeader h3 {
   margin: 0;
   color: var(--color-text-primary);
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 900;
 }
 
-.commentHeader span {
-  color: var(--color-primary);
-  font-size: 12px;
-  font-weight: 900;
+.audioFeedbackHeader span {
+  color: var(--color-text-muted);
+  font-size: 11px;
+  font-weight: 800;
 }
 
-.commentList {
+.audioFeedbackList {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-bottom: 0;
 }
 
-.commentItem {
-  padding: 11px 12px;
+.audioFeedbackItem {
+  min-height: 54px;
+  padding: 8px 10px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) 24px;
+  align-items: center;
+  gap: 10px;
   border: 1px solid var(--color-border);
   border-radius: 13px;
   background: var(--color-surface);
 }
 
-.commentItemTop {
-  display: flex;
+.audioFeedbackTime {
+  min-width: 64px;
+  min-height: 34px;
+  padding: 0 9px;
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.commentMeta {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-}
-
-.commentMeta strong {
-  color: var(--color-text-primary);
-  font-size: 12px;
+  justify-content: center;
+  border-radius: 10px;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-size: 13px;
   font-weight: 900;
+  font-variant-numeric: tabular-nums;
 }
 
-.commentMeta span {
-  flex: 0 0 auto;
+.audioFeedbackItem p {
+  min-width: 0;
   margin: 0;
-  color: var(--color-text-subtle);
-  font-size: 10px;
-  font-weight: 700;
-}
-
-.commentItem p {
-  margin: 7px 0 0;
-  color: var(--color-text-secondary);
-  font-size: 12px;
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-weight: 750;
   line-height: 1.5;
   word-break: break-word;
 }
 
-.commentEmpty {
-  padding: 24px 12px;
+.audioFeedbackEmpty {
+  padding: 18px 12px;
   border: 1px solid var(--color-border);
   border-radius: 13px;
   background: var(--color-surface-subtle);
@@ -509,24 +478,23 @@
   text-align: center;
 }
 
-.commentForm {
-  margin-top: 12px;
+.audioFeedbackForm {
+  margin-top: 10px;
 }
 
-.commentInputRow {
-  position: relative;
-  display: flex;
+.audioFeedbackInputRow {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr) 40px;
   align-items: flex-end;
   gap: 8px;
 }
 
-.commentInputRow textarea {
-  flex: 1;
+.audioFeedbackInputRow input,
+.audioFeedbackInputRow textarea {
+  width: 100%;
   min-width: 0;
   min-height: 44px;
-  max-height: 110px;
   padding: 11px 13px;
-  resize: vertical;
   border: 1px solid var(--color-border);
   border-radius: 14px;
   background: var(--color-surface-subtle);
@@ -537,13 +505,24 @@
   outline: none;
 }
 
-.commentInputRow textarea:focus {
+.audioFeedbackInputRow input {
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.audioFeedbackInputRow textarea {
+  max-height: 110px;
+  resize: vertical;
+}
+
+.audioFeedbackInputRow input:focus,
+.audioFeedbackInputRow textarea:focus {
   border-color: var(--color-primary);
   background: var(--color-surface);
   box-shadow: var(--focus-ring-primary);
 }
 
-.commentSendButton {
+.audioFeedbackSendButton {
   flex: 0 0 auto;
   align-self: center;
   width: 40px;
@@ -557,26 +536,26 @@
   color: var(--color-on-accent);
 }
 
-.commentSendButton img {
+.audioFeedbackSendButton img {
   width: 18px;
   height: 18px;
   display: block;
   object-fit: contain;
 }
 
-.commentSendLoading {
+.audioFeedbackSendLoading {
   color: var(--color-on-accent);
   font-size: 14px;
   font-weight: 900;
   line-height: 1;
 }
 
-.commentSendButton:disabled {
+.audioFeedbackSendButton:disabled {
   cursor: not-allowed;
   opacity: 0.45;
 }
 
-.commentDeleteButton {
+.audioFeedbackDeleteButton {
   flex: 0 0 auto;
   width: 24px;
   height: 24px;
@@ -591,13 +570,21 @@
   line-height: 1;
 }
 
-.commentDeleteButton:active {
+.audioFeedbackDeleteButton:active {
   transform: scale(0.92);
 }
 
-.commentDeleteButton:disabled {
+.audioFeedbackDeleteButton:disabled {
   cursor: not-allowed;
   opacity: 0.45;
+}
+
+.audioFeedbackError {
+  margin: 8px 2px 0;
+  color: var(--color-danger);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.4;
 }
 
 @keyframes audioEqualizer {
