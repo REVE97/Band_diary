@@ -8,8 +8,8 @@ import supabase from '../api/supabase'
 import styles from './LoginPage.module.css'
 
 const LOGIN_SPLASH_SESSION_KEY = 'bandiaryLoginSplashShown'
-const LOGIN_SPLASH_FADE_DELAY = 900
-const LOGIN_SPLASH_DURATION = 1350
+const LOGIN_SPLASH_FADE_DELAY = 2550
+const LOGIN_SPLASH_DURATION = 3000
 
 const shouldShowLoginSplash = () => {
   const prefersReducedMotion = window.matchMedia(
