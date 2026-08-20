@@ -7,6 +7,21 @@ import clearIcon from '../assets/images/clear_input.svg'
 import supabase from '../api/supabase'
 import styles from './LoginPage.module.css'
 
+const LOGIN_SPLASH_SESSION_KEY = 'bandiaryLoginSplashShown'
+const LOGIN_SPLASH_FADE_DELAY = 900
+const LOGIN_SPLASH_DURATION = 1350
+
+const shouldShowLoginSplash = () => {
+  const prefersReducedMotion = window.matchMedia(
+    '(prefers-reduced-motion: reduce)'
+  ).matches
+
+  return (
+    !prefersReducedMotion &&
+    sessionStorage.getItem(LOGIN_SPLASH_SESSION_KEY) !== 'true'
+  )
+}
+
 function LoginPage() {
   const navigate = useNavigate()
 
@@ -21,6 +36,10 @@ function LoginPage() {
 
   const [errorMessage, setErrorMessage] = useState('')
   const [users, setUsers] = useState([])
+  const [isLoginSplashVisible, setIsLoginSplashVisible] = useState(
+    shouldShowLoginSplash
+  )
+  const [isLoginSplashLeaving, setIsLoginSplashLeaving] = useState(false)
 
   // users 테이블 데이터 조회
   const getUsers = async () => {
@@ -38,6 +57,24 @@ function LoginPage() {
   useEffect(() => {
     getUsers()
   }, [])
+
+  useEffect(() => {
+    if (!isLoginSplashVisible) return undefined
+
+    const fadeTimer = window.setTimeout(() => {
+      setIsLoginSplashLeaving(true)
+    }, LOGIN_SPLASH_FADE_DELAY)
+
+    const closeTimer = window.setTimeout(() => {
+      sessionStorage.setItem(LOGIN_SPLASH_SESSION_KEY, 'true')
+      setIsLoginSplashVisible(false)
+    }, LOGIN_SPLASH_DURATION)
+
+    return () => {
+      window.clearTimeout(fadeTimer)
+      window.clearTimeout(closeTimer)
+    }
+  }, [isLoginSplashVisible])
 
   const handleInputChange = (event) => {
     const { name, value } = event.target
@@ -120,7 +157,22 @@ function LoginPage() {
 
   return (
     <div className={`${styles.page} ${styles.loginPage}`}>
-      <div className={styles.loginCard}>
+      {isLoginSplashVisible && (
+        <div
+          className={`${styles.loginSplash} ${
+            isLoginSplashLeaving ? styles.leaving : ''
+          }`}
+          aria-hidden="true"
+        >
+          <img src={logo} alt="" className={styles.loginSplashLogo} />
+        </div>
+      )}
+
+      <div
+        className={styles.loginCard}
+        aria-hidden={isLoginSplashVisible || undefined}
+        inert={isLoginSplashVisible || undefined}
+      >
         <img src={logo} alt="Bandiary" className={styles.loginLogo} />
         <p>밴드를 위한 다이어리 서비스</p>
 

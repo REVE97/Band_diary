@@ -31,6 +31,38 @@
   justify-content: center;
 }
 
+.loginSplash {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  z-index: 500;
+  width: 100%;
+  max-width: 430px;
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--color-surface);
+  transform: translateX(-50%);
+  animation: loginSplashEnter 0.22s ease-out both;
+}
+
+.loginSplash.leaving {
+  pointer-events: none;
+  animation: loginSplashLeave 0.45s ease-in both;
+}
+
+.loginSplashLogo {
+  width: 172px;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  animation: loginSplashLogoReveal 0.72s cubic-bezier(0.22, 1, 0.36, 1)
+    both;
+}
+
 .loginCard {
   width: 100%;
   padding: 28px 20px;
@@ -155,4 +187,53 @@
 
 .signupLinkButton {
   margin-top: 10px;
+}
+
+@keyframes loginSplashEnter {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes loginSplashLogoReveal {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes loginSplashLeave {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@media (min-width: 431px) {
+  .loginSplash {
+    top: 24px;
+    height: calc(100vh - 48px);
+    height: calc(100dvh - 48px);
+    border-radius: 34px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loginSplash,
+  .loginSplash.leaving,
+  .loginSplashLogo {
+    animation: none;
+  }
 }
