@@ -8,6 +8,7 @@ import ContentFilterTabs from '../components/home/ContentFilterTabs'
 import ProfileEditModal from '../components/home/ProfileEditModal'
 import ContentAddModal from '../components/home/ContentAddModal'
 import ContentDetailModal from '../components/home/ContentDetailModal'
+import AudioDetailModal from '../components/home/AudioDetailModal'
 import PlaceResultModal from '../components/place/PlaceResultModal'
 import useToast from '../components/common/useToast'
 
@@ -1253,7 +1254,14 @@ function HomePage() {
         />
       )}
 
-      {detailContent && (
+      {detailContent?.type === '오디오' && (
+        <AudioDetailModal
+          content={detailContent}
+          onClose={handleCloseDetailModal}
+        />
+      )}
+
+      {detailContent && detailContent.type !== '오디오' && (
         <ContentDetailModal
           content={detailContent}
           onClose={handleCloseDetailModal}

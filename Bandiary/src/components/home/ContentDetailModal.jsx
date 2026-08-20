@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import ModalPortal from '../common/ModalPortal'
 
@@ -18,19 +18,7 @@ const fetchComments = (contentId) =>
 function ContentDetailModal({ content, onClose }) {
   const isPicture = content.type === '사진'
   const isVideo = content.type === '비디오'
-  const isAudio = content.type === '오디오'
-  const audioPlayerRefs = useRef([])
-  const audioFiles = Array.isArray(content.audioFiles)
-    ? [...content.audioFiles].sort(
-        (firstAudio, secondAudio) =>
-          firstAudio.sort_order - secondAudio.sort_order
-      )
-    : []
-  const contentTypeClass = isPicture
-    ? styles.picture
-    : isAudio
-      ? styles.audio
-      : ''
+  const contentTypeClass = isPicture ? styles.picture : ''
 
   const [comments, setComments] = useState([])
   const [commentText, setCommentText] = useState('')
@@ -82,15 +70,6 @@ function ContentDetailModal({ content, onClose }) {
   const handleCommentInputChange = (event) => {
     setCommentText(event.target.value)
     setCommentErrorMessage('')
-  }
-
-  // 하나의 오디오 재생 시 다른 오디오 일시정지
-  const handleAudioPlay = (currentAudioIndex) => {
-    audioPlayerRefs.current.forEach((audioPlayer, audioIndex) => {
-      if (audioIndex !== currentAudioIndex && audioPlayer) {
-        audioPlayer.pause()
-      }
-    })
   }
 
   // 댓글 추가 기능
@@ -190,58 +169,13 @@ function ContentDetailModal({ content, onClose }) {
         </div>
 
         {/* 콘텐츠 미디어 */}
-        <div
-          className={`${styles.contentDetailMedia} ${
-            isAudio ? styles.contentDetailAudioMedia : ''
-          }`}
-        >
+        <div className={styles.contentDetailMedia}>
           {isPicture && content.contentImageUrl && (
             <img src={content.contentImageUrl} alt={content.title} />
           )}
 
           {isVideo && content.contentVideoUrl && (
             <video src={content.contentVideoUrl} controls />
-          )}
-
-          {isAudio && audioFiles.length > 0 && (
-            <div className={styles.contentDetailAudio}>
-              <div className={styles.contentDetailAudioHeader}>
-                <strong>오디오 목록</strong>
-                <span>{audioFiles.length}개</span>
-              </div>
-
-              <div className={styles.contentDetailAudioList}>
-                {audioFiles.map((audioFile, index) => (
-                  <article
-                    key={audioFile.id}
-                    className={styles.contentDetailAudioItem}
-                  >
-                    <div className={styles.contentDetailAudioTitle}>
-                      <span>{index + 1}</span>
-
-                      <div>
-                        <strong>{audioFile.title}</strong>
-                        {audioFile.original_file_name && (
-                          <small>{audioFile.original_file_name}</small>
-                        )}
-                      </div>
-                    </div>
-
-                    <audio
-                      ref={(audioPlayer) => {
-                        audioPlayerRefs.current[index] = audioPlayer
-                      }}
-                      controls
-                      preload="metadata"
-                      src={audioFile.file_url}
-                      onPlay={() => handleAudioPlay(index)}
-                    >
-                      브라우저가 오디오 재생을 지원하지 않습니다.
-                    </audio>
-                  </article>
-                ))}
-              </div>
-            </div>
           )}
 
           {isPicture && !content.contentImageUrl && (
@@ -256,11 +190,6 @@ function ContentDetailModal({ content, onClose }) {
             </div>
           )}
 
-          {isAudio && audioFiles.length === 0 && (
-            <div className={styles.contentDetailEmpty}>
-              등록된 오디오가 없습니다.
-            </div>
-          )}
         </div>
 
         <div className={styles.commentSection}>
