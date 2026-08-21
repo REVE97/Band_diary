@@ -9,6 +9,7 @@ import ProfileEditModal from '../components/home/ProfileEditModal'
 import ContentAddModal from '../components/home/ContentAddModal'
 import ContentDetailModal from '../components/home/ContentDetailModal'
 import AudioDetailModal from '../components/home/AudioDetailModal'
+import PictureDetailModal from '../components/home/PictureDetailModal'
 import PlaceResultModal from '../components/place/PlaceResultModal'
 import useToast from '../components/common/useToast'
 
@@ -133,8 +134,12 @@ function HomePage() {
     const audioContentIds = contentList
       .filter((item) => item.type === '오디오')
       .map((item) => item.id)
+    const pictureContentIds = contentList
+      .filter((item) => item.type === '사진')
+      .map((item) => item.id)
 
     const audioFilesByContentId = new Map()
+    const pictureFilesByContentId = new Map()
 
     if (audioContentIds.length > 0) {
       const { data: audioData, error: audioError } = await supabase
@@ -160,13 +165,42 @@ function HomePage() {
       }
     }
 
+    if (pictureContentIds.length > 0) {
+      const { data: pictureData, error: pictureError } = await supabase
+        .from('content_picture')
+        .select(
+          'id, content_id, file_url, storage_path, original_file_name, mime_type, file_size, sort_order, created_at'
+        )
+        .in('content_id', pictureContentIds)
+        .order('sort_order', { ascending: true })
+
+      if (pictureError) {
+        console.error('사진 목록 조회 실패:', pictureError)
+      } else {
+        const pictureFileList = pictureData || []
+
+        pictureFileList.forEach((pictureFile) => {
+          const currentPictureFiles =
+            pictureFilesByContentId.get(pictureFile.content_id) || []
+
+          currentPictureFiles.push(pictureFile)
+          pictureFilesByContentId.set(
+            pictureFile.content_id,
+            currentPictureFiles
+          )
+        })
+      }
+    }
+
     setContent(
       contentList.map((item) => {
         const savedAudioFiles = audioFilesByContentId.get(item.id) || []
+        const savedPictureFiles = pictureFilesByContentId.get(item.id) || []
 
         return {
           ...item,
           audioFiles: savedAudioFiles,
+          pictureFiles: savedPictureFiles,
         }
       })
     )
@@ -844,11 +878,11 @@ function HomePage() {
       const payload = {
         type: contentType,
         title: contentForm.title.trim(),
-        contentImageUrl: null,
         contentVideoUrl: null,
       }
 
       const uploadedAudioFiles = []
+      let uploadedPictureFile = null
 
       if (contentType === '오디오') {
         for (let index = 0; index < contentAudioFiles.length; index += 1) {
@@ -894,7 +928,14 @@ function HomePage() {
         uploadedStoragePaths.push(uploadedFile.filePath)
 
         if (contentType === '사진') {
-          payload.contentImageUrl = uploadedFile.publicUrl
+          uploadedPictureFile = {
+            file_url: uploadedFile.publicUrl,
+            storage_path: uploadedFile.filePath,
+            original_file_name: contentFile.name || '이미지 파일',
+            mime_type: contentFile.type || null,
+            file_size: contentFile.size,
+            sort_order: 0,
+          }
         }
 
         if (contentType === '비디오') {
@@ -926,6 +967,21 @@ function HomePage() {
 
         if (audioInsertError) {
           throw audioInsertError
+        }
+      }
+
+      if (contentType === '사진' && uploadedPictureFile) {
+        const { error: pictureInsertError } = await supabase
+          .from('content_picture')
+          .insert([
+            {
+              ...uploadedPictureFile,
+              content_id: createdContent.id,
+            },
+          ])
+
+        if (pictureInsertError) {
+          throw pictureInsertError
         }
       }
 
@@ -968,8 +1024,14 @@ function HomePage() {
       })
 
       const isContentAudioPermissionError =
-        error.code === '42501' ||
-        error.message?.includes('permission denied for table content_audio')
+        contentType === '오디오' &&
+        (error.code === '42501' ||
+          error.message?.includes('permission denied for table content_audio'))
+      const isPictureTableError =
+        contentType === '사진' &&
+        (error.code === '42501' ||
+          error.message?.includes('content_picture') ||
+          error.message?.includes('schema cache'))
 
       setResultModal({
         isOpen: true,
@@ -977,7 +1039,9 @@ function HomePage() {
         title: '등록 실패',
         message: isContentAudioPermissionError
           ? 'content_audio 테이블의 Supabase 접근 정책을 확인해주세요.'
-          : '콘텐츠 등록 중 오류가 발생했습니다. 파일 용량, 형식, 네트워크 상태, 변환 가능 여부 또는 Supabase 설정을 확인해주세요.',
+          : isPictureTableError
+            ? 'content_picture 테이블 생성 SQL을 먼저 실행해주세요.'
+            : '콘텐츠 등록 중 오류가 발생했습니다. 파일 용량, 형식, 네트워크 상태, 변환 가능 여부 또는 Supabase 설정을 확인해주세요.',
       })
     } finally {
       setIsContentUploading(false)
@@ -1042,12 +1106,15 @@ function HomePage() {
       const storageFilePaths = []
 
       if (deleteContentTarget.type === '사진') {
-        const filePath = getStorageFilePathFromUrl(
-          'content-files',
-          deleteContentTarget.contentImageUrl
-        )
+        const pictureFiles = deleteContentTarget.pictureFiles || []
 
-        if (filePath) storageFilePaths.push(filePath)
+        pictureFiles.forEach((pictureFile) => {
+          const filePath =
+            pictureFile.storage_path ||
+            getStorageFilePathFromUrl('content-files', pictureFile.file_url)
+
+          if (filePath) storageFilePaths.push(filePath)
+        })
       }
 
       if (deleteContentTarget.type === '비디오') {
@@ -1261,7 +1328,14 @@ function HomePage() {
         />
       )}
 
-      {detailContent && detailContent.type !== '오디오' && (
+      {detailContent?.type === '사진' && (
+        <PictureDetailModal
+          content={detailContent}
+          onClose={handleCloseDetailModal}
+        />
+      )}
+
+      {detailContent?.type === '비디오' && (
         <ContentDetailModal
           content={detailContent}
           onClose={handleCloseDetailModal}

@@ -1,0 +1,404 @@
+/* Local styles for PictureDetailModal.jsx */
+
+.placeModalCard {
+  width: 100%;
+  max-width: 390px;
+  max-height: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 24px;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-modal);
+}
+
+.pictureDetailCard {
+  padding: 0;
+}
+
+.pictureDetailHeader {
+  position: relative;
+  min-height: 78px;
+  padding: 18px 58px 16px 20px;
+  display: flex;
+  align-items: center;
+  background: var(--color-surface);
+}
+
+.pictureDetailHeading {
+  min-width: 0;
+}
+
+.pictureDetailHeading h2 {
+  margin: 0 0 5px;
+  overflow: hidden;
+  color: var(--color-text-primary);
+  font-size: 19px;
+  font-weight: 900;
+  line-height: 1.35;
+  letter-spacing: -0.4px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pictureDetailHeading time {
+  color: var(--color-text-muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.placeModalClose {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--color-surface-subtle);
+  color: var(--color-text-muted);
+  font-size: 24px;
+  line-height: 1;
+}
+
+.placeModalClose:active {
+  transform: scale(0.94);
+}
+
+.pictureDetailMedia {
+  min-height: 250px;
+  padding: 16px 14px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-media-background);
+}
+
+.pictureImageLayer {
+  position: relative;
+  max-width: 100%;
+  display: inline-block;
+  overflow: visible;
+  line-height: 0;
+  cursor: crosshair;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.pictureImageLayer > img {
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 12px;
+  object-fit: contain;
+}
+
+.picturePin {
+  --pin-color: var(--color-primary);
+
+  position: absolute;
+  z-index: 2;
+  width: 29px;
+  height: 29px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--color-on-accent);
+  border-radius: 50% 50% 50% 0;
+  background: var(--pin-color);
+  color: var(--color-on-accent);
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  transform: translate(-50%, -100%) rotate(-45deg);
+  transform-origin: 50% 100%;
+}
+
+.picturePin > span {
+  pointer-events: none;
+  color: var(--color-on-accent);
+  line-height: 1;
+  transform: rotate(45deg);
+}
+
+.picturePin:not(.pictureDraftPin) {
+  cursor: pointer;
+}
+
+.picturePin:not(.pictureDraftPin):hover,
+.picturePinActive {
+  z-index: 3;
+  box-shadow:
+    0 0 0 4px rgba(255, 255, 255, 0.8),
+    0 5px 14px rgba(0, 0, 0, 0.36);
+  transform: translate(-50%, -100%) rotate(-45deg) scale(1.08);
+}
+
+.pictureDraftPin {
+  pointer-events: none;
+  border-style: dashed;
+  transform: translate(-50%, -100%) rotate(-45deg);
+}
+
+.pictureDraftPin > span {
+  font-size: 16px;
+}
+
+.pinPurple {
+  --pin-color: var(--color-primary);
+}
+
+.pinGreen {
+  --pin-color: var(--color-success);
+}
+
+.pinOrange {
+  --pin-color: var(--color-warning);
+}
+
+.picturePointGuide {
+  margin: 12px 0 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.pictureDetailEmpty {
+  min-height: 230px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.pictureFeedbackSection {
+  padding: 18px 20px 20px;
+  background: var(--color-surface);
+}
+
+.pictureFeedbackHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin: 0 2px 8px;
+}
+
+.pictureFeedbackHeader h3 {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.pictureFeedbackHeader span {
+  color: var(--color-text-muted);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.pictureFeedbackList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pictureFeedbackItem {
+  padding: 11px 10px;
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) auto;
+  align-items: flex-start;
+  gap: 9px;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: var(--color-surface);
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.pictureFeedbackItemActive {
+  border-color: var(--color-primary-border);
+  background: var(--color-primary-soft);
+  box-shadow: var(--focus-ring-primary);
+}
+
+.pictureFeedbackNumber {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  background: var(--pin-color);
+  color: var(--color-on-accent);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.pictureFeedbackBody {
+  min-width: 0;
+}
+
+.pictureFeedbackMeta {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.pictureFeedbackMeta strong {
+  color: var(--color-text-primary);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.pictureFeedbackMeta time {
+  color: var(--color-text-subtle);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.pictureFeedbackBody p {
+  margin: 6px 0 0;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.pictureFeedbackDeleteButton {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+  font-size: 17px;
+  font-weight: 900;
+}
+
+.pictureFeedbackDeleteButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.pictureFeedbackEmpty {
+  padding: 24px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 13px;
+  background: var(--color-surface-subtle);
+  color: var(--color-text-muted);
+  font-size: 12px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.pictureFeedbackForm {
+  margin-top: 10px;
+}
+
+.pictureFeedbackInputRow {
+  min-height: 56px;
+  padding: 5px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 44px;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--color-primary-border);
+  border-radius: 17px;
+  background: var(--color-primary-soft);
+}
+
+.pictureFeedbackInputRow textarea {
+  width: 100%;
+  min-width: 0;
+  min-height: 46px;
+  height: 46px;
+  max-height: 96px;
+  padding: 11px 8px;
+  border: 0;
+  border-radius: 10px;
+  outline: none;
+  background: transparent;
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 1.45;
+  resize: none;
+}
+
+.pictureFeedbackInputRow textarea:focus {
+  background: var(--color-surface);
+  box-shadow: var(--focus-ring-primary);
+}
+
+.pictureFeedbackSendButton {
+  flex: 0 0 auto;
+  align-self: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: var(--color-on-accent);
+}
+
+.pictureFeedbackSendButton img {
+  width: 18px;
+  height: 18px;
+  display: block;
+  object-fit: contain;
+}
+
+.pictureFeedbackSendButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.pictureFeedbackSendLoading {
+  color: var(--color-on-accent);
+  font-size: 14px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.pictureFeedbackError {
+  margin: 8px 2px 0;
+  color: var(--color-danger);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.pictureFeedbackSendButton:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pictureFeedbackItem,
+  .picturePin {
+    transition: none;
+  }
+}

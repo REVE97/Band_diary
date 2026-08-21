@@ -88,15 +88,6 @@ function ContentCard({ item, isActive, isAdmin, onClick, onDeleteClick }) {
       >
         ›
       </span>
-
-      {/* 캐싱 효율성 테스트 중 */}
-      {/* {isPicture && item.contentImageUrl && (
-        <img src={item.contentImageUrl} alt={item.title} />
-      )}
-
-      {isVideo && item.contentVideoUrl && (
-        <video src={item.contentVideoUrl} muted />
-      )} */}
     </div>
   )
 }

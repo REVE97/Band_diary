@@ -68,11 +68,6 @@
   font-weight: 900;
 }
 
-.contentDetailType.picture {
-  background: var(--color-success-soft);
-  color: var(--color-success);
-}
-
 .contentDetailHeading h2 {
   margin: 9px 0 5px;
   color: var(--color-text-primary);

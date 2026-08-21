@@ -16,9 +16,7 @@ const fetchComments = (contentId) =>
     .order('created_at', { ascending: true })
 
 function ContentDetailModal({ content, onClose }) {
-  const isPicture = content.type === '사진'
   const isVideo = content.type === '비디오'
-  const contentTypeClass = isPicture ? styles.picture : ''
 
   const [comments, setComments] = useState([])
   const [commentText, setCommentText] = useState('')
@@ -150,7 +148,7 @@ function ContentDetailModal({ content, onClose }) {
         {/* 콘텐츠 상세 헤더 */}
         <div className={styles.contentDetailHeader}>
           <div className={styles.contentDetailHeading}>
-            <span className={`${styles.contentDetailType} ${contentTypeClass}`}>
+            <span className={styles.contentDetailType}>
               {content.type}
             </span>
 
@@ -170,18 +168,8 @@ function ContentDetailModal({ content, onClose }) {
 
         {/* 콘텐츠 미디어 */}
         <div className={styles.contentDetailMedia}>
-          {isPicture && content.contentImageUrl && (
-            <img src={content.contentImageUrl} alt={content.title} />
-          )}
-
           {isVideo && content.contentVideoUrl && (
             <video src={content.contentVideoUrl} controls />
-          )}
-
-          {isPicture && !content.contentImageUrl && (
-            <div className={styles.contentDetailEmpty}>
-              등록된 이미지가 없습니다.
-            </div>
           )}
 
           {isVideo && !content.contentVideoUrl && (
