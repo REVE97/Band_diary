@@ -333,7 +333,7 @@
   background: var(--color-surface);
   color: var(--color-text-primary);
   font-family: inherit;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.4;
 }
 
@@ -357,7 +357,7 @@
   padding: 0 5px;
   border-radius: 12px;
   color: var(--color-primary);
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 900;
   font-variant-numeric: tabular-nums;
   text-align: center;
