@@ -166,7 +166,6 @@ function LoginPage() {
           aria-hidden="true"
         >
           <div className={styles.loginSplashContent}>
-            <img src={logo} alt="" className={styles.loginSplashLogo} />
             <img
               src={welcomeHandwriting}
               alt=""

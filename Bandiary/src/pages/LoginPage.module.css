@@ -57,20 +57,8 @@
 .loginSplashContent {
   width: 100%;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 14px;
-  transform: translateY(-6px);
-}
-
-.loginSplashLogo {
-  width: 172px;
-  height: auto;
-  display: block;
-  object-fit: contain;
-  animation: loginSplashLogoReveal 0.72s cubic-bezier(0.22, 1, 0.36, 1)
-    both;
 }
 
 .loginSplashWelcome {
@@ -216,18 +204,6 @@
   }
 }
 
-@keyframes loginSplashLogoReveal {
-  from {
-    opacity: 0;
-    transform: scale(0.92);
-  }
-
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
 @keyframes loginSplashLeave {
   from {
     opacity: 1;
@@ -250,7 +226,6 @@
 @media (prefers-reduced-motion: reduce) {
   .loginSplash,
   .loginSplash.leaving,
-  .loginSplashLogo,
   .loginSplashWelcome {
     animation: none;
   }
