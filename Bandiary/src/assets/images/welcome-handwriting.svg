@@ -1,0 +1,138 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="340"
+  height="92"
+  viewBox="0 0 340 92"
+  fill="none"
+  role="img"
+  aria-label="Welcome"
+>
+  <style>
+    .handwriting-stroke {
+      stroke: #19181f;
+      stroke-width: 3.15;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      opacity: 0;
+      animation: draw-stroke var(--duration, 260ms)
+        cubic-bezier(0.35, 0, 0.25, 1) var(--delay, 0ms) both;
+    }
+
+    .fine-stroke {
+      stroke-width: 2;
+    }
+
+    .pressure-stroke {
+      stroke-width: 4.1;
+      --stroke-opacity: 0.72;
+    }
+
+    @keyframes draw-stroke {
+      0% {
+        opacity: 0;
+        stroke-dashoffset: 1;
+      }
+
+      2% {
+        opacity: var(--stroke-opacity, 1);
+      }
+
+      100% {
+        opacity: var(--stroke-opacity, 1);
+        stroke-dashoffset: 0;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .handwriting-stroke {
+        animation: none;
+        opacity: var(--stroke-opacity, 1);
+        stroke-dashoffset: 0;
+      }
+    }
+  </style>
+
+  <!-- W -->
+  <path
+    class="handwriting-stroke"
+    pathLength="1"
+    style="--delay: 760ms; --duration: 620ms"
+    d="M13 29C17 20 23 17 27 21C32 26 26 50 27 64C28 73 33 76 38 68C45 57 49 40 52 28C50 42 47 61 51 69C55 77 61 75 67 67C74 57 78 42 80 30C78 44 75 57 77 65"
+  />
+  <path
+    class="handwriting-stroke pressure-stroke"
+    pathLength="1"
+    style="--delay: 790ms; --duration: 330ms"
+    d="M27 22C30 31 26 51 27 63C28 69 30 73 33 73"
+  />
+  <path
+    class="handwriting-stroke pressure-stroke"
+    pathLength="1"
+    style="--delay: 980ms; --duration: 300ms"
+    d="M52 30C50 44 47 61 51 68C53 72 55 74 58 73"
+  />
+
+  <!-- e -->
+  <path
+    class="handwriting-stroke"
+    pathLength="1"
+    style="--delay: 1320ms; --duration: 300ms"
+    d="M77 65C84 63 92 59 95 54C97 50 93 48 89 51C82 55 81 63 85 69C90 76 102 73 114 59"
+  />
+
+  <!-- l -->
+  <path
+    class="handwriting-stroke"
+    pathLength="1"
+    style="--delay: 1560ms; --duration: 360ms"
+    d="M114 59C120 44 122 28 128 21C132 17 136 19 135 25C134 34 124 42 121 51C118 58 116 68 120 72C125 77 135 68 141 59"
+  />
+  <path
+    class="handwriting-stroke pressure-stroke"
+    pathLength="1"
+    style="--delay: 1690ms; --duration: 230ms"
+    d="M134 27C132 36 124 44 121 52C119 59 117 67 120 71"
+  />
+
+  <!-- c -->
+  <path
+    class="handwriting-stroke"
+    pathLength="1"
+    style="--delay: 1860ms; --duration: 300ms"
+    d="M141 59C146 51 157 48 162 53C165 56 162 59 158 57C153 55 149 58 148 63C147 69 152 73 158 73C166 73 172 67 177 59"
+  />
+
+  <!-- o -->
+  <path
+    class="handwriting-stroke"
+    pathLength="1"
+    style="--delay: 2100ms; --duration: 320ms"
+    d="M177 60C182 51 193 50 198 56C203 63 198 73 190 74C182 75 178 69 180 63C182 57 190 54 197 58C203 61 207 63 211 59"
+  />
+
+  <!-- m -->
+  <path
+    class="handwriting-stroke"
+    pathLength="1"
+    style="--delay: 2360ms; --duration: 440ms"
+    d="M211 59C210 64 209 69 209 73C212 64 217 53 224 53C231 53 228 63 225 73C229 63 235 53 242 53C249 53 246 64 243 71C242 75 247 76 252 72C257 68 259 62 262 58"
+  />
+
+  <!-- e -->
+  <path
+    class="handwriting-stroke"
+    pathLength="1"
+    style="--delay: 2740ms; --duration: 320ms"
+    d="M262 65C269 63 278 59 281 54C283 50 279 48 275 51C268 55 267 63 271 69C276 76 289 73 301 59"
+  />
+
+  <!-- finishing flourish -->
+  <path
+    class="handwriting-stroke fine-stroke"
+    pathLength="1"
+    style="--delay: 3000ms; --duration: 320ms"
+    d="M301 59C306 66 313 70 322 67C329 65 334 61 337 57"
+  />
+</svg>

@@ -2,14 +2,15 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import logo from '../assets/images/logo.svg'
+import welcomeHandwriting from '../assets/images/welcome-handwriting.svg'
 import clearIcon from '../assets/images/clear_input.svg'
 
 import supabase from '../api/supabase'
 import styles from './LoginPage.module.css'
 
 const LOGIN_SPLASH_SESSION_KEY = 'bandiaryLoginSplashShown'
-const LOGIN_SPLASH_FADE_DELAY = 2550
-const LOGIN_SPLASH_DURATION = 3000
+const LOGIN_SPLASH_FADE_DELAY = 3800
+const LOGIN_SPLASH_DURATION = 4300
 
 const shouldShowLoginSplash = () => {
   const prefersReducedMotion = window.matchMedia(
@@ -164,7 +165,14 @@ function LoginPage() {
           }`}
           aria-hidden="true"
         >
-          <img src={logo} alt="" className={styles.loginSplashLogo} />
+          <div className={styles.loginSplashContent}>
+            <img src={logo} alt="" className={styles.loginSplashLogo} />
+            <img
+              src={welcomeHandwriting}
+              alt=""
+              className={styles.loginSplashWelcome}
+            />
+          </div>
         </div>
       )}
 
