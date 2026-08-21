@@ -7,7 +7,7 @@ import ContentCard from '../components/home/ContentCard'
 import ContentFilterTabs from '../components/home/ContentFilterTabs'
 import ProfileEditModal from '../components/home/ProfileEditModal'
 import ContentAddModal from '../components/home/ContentAddModal'
-import ContentDetailModal from '../components/home/ContentDetailModal'
+import VideoDetailModal from '../components/home/VideoDetailModal'
 import AudioDetailModal from '../components/home/AudioDetailModal'
 import PictureDetailModal from '../components/home/PictureDetailModal'
 import PlaceResultModal from '../components/place/PlaceResultModal'
@@ -137,9 +137,13 @@ function HomePage() {
     const pictureContentIds = contentList
       .filter((item) => item.type === '사진')
       .map((item) => item.id)
+    const videoContentIds = contentList
+      .filter((item) => item.type === '비디오')
+      .map((item) => item.id)
 
     const audioFilesByContentId = new Map()
     const pictureFilesByContentId = new Map()
+    const videoFilesByContentId = new Map()
 
     if (audioContentIds.length > 0) {
       const { data: audioData, error: audioError } = await supabase
@@ -192,15 +196,41 @@ function HomePage() {
       }
     }
 
+    if (videoContentIds.length > 0) {
+      const { data: videoData, error: videoError } = await supabase
+        .from('content_video')
+        .select(
+          'id, content_id, file_url, storage_path, original_file_name, mime_type, file_size, duration, width, height, sort_order, created_at'
+        )
+        .in('content_id', videoContentIds)
+        .order('sort_order', { ascending: true })
+
+      if (videoError) {
+        console.error('비디오 목록 조회 실패:', videoError)
+      } else {
+        const videoFileList = videoData || []
+
+        videoFileList.forEach((videoFile) => {
+          const currentVideoFiles =
+            videoFilesByContentId.get(videoFile.content_id) || []
+
+          currentVideoFiles.push(videoFile)
+          videoFilesByContentId.set(videoFile.content_id, currentVideoFiles)
+        })
+      }
+    }
+
     setContent(
       contentList.map((item) => {
         const savedAudioFiles = audioFilesByContentId.get(item.id) || []
         const savedPictureFiles = pictureFilesByContentId.get(item.id) || []
+        const savedVideoFiles = videoFilesByContentId.get(item.id) || []
 
         return {
           ...item,
           audioFiles: savedAudioFiles,
           pictureFiles: savedPictureFiles,
+          videoFiles: savedVideoFiles,
         }
       })
     )
@@ -328,7 +358,7 @@ function HomePage() {
   const loadFfmpeg = async () => {
     if (isFfmpegLoadedRef.current) return
 
-    setConvertMessage('오디오 변환 엔진을 불러오는 중입니다.')
+    setConvertMessage('미디어 변환 엔진을 불러오는 중입니다.')
 
     const ffmpeg = ffmpegRef.current
 
@@ -400,6 +430,102 @@ function HomePage() {
       type: 'audio/mp4',
     })
   }
+
+  // Supabase Free Storage 제한에 맞춰 영상을 540p MP4로 압축
+  const compressVideoTo540p = async (file) => {
+    await loadFfmpeg()
+
+    setConvertMessage(
+      '비디오를 540p로 압축하는 중입니다. 기기 성능에 따라 시간이 걸릴 수 있어요.'
+    )
+
+    const ffmpeg = ffmpegRef.current
+    const inputExt = getFileExtension(file, '비디오')
+    const fileId = createSafeId()
+    const inputName = 'video_input_' + fileId + '.' + inputExt
+    const outputName = 'video_output_' + fileId + '.mp4'
+
+    try {
+      await ffmpeg.writeFile(inputName, await fetchFile(file))
+
+      const resultCode = await ffmpeg.exec([
+        '-i',
+        inputName,
+        '-vf',
+        'scale=-2:540',
+        '-c:v',
+        'libx264',
+        '-preset',
+        'veryfast',
+        '-b:v',
+        '650k',
+        '-maxrate',
+        '715k',
+        '-bufsize',
+        '1300k',
+        '-pix_fmt',
+        'yuv420p',
+        '-c:a',
+        'aac',
+        '-b:a',
+        '96k',
+        '-movflags',
+        '+faststart',
+        '-map_metadata',
+        '-1',
+        outputName,
+      ])
+
+      if (resultCode !== 0) {
+        throw new Error('비디오를 540p MP4로 압축하지 못했습니다.')
+      }
+
+      const data = await ffmpeg.readFile(outputName)
+      const originalName =
+        file.name?.replace(/\.[^/.]+$/, '') || 'compressed-video'
+
+      return new File([data], originalName + '-540p.mp4', {
+        type: 'video/mp4',
+      })
+    } finally {
+      for (const temporaryFileName of [inputName, outputName]) {
+        try {
+          await ffmpeg.deleteFile(temporaryFileName)
+        } catch (error) {
+          console.warn('비디오 변환 임시 파일 삭제 실패:', error)
+        }
+      }
+    }
+  }
+
+  const getVideoMetadata = (file) =>
+    new Promise((resolve, reject) => {
+      const video = document.createElement('video')
+      const objectUrl = URL.createObjectURL(file)
+
+      const cleanup = () => {
+        video.removeAttribute('src')
+        video.load()
+        URL.revokeObjectURL(objectUrl)
+      }
+
+      video.preload = 'metadata'
+      video.onloadedmetadata = () => {
+        const metadata = {
+          duration: Number.isFinite(video.duration) ? video.duration : null,
+          width: video.videoWidth || null,
+          height: video.videoHeight || null,
+        }
+
+        cleanup()
+        resolve(metadata)
+      }
+      video.onerror = () => {
+        cleanup()
+        reject(new Error('압축한 비디오의 정보를 확인하지 못했습니다.'))
+      }
+      video.src = objectUrl
+    })
 
   // 프로필 수정 Modal 관련 메서드
   const handleOpenProfileModal = () => {
@@ -640,7 +766,6 @@ function HomePage() {
     if (selectedFiles.length === 0) return
 
     const maxImageSize = 10 * 1024 * 1024
-    const maxVideoUploadSize = 30 * 1024 * 1024
     const maxVideoConvertSourceSize = 200 * 1024 * 1024
     const maxAudioSize = 20 * 1024 * 1024
 
@@ -736,8 +861,10 @@ function HomePage() {
       return
     }
 
-    if (contentType === '비디오' && file.size > maxVideoUploadSize) {
-      setErrorMessage('비디오 파일은 30MB 이하만 업로드할 수 있습니다.')
+    if (contentType === '비디오' && file.size > maxVideoConvertSourceSize) {
+      setErrorMessage(
+        '압축할 비디오 원본은 200MB 이하만 선택할 수 있습니다.'
+      )
       event.target.value = ''
       return
     }
@@ -878,11 +1005,11 @@ function HomePage() {
       const payload = {
         type: contentType,
         title: contentForm.title.trim(),
-        contentVideoUrl: null,
       }
 
       const uploadedAudioFiles = []
       let uploadedPictureFile = null
+      let uploadedVideoFile = null
 
       if (contentType === '오디오') {
         for (let index = 0; index < contentAudioFiles.length; index += 1) {
@@ -916,12 +1043,39 @@ function HomePage() {
             sort_order: index,
           })
         }
-      } else {
-        setConvertMessage(
-          contentType === '비디오'
-            ? '비디오 파일을 업로드하는 중입니다.'
-            : '이미지 파일을 업로드하는 중입니다.'
+      } else if (contentType === '비디오') {
+        const compressedVideo = await compressVideoTo540p(contentFile)
+        const maxCompressedVideoSize = 48 * 1024 * 1024
+
+        if (compressedVideo.size > maxCompressedVideoSize) {
+          throw new Error(
+            '압축한 비디오가 48MB를 초과합니다. 영상 길이를 줄인 후 다시 시도해주세요.'
+          )
+        }
+
+        const videoMetadata = await getVideoMetadata(compressedVideo)
+
+        setConvertMessage('압축한 비디오를 업로드하는 중입니다.')
+
+        const uploadedFile = await uploadContentFile(
+          compressedVideo,
+          '비디오'
         )
+
+        uploadedStoragePaths.push(uploadedFile.filePath)
+        uploadedVideoFile = {
+          file_url: uploadedFile.publicUrl,
+          storage_path: uploadedFile.filePath,
+          original_file_name: contentFile.name || '비디오 파일',
+          mime_type: compressedVideo.type,
+          file_size: compressedVideo.size,
+          duration: videoMetadata.duration,
+          width: videoMetadata.width,
+          height: videoMetadata.height,
+          sort_order: 0,
+        }
+      } else {
+        setConvertMessage('이미지 파일을 업로드하는 중입니다.')
 
         const uploadedFile = await uploadContentFile(contentFile, contentType)
 
@@ -936,10 +1090,6 @@ function HomePage() {
             file_size: contentFile.size,
             sort_order: 0,
           }
-        }
-
-        if (contentType === '비디오') {
-          payload.contentVideoUrl = uploadedFile.publicUrl
         }
       }
 
@@ -982,6 +1132,21 @@ function HomePage() {
 
         if (pictureInsertError) {
           throw pictureInsertError
+        }
+      }
+
+      if (contentType === '비디오' && uploadedVideoFile) {
+        const { error: videoInsertError } = await supabase
+          .from('content_video')
+          .insert([
+            {
+              ...uploadedVideoFile,
+              content_id: createdContent.id,
+            },
+          ])
+
+        if (videoInsertError) {
+          throw videoInsertError
         }
       }
 
@@ -1032,6 +1197,11 @@ function HomePage() {
         (error.code === '42501' ||
           error.message?.includes('content_picture') ||
           error.message?.includes('schema cache'))
+      const isVideoTableError =
+        contentType === '비디오' &&
+        (error.code === '42501' ||
+          error.message?.includes('content_video') ||
+          error.message?.includes('schema cache'))
 
       setResultModal({
         isOpen: true,
@@ -1041,7 +1211,10 @@ function HomePage() {
           ? 'content_audio 테이블의 Supabase 접근 정책을 확인해주세요.'
           : isPictureTableError
             ? 'content_picture 테이블 생성 SQL을 먼저 실행해주세요.'
-            : '콘텐츠 등록 중 오류가 발생했습니다. 파일 용량, 형식, 네트워크 상태, 변환 가능 여부 또는 Supabase 설정을 확인해주세요.',
+            : isVideoTableError
+              ? 'content_video 테이블 생성 SQL을 먼저 실행해주세요.'
+              : error.message ||
+                '콘텐츠 등록 중 오류가 발생했습니다. 파일 용량, 형식, 네트워크 상태 또는 Supabase 설정을 확인해주세요.',
       })
     } finally {
       setIsContentUploading(false)
@@ -1118,12 +1291,15 @@ function HomePage() {
       }
 
       if (deleteContentTarget.type === '비디오') {
-        const filePath = getStorageFilePathFromUrl(
-          'content-files',
-          deleteContentTarget.contentVideoUrl
-        )
+        const videoFiles = deleteContentTarget.videoFiles || []
 
-        if (filePath) storageFilePaths.push(filePath)
+        videoFiles.forEach((videoFile) => {
+          const filePath =
+            videoFile.storage_path ||
+            getStorageFilePathFromUrl('content-files', videoFile.file_url)
+
+          if (filePath) storageFilePaths.push(filePath)
+        })
       }
 
       if (deleteContentTarget.type === '오디오') {
@@ -1336,7 +1512,7 @@ function HomePage() {
       )}
 
       {detailContent?.type === '비디오' && (
-        <ContentDetailModal
+        <VideoDetailModal
           content={detailContent}
           onClose={handleCloseDetailModal}
         />

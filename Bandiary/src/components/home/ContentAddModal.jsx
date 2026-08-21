@@ -311,8 +311,8 @@ function ContentAddModal({
                 <div className={styles.contentUploadGuide}>
                   <strong>비디오 업로드 안내</strong>
                   <p>
-                    비디오 탭에서는 30MB 이하의 영상 파일을 원본 비디오로
-                    저장합니다.
+                    200MB 이하의 원본을 선택할 수 있습니다. 업로드 전에
+                    540p · 영상 650kbps · 음성 96kbps MP4로 압축합니다.
                   </p>
                 </div>
               )}
