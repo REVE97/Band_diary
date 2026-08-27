@@ -5,6 +5,7 @@ import PlaceFilterTabs from '../components/place/PlaceFilterTabs'
 import PlaceModal from '../components/place/PlaceModal'
 import PlaceResultModal from '../components/place/PlaceResultModal'
 import useToast from '../components/common/useToast'
+import addIcon from '../assets/images/add.svg'
 import restaurantPlaceIcon from '../assets/images/place-restaurant.svg'
 import searchIcon from '../assets/images/search.svg'
 import studioPlaceIcon from '../assets/images/place-studio.svg'
@@ -716,7 +717,7 @@ function PlacePage() {
         onClick={handleOpenModal}
         aria-label="장소 추가"
       >
-        +
+        <img src={addIcon} alt="" aria-hidden="true" />
       </button>
 
       {/* 합주실, 주변 맛집 추가 Modal */}

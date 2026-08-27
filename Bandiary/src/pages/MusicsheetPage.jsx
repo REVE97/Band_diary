@@ -7,6 +7,7 @@ import MusicsheetAddModal from '../components/musicsheet/MusicsheetAddModal'
 import MusicsheetFilterTabs from '../components/musicsheet/MusicsheetFilterTabs'
 import PlaceResultModal from '../components/place/PlaceResultModal'
 import useToast from '../components/common/useToast'
+import addIcon from '../assets/images/add.svg'
 import downloadIcon from '../assets/images/download.svg'
 import bassPdfIcon from '../assets/images/PdfIcon-bass.svg'
 import drumPdfIcon from '../assets/images/PdfIcon-drum.svg'
@@ -485,7 +486,7 @@ function MusicsheetPage() {
         onClick={handleOpenMusicsheetModal}
         aria-label="PDF 악보 추가"
       >
-        +
+        <img src={addIcon} alt="" aria-hidden="true" />
       </button>
 
       <section className={styles.librarySection}>

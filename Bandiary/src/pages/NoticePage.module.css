@@ -266,16 +266,18 @@
   justify-content: center;
   border-radius: 50%;
   background: var(--color-primary);
-  color: var(--color-on-accent);
-  font-size: 30px;
-  font-weight: 700;
-  line-height: 1;
   box-shadow: var(--shadow-floating);
   opacity: 0.5;
 }
 
 .noticeAddButton:active {
   transform: scale(0.96);
+}
+
+.noticeAddButton img {
+  width: 24px;
+  height: 24px;
+  display: block;
 }
 
 .noticeStateBox,

@@ -423,18 +423,23 @@
   z-index: 90;
   width: 56px;
   height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 50%;
-  color: var(--color-on-accent);
   background: var(--color-primary);
-  font-size: 30px;
-  font-weight: 700;
-  line-height: 1;
   box-shadow: var(--shadow-floating);
   opacity: 0.5;
 }
 
 .placeAddButton:active {
   transform: scale(0.96);
+}
+
+.placeAddButton img {
+  width: 24px;
+  height: 24px;
+  display: block;
 }
 
 @media (max-width: 360px) {

@@ -307,18 +307,23 @@
   z-index: 90;
   width: 56px;
   height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 50%;
   background: var(--color-primary);
-  color: var(--color-on-accent);
-  font-size: 30px;
-  font-weight: 700;
-  line-height: 1;
   box-shadow: var(--shadow-floating);
   opacity: 0.5;
 }
 
 .contentAddButton:active {
   transform: scale(0.96);
+}
+
+.contentAddButton img {
+  width: 24px;
+  height: 24px;
+  display: block;
 }
 
 .emptyState {

@@ -4,6 +4,7 @@ import NoticeAddModal from '../components/notice/NoticeAddModal'
 import NoticeDetailModal from '../components/notice/NoticeDetailModal'
 import NoticeFilterTabs from '../components/notice/NoticeFilterTabs'
 
+import addIcon from '../assets/images/add.svg'
 import importantIcon from '../assets/images/notice-important.svg'
 import noticeIcon from '../assets/images/notice-announcement.svg'
 import memoIcon from '../assets/images/notice-memo.svg'
@@ -466,7 +467,7 @@ function NoticePage() {
           setIsAddModalOpen(true)
         }
       >
-        +
+        <img src={addIcon} alt="" aria-hidden="true" />
       </button>
 
       {/* 등록 모달 */}

@@ -9,6 +9,7 @@ import ScheduleAddModal from '../components/schedule/ScheduleAddModal'
 import ScheduleDetailModal from '../components/schedule/ScheduleDetailModal'
 import PlaceResultModal from '../components/place/PlaceResultModal'
 import useToast from '../components/common/useToast'
+import addIcon from '../assets/images/add.svg'
 import styles from './SchedulePage.module.css'
 
 const initialScheduleForm = {
@@ -390,7 +391,7 @@ function SchedulePage() {
         onClick={() => handleOpenScheduleModal()}
         aria-label="일정 추가"
       >
-        +
+        <img src={addIcon} alt="" aria-hidden="true" />
       </button>
 
       <section className={styles.upcomingSection} aria-label="다가오는 일정">

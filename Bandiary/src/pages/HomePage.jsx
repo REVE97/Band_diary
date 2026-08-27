@@ -14,6 +14,7 @@ import PlaceResultModal from '../components/place/PlaceResultModal'
 import useToast from '../components/common/useToast'
 
 import profile from '../assets/images/default_profile.svg'
+import addIcon from '../assets/images/add.svg'
 import editIcon from '../assets/images/edit.svg'
 import instagramIcon from '../assets/images/instagram.svg'
 import discordIcon from '../assets/images/discord.svg'
@@ -1438,7 +1439,7 @@ function HomePage() {
         onClick={handleOpenContentModal}
         aria-label="사진, 비디오 또는 오디오 추가"
       >
-        +
+        <img src={addIcon} alt="" aria-hidden="true" />
       </button>
 
       {/* 콘텐츠 목록 */}
