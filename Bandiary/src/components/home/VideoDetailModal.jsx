@@ -6,7 +6,7 @@ import useToast from '../common/useToast'
 import { formatDate } from '../../features/common'
 import supabase from '../../api/supabase'
 
-import commentSendIcon from '../../assets/images/comment-send.svg'
+import chapterAddIcon from '../../assets/images/chapter-add.svg'
 import styles from './VideoDetailModal.module.css'
 
 const THUMBNAIL_COUNT = 5
@@ -596,63 +596,74 @@ function VideoDetailModal({ content, onClose }) {
                 className={styles.videoChapterForm}
                 onSubmit={handleAddChapter}
               >
-                <div className={styles.videoChapterInputRow}>
-                  <input
-                    type="text"
-                    value={chapterTitle}
-                    placeholder="구간 제목"
-                    maxLength={100}
-                    onChange={handleChapterTitleChange}
-                    aria-label="곡 구간 제목"
-                  />
-
-                  <div className={styles.videoChapterTimeInputs}>
+                <div className={styles.videoChapterInputPanel}>
+                  <div className={styles.videoChapterField}>
+                    <label htmlFor="video-chapter-title">구간 제목</label>
                     <input
+                      id="video-chapter-title"
                       type="text"
-                      inputMode="numeric"
-                      value={chapterStartTime}
-                      placeholder="시작 MM:SS"
-                      maxLength={5}
-                      onChange={handleChapterStartTimeChange}
-                      aria-label="곡 구간 시작 시간"
+                      value={chapterTitle}
+                      placeholder="예: 후렴 반복 연습"
+                      maxLength={100}
+                      onChange={handleChapterTitleChange}
                     />
+                  </div>
 
-                    <span aria-hidden="true">–</span>
+                  <div className={styles.videoChapterTimeFields}>
+                    <div className={styles.videoChapterField}>
+                      <label htmlFor="video-chapter-start-time">
+                        시작 시간
+                      </label>
+                      <input
+                        id="video-chapter-start-time"
+                        type="text"
+                        inputMode="numeric"
+                        value={chapterStartTime}
+                        placeholder="예: 01:30"
+                        maxLength={5}
+                        onChange={handleChapterStartTimeChange}
+                      />
+                    </div>
 
-                    <input
-                      type="text"
-                      inputMode="numeric"
-                      value={chapterEndTime}
-                      placeholder="종료 MM:SS"
-                      maxLength={5}
-                      onChange={handleChapterEndTimeChange}
-                      aria-label="곡 구간 종료 시간"
-                    />
+                    <div className={styles.videoChapterField}>
+                      <label htmlFor="video-chapter-end-time">
+                        종료 시간
+                      </label>
+                      <input
+                        id="video-chapter-end-time"
+                        type="text"
+                        inputMode="numeric"
+                        value={chapterEndTime}
+                        placeholder="예: 02:05"
+                        maxLength={5}
+                        onChange={handleChapterEndTimeChange}
+                      />
+                    </div>
                   </div>
 
                   <button
                     type="submit"
-                    className={styles.videoChapterSendButton}
+                    className={styles.videoChapterSubmitButton}
                     disabled={isChapterSubmitting}
-                    aria-label="곡 구간 등록"
                   >
                     {isChapterSubmitting ? (
-                      <span className={styles.videoChapterSendLoading}>
-                        ...
-                      </span>
+                      '등록 중...'
                     ) : (
-                      <img
-                        src={commentSendIcon}
-                        alt=""
-                        aria-hidden="true"
-                      />
+                      <>
+                        <img
+                          src={chapterAddIcon}
+                          alt=""
+                          aria-hidden="true"
+                        />
+                        <span>구간 추가</span>
+                      </>
                     )}
                   </button>
-                </div>
 
-                <p className={styles.videoChapterInputGuide}>
-                  제목과 시작·종료 시간을 입력해주세요. 예: 0130 → 01:30
-                </p>
+                  <p className={styles.videoChapterInputGuide}>
+                    제목과 시작·종료 시간을 입력해주세요. 예: 0130 → 01:30
+                  </p>
+                </div>
 
                 {chapterFormErrorMessage && (
                   <p className={styles.videoChapterFormError}>

@@ -307,55 +307,53 @@
   margin-top: 12px;
 }
 
-.videoChapterInputRow {
-  min-height: 104px;
-  padding: 6px;
-  display: grid;
-  grid-template-areas:
-    'title send'
-    'times send';
-  grid-template-columns: minmax(0, 1fr) 44px;
-  grid-template-rows: 44px 44px;
-  align-items: center;
-  gap: 6px;
+.videoChapterInputPanel {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   border: 1px solid var(--color-primary-border);
   border-radius: 17px;
   background: var(--color-primary-soft);
 }
 
-.videoChapterInputRow > input,
-.videoChapterTimeInputs input {
+.videoChapterField {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.videoChapterField label {
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.videoChapterField input {
   width: 100%;
   min-width: 0;
-  height: 44px;
-  border: 0;
+  height: 46px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
   outline: none;
   background: var(--color-surface);
   color: var(--color-text-primary);
   font-family: inherit;
   font-size: 16px;
+  font-weight: 800;
   line-height: 1.4;
 }
 
-.videoChapterInputRow > input {
-  grid-area: title;
-  padding: 0 12px;
-  border-radius: 12px;
-  font-weight: 800;
-}
-
-.videoChapterTimeInputs {
-  grid-area: times;
+.videoChapterTimeFields {
   min-width: 0;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-  align-items: center;
-  gap: 5px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
 }
 
-.videoChapterTimeInputs input {
-  padding: 0 5px;
-  border-radius: 12px;
+.videoChapterTimeFields input {
   color: var(--color-primary);
   font-size: 16px;
   font-weight: 900;
@@ -363,51 +361,42 @@
   text-align: center;
 }
 
-.videoChapterTimeInputs span {
-  color: var(--color-text-muted);
-  font-size: 12px;
-  font-weight: 900;
-}
-
-.videoChapterInputRow > input:focus,
-.videoChapterTimeInputs input:focus {
+.videoChapterField input:focus {
+  border-color: var(--color-primary);
   box-shadow: var(--focus-ring-primary);
 }
 
-.videoChapterSendButton {
-  grid-area: send;
-  width: 44px;
-  height: 44px;
-  padding: 0;
+.videoChapterSubmitButton {
+  width: 100%;
+  height: 46px;
+  padding: 0 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
+  gap: 7px;
+  border-radius: 13px;
   background: var(--color-primary);
   color: var(--color-on-accent);
+  font-size: 14px;
+  font-weight: 900;
+  box-shadow: var(--shadow-button);
 }
 
-.videoChapterSendButton img {
-  width: 18px;
-  height: 18px;
+.videoChapterSubmitButton img {
+  width: 17px;
+  height: 17px;
   display: block;
   object-fit: contain;
 }
 
-.videoChapterSendButton:disabled {
+.videoChapterSubmitButton:disabled {
   cursor: not-allowed;
   opacity: 0.45;
-}
-
-.videoChapterSendLoading {
-  color: var(--color-on-accent);
-  font-size: 14px;
-  font-weight: 900;
-  line-height: 1;
+  box-shadow: none;
 }
 
 .videoChapterInputGuide {
-  margin: 6px 5px 0;
+  margin: -4px 2px 0;
   color: var(--color-text-muted);
   font-size: 10px;
   font-weight: 700;
@@ -444,7 +433,7 @@
 .videoLoopButtonActive:focus-visible,
 .videoRateButton:focus-visible,
 .videoNextButton:focus-visible,
-.videoChapterSendButton:focus-visible {
+.videoChapterSubmitButton:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
