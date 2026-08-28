@@ -52,3 +52,7 @@
 .restaurantColor {
   background: var(--color-warning);
 }
+
+.parkingColor {
+  background: #2563eb;
+}

@@ -13,6 +13,10 @@ const placeFilters = [
     value: 'restaurant',
     label: '주변 맛집',
   },
+  {
+    value: 'parking',
+    label: '주차장',
+  },
 ]
 
 function PlaceFilterTabs({

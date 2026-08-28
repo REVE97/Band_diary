@@ -6,6 +6,7 @@ import PlaceModal from '../components/place/PlaceModal'
 import PlaceResultModal from '../components/place/PlaceResultModal'
 import useToast from '../components/common/useToast'
 import addIcon from '../assets/images/add.svg'
+import parkingPlaceIcon from '../assets/images/place-parking.svg'
 import restaurantPlaceIcon from '../assets/images/place-restaurant.svg'
 import searchIcon from '../assets/images/search.svg'
 import studioPlaceIcon from '../assets/images/place-studio.svg'
@@ -26,6 +27,19 @@ const initialForm = {
 
 const getPlaceKey = (place) => `${place.type}-${place.id}`
 
+const placeLabels = {
+  studio: '합주실',
+  restaurant: '주변 맛집',
+  parking: '주차장',
+}
+
+const getPlaceIcon = (placeType) => {
+  if (placeType === 'restaurant') return restaurantPlaceIcon
+  if (placeType === 'parking') return parkingPlaceIcon
+
+  return studioPlaceIcon
+}
+
 function PlacePage() {
   const { showToast } = useToast()
   // 유저 데이터 호출
@@ -43,6 +57,7 @@ function PlacePage() {
 
   const [studioList, setStudioList] = useState([])
   const [restaurantList, setRestaurantList] = useState([])
+  const [parkingList, setParkingList] = useState([])
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [formType, setFormType] = useState('studio')
@@ -87,11 +102,25 @@ function PlacePage() {
     }
   }
 
+  // Supabase parking 테이블 데이터 API 호출
+  const getParking = async () => {
+    const { data, error } = await supabase
+      .from('parking')
+      .select('*')
+
+    if (error) {
+      console.error(error)
+    } else {
+      setParkingList(data || [])
+    }
+  }
+
   useEffect(() => {
     // Supabase의 초기 장소 목록을 페이지 진입 시 한 번만 조회합니다.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     getStudio()
     getRestaurant()
+    getParking()
   }, [])
 
   // 서로 다른 테이블의 데이터를 지도와 목록에서 사용할 공통 형태로 합칩니다.
@@ -105,16 +134,21 @@ function PlacePage() {
         ...place,
         type: 'restaurant',
       })),
+      ...parkingList.map((place) => ({
+        ...place,
+        type: 'parking',
+      })),
     ]
-  }, [restaurantList, studioList])
+  }, [parkingList, restaurantList, studioList])
 
   const placeCounts = useMemo(() => {
     return {
       all: allPlaces.length,
       studio: studioList.length,
       restaurant: restaurantList.length,
+      parking: parkingList.length,
     }
-  }, [allPlaces.length, restaurantList.length, studioList.length])
+  }, [allPlaces.length, parkingList.length, restaurantList.length, studioList.length])
 
   // 검색어와 장소 유형 필터를 카드 목록과 지도 마커에 함께 적용합니다.
   const filteredPlaces = useMemo(() => {
@@ -150,11 +184,7 @@ function PlacePage() {
   }, [filteredPlaces])
 
   const listTitle =
-    activeFilter === 'studio'
-      ? '합주실'
-      : activeFilter === 'restaurant'
-        ? '주변 맛집'
-        : '전체 장소'
+    activeFilter === 'all' ? '전체 장소' : placeLabels[activeFilter]
 
   const handleFilterChange = (filterValue) => {
     setActiveFilter(filterValue)
@@ -194,7 +224,7 @@ function PlacePage() {
   }
 
   const handleOpenModal = () => {
-    setFormType(activeFilter === 'restaurant' ? 'restaurant' : 'studio')
+    setFormType(activeFilter === 'all' ? 'studio' : activeFilter)
     setPlaceForm(initialForm)
     setPlaceSearchResults([])
     setErrorMessage('')
@@ -378,7 +408,7 @@ function PlacePage() {
     return ''
   }
 
-  // 합주실, 주변 맛집 데이터 입력 API 호출
+  // 합주실, 주변 맛집, 주차장 데이터 입력 API 호출
   const handleAddPlace = async () => {
     const validationMessage = validateForm()
 
@@ -404,17 +434,17 @@ function PlacePage() {
     }
 
     const payload =
-      formType === 'studio'
+      formType === 'restaurant'
         ? {
-            ...commonPayload,
-            timeUnit: '1시간',
-          }
-        : {
             ...commonPayload,
             category: placeForm.category.trim(),
           }
+        : {
+            ...commonPayload,
+            timeUnit: '1시간',
+          }
 
-    const tableName = formType === 'studio' ? 'studio' : 'restaurant'
+    const tableName = formType
 
     const { error } = await supabase.from(tableName).insert([payload])
 
@@ -434,8 +464,10 @@ function PlacePage() {
 
     if (formType === 'studio') {
       await getStudio()
-    } else {
+    } else if (formType === 'restaurant') {
       await getRestaurant()
+    } else {
+      await getParking()
     }
 
     setActiveFilter(formType)
@@ -443,20 +475,15 @@ function PlacePage() {
     setSelectedPlace(null)
     handleCloseModal()
 
-    showToast(
-      formType === 'studio'
-        ? '합주실이 등록되었습니다.'
-        : '주변 맛집이 등록되었습니다.',
-    )
+    showToast(`${placeLabels[formType]}이 등록되었습니다.`)
   }
 
-  // 합주실, 주변 맛집 데이터 삭제 API 호출
+  // 합주실, 주변 맛집, 주차장 데이터 삭제 API 호출
   const handleDeletePlace = async () => {
     // 관리자만 삭제 가능
     if (!isAdmin || !deleteTarget) return
 
-    const tableName =
-      deleteTarget.type === 'studio' ? 'studio' : 'restaurant'
+    const tableName = deleteTarget.type
 
     const { error } = await supabase
       .from(tableName)
@@ -480,8 +507,10 @@ function PlacePage() {
 
     if (deleteTarget.type === 'studio') {
       await getStudio()
-    } else {
+    } else if (deleteTarget.type === 'restaurant') {
       await getRestaurant()
+    } else {
+      await getParking()
     }
 
     if (
@@ -499,7 +528,7 @@ function PlacePage() {
   const getPlacePriceText = (place) => {
     const price = Number(place.price || 0).toLocaleString()
 
-    if (place.type === 'studio') {
+    if (place.type !== 'restaurant') {
       return `₩ ${price} / ${place.timeUnit || '1시간'}`
     }
 
@@ -527,16 +556,16 @@ function PlacePage() {
         >
           <span
             className={`${styles.placeIcon} ${
-              place.type === 'restaurant' ? styles.restaurantIcon : ''
+              place.type === 'restaurant'
+                ? styles.restaurantIcon
+                : place.type === 'parking'
+                  ? styles.parkingIcon
+                  : ''
             }`}
             aria-hidden="true"
           >
             <img
-              src={
-                place.type === 'restaurant'
-                  ? restaurantPlaceIcon
-                  : studioPlaceIcon
-              }
+              src={getPlaceIcon(place.type)}
               alt=""
               aria-hidden="true"
             />
@@ -595,7 +624,7 @@ function PlacePage() {
             <input
               type="search"
               value={searchKeyword}
-              placeholder="합주실 또는 주변 맛집 검색"
+              placeholder="합주실, 주변 맛집 또는 주차장 검색"
               aria-label="장소명, 주소 또는 태그 검색"
               onChange={handleSearchKeywordChange}
             />
@@ -637,16 +666,14 @@ function PlacePage() {
                 className={`${styles.selectedMapIcon} ${
                   selectedPlace.type === 'restaurant'
                     ? styles.restaurantIcon
-                    : ''
+                    : selectedPlace.type === 'parking'
+                      ? styles.parkingIcon
+                      : ''
                 }`}
                 aria-hidden="true"
               >
                 <img
-                  src={
-                    selectedPlace.type === 'restaurant'
-                      ? restaurantPlaceIcon
-                      : studioPlaceIcon
-                  }
+                  src={getPlaceIcon(selectedPlace.type)}
                   alt=""
                   aria-hidden="true"
                 />
@@ -720,7 +747,7 @@ function PlacePage() {
         <img src={addIcon} alt="" aria-hidden="true" />
       </button>
 
-      {/* 합주실, 주변 맛집 추가 Modal */}
+      {/* 합주실, 주변 맛집, 주차장 추가 Modal */}
       {isModalOpen && (
         <PlaceModal
           formType={formType}

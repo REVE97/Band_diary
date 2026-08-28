@@ -302,6 +302,11 @@
   color: var(--color-warning);
 }
 
+.parkingIcon {
+  background: rgba(37, 99, 235, 0.12);
+  color: #2563eb;
+}
+
 .placeInfo {
   min-width: 0;
   display: flex;

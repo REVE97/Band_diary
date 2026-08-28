@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 
+import parkingMarkerIcon from '../../assets/images/place-parking-marker.svg'
 import restaurantMarkerIcon from '../../assets/images/place-restaurant-marker.svg'
 import studioMarkerIcon from '../../assets/images/place-studio-marker.svg'
 import styles from './KakaoMap.module.css'
@@ -10,6 +11,13 @@ const seoulCenter = {
 }
 
 const getPlaceKey = (place) => `${place.type}-${place.id}`
+
+const getMarkerIcon = (placeType) => {
+  if (placeType === 'restaurant') return restaurantMarkerIcon
+  if (placeType === 'parking') return parkingMarkerIcon
+
+  return studioMarkerIcon
+}
 
 function KakaoMap({
   places,
@@ -91,9 +99,7 @@ function KakaoMap({
         )
 
         const markerImage = new kakao.maps.MarkerImage(
-          place.type === 'restaurant'
-            ? restaurantMarkerIcon
-            : studioMarkerIcon,
+          getMarkerIcon(place.type),
           markerSize,
           markerOptions
         )
@@ -156,6 +162,10 @@ function KakaoMap({
           <span>
             <i className={styles.restaurantColor} />
             주변 맛집
+          </span>
+          <span>
+            <i className={styles.parkingColor} />
+            주차장
           </span>
         </div>
       )}

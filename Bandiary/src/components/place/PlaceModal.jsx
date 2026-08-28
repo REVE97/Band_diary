@@ -23,6 +23,8 @@ function PlaceModal({
 
   const isStudio = formType === 'studio'
   const isRestaurant = formType === 'restaurant'
+  const isParking = formType === 'parking'
+  const usesHourlyPrice = isStudio || isParking
 
   const hasSelectedPlace =
     placeForm.name.trim() &&
@@ -66,7 +68,9 @@ function PlaceModal({
 
     if (currentStep === 2) {
       if (!placeForm.price.trim()) {
-        return isStudio ? '시간당 가격을 입력해주세요.' : '평균 가격을 입력해주세요.'
+        return usesHourlyPrice
+          ? '시간당 가격을 입력해주세요.'
+          : '평균 가격을 입력해주세요.'
       }
 
       if (Number.isNaN(Number(placeForm.price))) {
@@ -200,6 +204,17 @@ function PlaceModal({
             />
             주변 맛집
           </label>
+
+          <label>
+            <input
+              type="radio"
+              name="formType"
+              value="parking"
+              checked={isParking}
+              onChange={onFormTypeChange}
+            />
+            주차장
+          </label>
         </div>
 
         <div className={styles.placeStepRow} aria-label="장소 등록 단계">
@@ -239,7 +254,9 @@ function PlaceModal({
                   placeholder={
                     isStudio
                       ? '합주실 장소명 검색 예: 홍대 합주실'
-                      : '맛집 장소명 검색 예: 홍대 맛집'
+                      : isParking
+                        ? '주차장 장소명 검색 예: 홍대 주차장'
+                        : '맛집 장소명 검색 예: 홍대 맛집'
                   }
                   onChange={handleSearchKeywordChange}
                   onKeyDown={(event) => {
@@ -303,7 +320,7 @@ function PlaceModal({
               inputMode="numeric"
               name="price"
               value={placeForm.price}
-              placeholder={isStudio ? '시간당 가격' : '평균 가격'}
+              placeholder={usesHourlyPrice ? '시간당 가격' : '평균 가격'}
               onChange={handleChangeInput}
             />
           )}
@@ -341,7 +358,7 @@ function PlaceModal({
               <span>{placeForm.address}</span>
 
               <span>
-                {isStudio
+                {usesHourlyPrice
                   ? `시간당 ₩ ${Number(placeForm.price).toLocaleString()}`
                   : `${placeForm.category} · 평균 ₩ ${Number(
                       placeForm.price
