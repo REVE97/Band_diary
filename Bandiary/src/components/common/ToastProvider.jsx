@@ -97,7 +97,6 @@ function ToastProvider({ children }) {
         <Toast
           message="새 버전이 준비되었습니다. 지금 업데이트할까요?"
           duration={null}
-          iconText="↻"
           actionLabel={isUpdating ? '업데이트 중...' : '업데이트'}
           dismissLabel="나중에"
           isActionDisabled={isUpdating}
