@@ -152,23 +152,6 @@ function KakaoMap({
   return (
     <div className={styles.wrap}>
       <div ref={mapContainerRef} className={styles.map} />
-
-      {!selectedPlace && (
-        <div className={styles.legend} aria-label="지도 마커 안내">
-          <span>
-            <i className={styles.studioColor} />
-            합주실
-          </span>
-          <span>
-            <i className={styles.restaurantColor} />
-            주변 맛집
-          </span>
-          <span>
-            <i className={styles.parkingColor} />
-            주차장
-          </span>
-        </div>
-      )}
     </div>
   )
 }
