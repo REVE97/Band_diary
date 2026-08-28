@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" role="img" aria-label="music note icon">
-  <title>Music Note Icon</title>
-  <path d="M15.5 4.5V15.2" stroke="#111111" stroke-width="2" stroke-linecap="round"/>
-  <path d="M15.5 5.2L20 4.2V7.2L15.5 8.2" fill="#111111"/>
-  <ellipse cx="12.8" cy="16.8" rx="3.2" ry="2.4" transform="rotate(-18 12.8 16.8)" fill="#111111"/>
-</svg>

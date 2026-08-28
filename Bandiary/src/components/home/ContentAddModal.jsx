@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 
 import ModalPortal from '../common/ModalPortal'
 
-import pictureTypeIcon from '../../assets/images/content-type-picture.svg'
-import videoTypeIcon from '../../assets/images/content-type-video.svg'
-import audioTypeIcon from '../../assets/images/content-type-audio.svg'
+import pictureTypeIcon from '../../assets/images/picture.svg'
+import videoTypeIcon from '../../assets/images/video.svg'
+import audioTypeIcon from '../../assets/images/audio.svg'
 import styles from './ContentAddModal.module.css'
 
 function ContentAddModal({
