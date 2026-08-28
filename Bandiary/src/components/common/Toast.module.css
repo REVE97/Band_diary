@@ -35,14 +35,66 @@
   display: block;
 }
 
-.toast p {
+.iconText {
+  color: var(--color-primary);
+  font-size: 21px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.content {
   min-width: 0;
+  flex: 1;
+}
+
+.toast p {
   margin: 0;
   color: var(--color-text-primary);
   font-size: 14px;
   font-weight: 800;
   line-height: 1.4;
   word-break: keep-all;
+}
+
+.actions {
+  margin-top: 9px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.actionButton,
+.dismissButton {
+  min-height: 36px;
+  padding: 0 13px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.actionButton {
+  background: var(--color-primary);
+  color: var(--color-on-accent);
+  box-shadow: var(--shadow-button);
+}
+
+.dismissButton {
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-subtle);
+  color: var(--color-text-secondary);
+}
+
+.actionButton:disabled,
+.dismissButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  box-shadow: none;
+}
+
+.actionButton:focus-visible,
+.dismissButton:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
 .leaving {

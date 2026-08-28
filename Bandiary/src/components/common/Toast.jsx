@@ -6,24 +6,39 @@ import styles from './Toast.module.css'
 
 const EXIT_ANIMATION_DURATION = 180
 
-function Toast({ message, duration = 3200, onClose }) {
+function Toast({
+  message,
+  duration = 3200,
+  iconText = '',
+  actionLabel = '',
+  dismissLabel = '',
+  isActionDisabled = false,
+  onAction,
+  onClose,
+}) {
   const [isLeaving, setIsLeaving] = useState(false)
+  const hasActions = Boolean(actionLabel || dismissLabel)
 
   useEffect(() => {
     document.body.classList.add('toastOpen')
 
-    const exitTimer = window.setTimeout(() => {
-      setIsLeaving(true)
-    }, Math.max(duration - EXIT_ANIMATION_DURATION, 0))
+    let exitTimer
+    let closeTimer
 
-    const closeTimer = window.setTimeout(() => {
-      onClose()
-    }, duration)
+    if (Number.isFinite(duration) && duration > 0) {
+      exitTimer = window.setTimeout(() => {
+        setIsLeaving(true)
+      }, Math.max(duration - EXIT_ANIMATION_DURATION, 0))
+
+      closeTimer = window.setTimeout(() => {
+        onClose()
+      }, duration)
+    }
 
     return () => {
       document.body.classList.remove('toastOpen')
-      window.clearTimeout(exitTimer)
-      window.clearTimeout(closeTimer)
+      if (exitTimer !== undefined) window.clearTimeout(exitTimer)
+      if (closeTimer !== undefined) window.clearTimeout(closeTimer)
     }
   }, [duration, onClose])
 
@@ -35,10 +50,42 @@ function Toast({ message, duration = 3200, onClose }) {
       aria-atomic="true"
     >
       <span className={styles.icon} aria-hidden="true">
-        <img src={toastCheckIcon} alt="" />
+        {iconText ? (
+          <span className={styles.iconText}>{iconText}</span>
+        ) : (
+          <img src={toastCheckIcon} alt="" />
+        )}
       </span>
 
-      <p>{message}</p>
+      <div className={styles.content}>
+        <p>{message}</p>
+
+        {hasActions && (
+          <div className={styles.actions}>
+            {actionLabel && (
+              <button
+                type="button"
+                className={styles.actionButton}
+                onClick={onAction}
+                disabled={isActionDisabled}
+              >
+                {actionLabel}
+              </button>
+            )}
+
+            {dismissLabel && (
+              <button
+                type="button"
+                className={styles.dismissButton}
+                onClick={onClose}
+                disabled={isActionDisabled}
+              >
+                {dismissLabel}
+              </button>
+            )}
+          </div>
+        )}
+      </div>
     </div>,
     document.body,
   )
