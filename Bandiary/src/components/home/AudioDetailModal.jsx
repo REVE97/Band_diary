@@ -8,6 +8,7 @@ import { formatDate } from '../../features/common'
 import supabase from '../../api/supabase'
 
 import commentSendIcon from '../../assets/images/comment-send.svg'
+import songIcon from '../../assets/images/song.svg'
 import styles from './AudioDetailModal.module.css'
 
 const fetchAudioFeedbacks = (audioId) =>
@@ -405,7 +406,7 @@ function AudioDetailModal({ content, onClose }) {
                     className={styles.audioNowPlayingArtwork}
                     aria-hidden="true"
                   >
-                    ♪
+                    <img src={songIcon} alt="" />
                   </span>
 
                   <div className={styles.audioNowPlayingTitle}>
