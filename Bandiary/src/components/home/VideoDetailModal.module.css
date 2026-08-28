@@ -285,20 +285,82 @@
   line-height: 1.4;
 }
 
-.videoPracticeControls {
-  margin-top: 10px;
+.videoPracticePanel {
+  margin-top: 12px;
+  padding: 14px;
+  border: 1px solid var(--color-primary-border);
+  border-radius: 17px;
+  background: var(--color-primary-soft);
+}
+
+.videoPracticeSummary {
+  margin-bottom: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.videoPracticeSummary > div {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.videoPracticeEyebrow {
+  color: var(--color-primary);
+  font-size: 10px;
+  font-weight: 850;
+}
+
+.videoPracticeSummary strong {
+  overflow: hidden;
+  color: var(--color-text-primary);
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.videoPracticeDuration {
+  flex: 0 0 auto;
+  min-width: 48px;
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-primary);
+  font-size: 11px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.videoChapterTestButton {
+  width: 100%;
+  min-height: 50px;
+  padding: 0 16px;
+  border-radius: 14px;
+  background: var(--color-primary);
+  color: var(--color-on-accent);
+  font-size: 14px;
+  font-weight: 900;
+  box-shadow: var(--shadow-button);
+}
+
+.videoPracticeOptions {
+  margin-top: 9px;
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) 76px minmax(0, 1fr);
-  gap: 7px;
+  grid-template-columns: minmax(106px, 0.85fr) minmax(0, 1.6fr);
+  gap: 8px;
 }
 
 .videoLoopButton,
-.videoLoopButtonActive,
-.videoRateButton,
-.videoNextButton {
-  min-height: 48px;
-  padding: 0 10px;
-  border-radius: 14px;
+.videoLoopButtonActive {
+  min-height: 46px;
+  padding: 0 9px;
+  border-radius: 13px;
   font-size: 12px;
   font-weight: 900;
   line-height: 1.2;
@@ -317,22 +379,50 @@
   box-shadow: var(--shadow-button);
 }
 
-.videoRateButton {
+.videoSpeedSelector {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  overflow: hidden;
   border: 1px solid var(--color-border);
+  border-radius: 13px;
   background: var(--color-surface);
+}
+
+.videoSpeedButton,
+.videoSpeedButtonActive {
+  min-width: 0;
+  min-height: 44px;
+  padding: 0 4px;
+  border-radius: 0;
   color: var(--color-primary);
+  font-size: 11px;
+  font-weight: 900;
   font-variant-numeric: tabular-nums;
 }
 
-.videoNextButton {
-  background: var(--color-primary);
-  color: var(--color-on-accent);
-  box-shadow: var(--shadow-button);
+.videoSpeedButton + .videoSpeedButton,
+.videoSpeedButton + .videoSpeedButtonActive,
+.videoSpeedButtonActive + .videoSpeedButton,
+.videoSpeedButtonActive + .videoSpeedButtonActive {
+  border-left: 1px solid var(--color-border);
 }
 
-.videoNextButton:disabled {
+.videoSpeedButton {
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+}
+
+.videoSpeedButtonActive {
+  background: var(--color-primary);
+  color: var(--color-on-accent);
+}
+
+.videoChapterTestButton:disabled,
+.videoLoopButton:disabled,
+.videoLoopButtonActive:disabled {
   cursor: not-allowed;
-  opacity: 0.4;
+  opacity: 0.45;
   box-shadow: none;
 }
 
@@ -463,10 +553,11 @@
 .videoChapterButton:focus-visible,
 .videoChapterActive:focus-visible,
 .videoChapterDeleteButton:focus-visible,
+.videoChapterTestButton:focus-visible,
 .videoLoopButton:focus-visible,
 .videoLoopButtonActive:focus-visible,
-.videoRateButton:focus-visible,
-.videoNextButton:focus-visible,
+.videoSpeedButton:focus-visible,
+.videoSpeedButtonActive:focus-visible,
 .videoChapterSubmitButton:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
