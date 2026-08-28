@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 
 import ModalPortal from '../common/ModalPortal'
 import useToast from '../common/useToast'
+import PlaceResultModal from '../place/PlaceResultModal'
 
 import { formatDate } from '../../features/common'
 import supabase from '../../api/supabase'
@@ -160,6 +161,13 @@ function VideoDetailModal({ content, onClose }) {
   const [chapterEndTime, setChapterEndTime] = useState('')
   const [chapterFormErrorMessage, setChapterFormErrorMessage] = useState('')
   const [isChapterSubmitting, setIsChapterSubmitting] = useState(false)
+  const [deletingChapterId, setDeletingChapterId] = useState(null)
+  const [deleteChapterTarget, setDeleteChapterTarget] = useState(null)
+
+  const storageInfo = JSON.parse(
+    sessionStorage.getItem('bandiaryLoginUser')
+  )
+  const isAdmin = storageInfo?.userId === 'admin'
 
   const navigationChapters = useMemo(() => {
     if (chapters.length > 0) return chapters
@@ -439,14 +447,60 @@ function VideoDetailModal({ content, onClose }) {
     showToast('곡 구간이 등록되었습니다.')
   }
 
+  const handleOpenChapterDeleteModal = (chapter) => {
+    if (!isAdmin) return
+
+    setDeleteChapterTarget(chapter)
+    setChapterErrorMessage('')
+  }
+
+  const handleCloseChapterDeleteModal = () => {
+    if (deletingChapterId !== null) return
+
+    setDeleteChapterTarget(null)
+  }
+
+  const handleDeleteChapter = async () => {
+    if (!isAdmin || !deleteChapterTarget || !activeVideo?.id) return
+
+    setDeletingChapterId(deleteChapterTarget.id)
+    setChapterErrorMessage('')
+
+    const { error } = await supabase
+      .from('content_video_chapter')
+      .delete()
+      .eq('id', deleteChapterTarget.id)
+      .eq('content_video_id', activeVideo.id)
+
+    if (error) {
+      console.error('곡 구간 삭제 실패:', error)
+      setChapterErrorMessage('곡 구간 삭제에 실패했습니다.')
+      setDeletingChapterId(null)
+      setDeleteChapterTarget(null)
+      return
+    }
+
+    const deletedChapterId = deleteChapterTarget.id
+
+    setChapters((currentChapters) =>
+      currentChapters.filter((chapter) => chapter.id !== deletedChapterId)
+    )
+    setActiveChapterIndex(0)
+    setIsChapterLooping(false)
+    setDeletingChapterId(null)
+    setDeleteChapterTarget(null)
+    showToast('곡 구간이 삭제되었습니다.')
+  }
+
   return (
-    <ModalPortal onEscapeKey={onClose}>
-      <div
-        className={styles.videoDetailCard}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="video-detail-title"
-      >
+    <>
+      <ModalPortal onEscapeKey={onClose}>
+        <div
+          className={styles.videoDetailCard}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="video-detail-title"
+        >
         <header className={styles.videoDetailHeader}>
           <div className={styles.videoDetailHeading}>
             <h2 id="video-detail-title">{content.title}</h2>
@@ -528,26 +582,42 @@ function VideoDetailModal({ content, onClose }) {
 
               <div className={styles.videoChapterList}>
                 {navigationChapters.map((chapter, index) => (
-                  <button
+                  <div
                     key={chapter.id}
-                    type="button"
-                    className={
-                      index === activeChapterIndex
-                        ? styles.videoChapterActive
-                        : styles.videoChapterButton
-                    }
-                    onClick={() => handleChapterSelect(index)}
-                    aria-current={
-                      index === activeChapterIndex ? 'true' : undefined
-                    }
+                    className={styles.videoChapterItem}
                   >
-                    <strong>{chapter.title}</strong>
-                    <time>
-                      {formatVideoTime(Number(chapter.start_time_seconds)) +
-                        '–' +
-                        formatVideoTime(Number(chapter.end_time_seconds))}
-                    </time>
-                  </button>
+                    <button
+                      type="button"
+                      className={
+                        index === activeChapterIndex
+                          ? styles.videoChapterActive
+                          : styles.videoChapterButton
+                      }
+                      onClick={() => handleChapterSelect(index)}
+                      aria-current={
+                        index === activeChapterIndex ? 'true' : undefined
+                      }
+                    >
+                      <strong>{chapter.title}</strong>
+                      <time>
+                        {formatVideoTime(Number(chapter.start_time_seconds)) +
+                          '–' +
+                          formatVideoTime(Number(chapter.end_time_seconds))}
+                      </time>
+                    </button>
+
+                    {isAdmin && chapter.id !== 'whole-video' && (
+                      <button
+                        type="button"
+                        className={styles.videoChapterDeleteButton}
+                        onClick={() => handleOpenChapterDeleteModal(chapter)}
+                        disabled={deletingChapterId === chapter.id}
+                        aria-label={`${chapter.title} 곡 구간 삭제`}
+                      >
+                        {deletingChapterId === chapter.id ? '...' : '−'}
+                      </button>
+                    )}
+                  </div>
                 ))}
               </div>
 
@@ -678,8 +748,21 @@ function VideoDetailModal({ content, onClose }) {
             등록된 비디오가 없습니다.
           </div>
         )}
-      </div>
-    </ModalPortal>
+        </div>
+      </ModalPortal>
+
+      {deleteChapterTarget && (
+        <PlaceResultModal
+          type="confirm"
+          title="삭제 확인"
+          message="선택한 곡 구간을 삭제하시겠습니까?"
+          confirmText="삭제"
+          cancelText="취소"
+          onClose={handleCloseChapterDeleteModal}
+          onConfirm={handleDeleteChapter}
+        />
+      )}
+    </>
   )
 }
 

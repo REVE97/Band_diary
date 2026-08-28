@@ -191,8 +191,15 @@
   display: none;
 }
 
+.videoChapterItem {
+  position: relative;
+  min-width: 0;
+  scroll-snap-align: start;
+}
+
 .videoChapterButton,
 .videoChapterActive {
+  width: 100%;
   min-height: 82px;
   padding: 12px 10px;
   display: flex;
@@ -202,8 +209,34 @@
   gap: 7px;
   border: 1px solid var(--color-border);
   border-radius: 14px;
-  scroll-snap-align: start;
   text-align: center;
+}
+
+.videoChapterDeleteButton {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.videoChapterDeleteButton:active {
+  transform: scale(0.92);
+}
+
+.videoChapterDeleteButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
 }
 
 .videoChapterButton {
@@ -429,6 +462,7 @@
 .videoThumbnailButton:focus-visible,
 .videoChapterButton:focus-visible,
 .videoChapterActive:focus-visible,
+.videoChapterDeleteButton:focus-visible,
 .videoLoopButton:focus-visible,
 .videoLoopButtonActive:focus-visible,
 .videoRateButton:focus-visible,
