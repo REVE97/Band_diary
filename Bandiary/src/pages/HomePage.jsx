@@ -23,7 +23,6 @@ import styles from './HomePage.module.css'
 const initialProfileForm = {
   name: '',
   bandName: '',
-  mainSession: '',
 }
 
 const initialContentForm = {
@@ -535,7 +534,6 @@ function HomePage() {
     setProfileForm({
       name: currentProfile?.name || '',
       bandName: currentProfile?.bandName || '',
-      mainSession: currentProfile?.mainSession || '',
     })
 
     setProfileImageFile(null)
@@ -642,7 +640,6 @@ function HomePage() {
       const payload = {
         name: profileForm.name.trim() || null,
         bandName: profileForm.bandName.trim() || null,
-        mainSession: profileForm.mainSession.trim() || null,
         profileImageUrl,
       }
 
@@ -1399,8 +1396,7 @@ function HomePage() {
           </h2>
 
           <p>
-            {profileInfo[0]?.bandName || '밴드를 설정해주세요'} {'/\t'}
-            {profileInfo[0]?.mainSession || '세션을 설정해주세요'}
+            {profileInfo[0]?.bandName + "\tBAND" || '밴드를 설정해주세요'}
           </p>
 
           {/* SNS */}

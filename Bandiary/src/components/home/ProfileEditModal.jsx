@@ -136,27 +136,6 @@ function ProfileEditModal({
             </select>
           </div>
 
-          {/* 메인 세션 */}
-          <div className={styles.profileEditField}>
-            <label htmlFor="profileMainSession">
-              메인 세션
-            </label>
-
-            <select
-              id="profileMainSession"
-              name="mainSession"
-              value={profileForm.mainSession}
-              onChange={onInputChange}
-            >
-              <option value="">메인 세션을 선택해주세요</option>
-              <option value="Vocal">Vocal</option>
-              <option value="Main Guitar">Main Guitar</option>
-              <option value="Sub Guitar">Sub Guitar</option>
-              <option value="Bass">Bass</option>
-              <option value="Keyboard">Keyboard</option>
-              <option value="Drum">Drum</option>
-            </select>
-          </div>
         </div>
 
         {errorMessage && (
