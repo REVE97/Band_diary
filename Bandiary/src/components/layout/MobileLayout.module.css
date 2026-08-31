@@ -19,9 +19,9 @@
 }
 
 .pageContent {
-  height: calc(100vh - 64px - 72px);
-  height: calc(100dvh - 64px - 72px);
-  padding: 0 18px 24px;
+  height: calc(100vh - 64px);
+  height: calc(100dvh - 64px);
+  padding: 0 18px 120px;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -29,6 +29,7 @@
 .loginOnly {
   height: 100vh;
   height: 100dvh;
+  padding-bottom: 24px;
 }
 
 @media (min-width: 431px) {
@@ -40,8 +41,8 @@
   }
 
   .pageContent {
-    height: calc(100vh - 48px - 64px - 72px);
-    height: calc(100dvh - 48px - 64px - 72px);
+    height: calc(100vh - 48px - 64px);
+    height: calc(100dvh - 48px - 64px);
   }
 
   .loginOnly {

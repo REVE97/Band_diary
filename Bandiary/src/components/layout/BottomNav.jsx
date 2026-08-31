@@ -1,58 +1,62 @@
 import { NavLink } from 'react-router-dom'
 
-import StudioIcon from '../../assets/images/bandroom.svg'
-import DiaryIcon from '../../assets/images/diary.svg'
-import SongIcon from '../../assets/images/song.svg'
-import ScheduleIcon from '../../assets/images/calendar.svg'
-import NoticeIcon from '../../assets/images/notice-renewal.svg'
+import homeIcon from '../../assets/images/bottom-nav-home.svg'
+import musicsheetIcon from '../../assets/images/bottom-nav-musicsheet.svg'
+import noticeIcon from '../../assets/images/bottom-nav-notice.svg'
+import placeIcon from '../../assets/images/bottom-nav-place.svg'
+import scheduleIcon from '../../assets/images/bottom-nav-schedule.svg'
 import styles from './BottomNav.module.css'
 
 const navItems = [
   {
     path: '/place',
     label: 'Place',
-    icon: StudioIcon
+    icon: placeIcon,
   },
   {
     path: '/musicsheet',
     label: 'Musicsheet',
-    icon: SongIcon
+    icon: musicsheetIcon,
   },
   {
     path: '/home',
     label: 'Home',
-    icon: DiaryIcon
+    icon: homeIcon,
   },
   {
     path: '/schedule',
     label: 'Schedule',
-    icon: ScheduleIcon
+    icon: scheduleIcon,
   },
   {
     path: '/notice',
     label: 'Notice',
-    icon: NoticeIcon
-  }
+    icon: noticeIcon,
+  },
 ]
 
 function BottomNav() {
   return (
     <nav className={styles.nav}>
-      {navItems.map((item) => (
-        <NavLink
-          key={item.path}
-          to={item.path}
-          className={({ isActive }) =>
-            `${styles.item} ${isActive ? styles.active : ''}`
-          }
-        >
-          <span className={styles.icon}>
-            <img src={item.icon} alt="" />
-          </span>
-          
-          <span className={styles.label}>{item.label}</span>
-        </NavLink>
-      ))}
+      {navItems.map((item) => {
+        return (
+          <NavLink
+            key={item.path}
+            to={item.path}
+            className={({ isActive }) =>
+              `${styles.item} ${isActive ? styles.active : ''}`
+            }
+          >
+            <span
+              className={styles.icon}
+              style={{ '--nav-icon': `url("${item.icon}")` }}
+              aria-hidden="true"
+            />
+
+            <span className={styles.label}>{item.label}</span>
+          </NavLink>
+        )
+      })}
     </nav>
   )
 }

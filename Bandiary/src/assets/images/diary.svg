@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="diary icon">
-  <title>Diary Icon</title>
-  <g fill="none" stroke="#1f1f1f" stroke-width="22" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M153 86h213c31 0 56 25 56 56v249c0 22-18 40-40 40H156c-30 0-54-24-54-54V139c0-29 23-53 51-53z"/>
-    <path d="M153 86v292"/>
-    <path d="M103 377c0 30 23 54 53 54h226"/>
-    <path d="M196 431v67l35-27 35 27v-67"/>
-  </g>
-</svg>
