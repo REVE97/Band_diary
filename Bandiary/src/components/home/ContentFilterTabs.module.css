@@ -3,17 +3,67 @@
 }
 
 .row {
+  position: relative;
+  isolation: isolate;
   width: 100%;
-  padding: 4px;
+  padding: 5px;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 4px;
-  border: 1px solid var(--color-border);
-  border-radius: 16px;
-  background: var(--color-surface-muted);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  border-radius: 22px;
+  background:
+    radial-gradient(
+      circle at 17% -28%,
+      rgba(255, 255, 255, 0.34),
+      transparent 44%
+    ),
+    radial-gradient(
+      circle at 80% 135%,
+      rgba(107, 78, 255, 0.035),
+      transparent 48%
+    ),
+    rgba(248, 248, 252, 0.12);
+  box-shadow:
+    0 10px 28px rgba(25, 24, 31, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.68),
+    inset 0 -1px 0 rgba(91, 84, 122, 0.08);
+  backdrop-filter: blur(22px) saturate(190%);
+  -webkit-backdrop-filter: blur(22px) saturate(190%);
+}
+
+.row::before {
+  content: "";
+  position: absolute;
+  top: 1px;
+  right: 9px;
+  left: 9px;
+  z-index: 0;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.16),
+    transparent
+  );
+  filter: blur(5px);
+  pointer-events: none;
+}
+
+.row::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  pointer-events: none;
 }
 
 .button {
+  position: relative;
+  z-index: 1;
   min-width: 0;
   width: 100%;
   height: 48px;
@@ -23,25 +73,38 @@
   justify-content: center;
   gap: 6px;
   border: 0;
-  border-radius: 12px;
+  border-radius: 17px;
   background: var(--color-transparent);
-  color: var(--color-text-muted);
+  color: rgba(86, 85, 96, 0.76);
   box-shadow: none;
   transition:
-    transform 0.2s ease,
-    background 0.2s ease,
-    color 0.2s ease,
-    box-shadow 0.2s ease;
+    color 180ms ease,
+    background-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 140ms ease;
 }
 
 .button.active {
-  background: var(--color-surface);
-  color: var(--color-primary);
-  box-shadow: var(--shadow-selected);
+  background:
+    radial-gradient(
+      circle at 50% -12%,
+      rgba(255, 255, 255, 0.44),
+      transparent 54%
+    ),
+    rgba(241, 239, 255, 0.3);
+  box-shadow:
+    0 5px 13px rgba(107, 78, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.66),
+    inset 0 -1px 0 rgba(107, 78, 255, 0.07);
 }
 
 .button:active {
-  transform: scale(0.97);
+  transform: scale(0.95);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
 }
 
 .icon {
@@ -68,6 +131,19 @@
   font-weight: 900;
 }
 
+.button.active .text {
+  font-weight: 900;
+}
+
+@supports not (
+  (-webkit-backdrop-filter: blur(1px)) or
+    (backdrop-filter: blur(1px))
+) {
+  .row {
+    background: rgba(248, 248, 252, 0.96);
+  }
+}
+
 @media (max-width: 360px) {
   .button {
     gap: 3px;
@@ -86,5 +162,11 @@
 
   .count {
     font-size: 9px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition: none;
   }
 }
