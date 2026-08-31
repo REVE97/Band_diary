@@ -8,6 +8,10 @@ import { formatDate } from '../../features/common'
 import supabase from '../../api/supabase'
 
 import chapterAddIcon from '../../assets/images/chapter-add.svg'
+import playbackSpeedIcon from '../../assets/images/playback-speed.svg'
+import practiceLoopIcon from '../../assets/images/practice-loop.svg'
+import seekBackward10Icon from '../../assets/images/seek-backward-10.svg'
+import seekForward10Icon from '../../assets/images/seek-forward-10.svg'
 import styles from './VideoDetailModal.module.css'
 
 const THUMBNAIL_COUNT = 5
@@ -135,6 +139,7 @@ const createVideoThumbnails = async (fileUrl, knownDuration) => {
 function VideoDetailModal({ content, onClose }) {
   const { showToast } = useToast()
   const videoPlayerRef = useRef(null)
+  const videoPlayerSectionRef = useRef(null)
   const videoFiles = Array.isArray(content.videoFiles)
     ? [...content.videoFiles].sort(
         (firstVideo, secondVideo) =>
@@ -149,6 +154,9 @@ function VideoDetailModal({ content, onClose }) {
   )
   const [chapterErrorMessage, setChapterErrorMessage] = useState('')
   const [currentTime, setCurrentTime] = useState(0)
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [volume, setVolume] = useState(1)
+  const [isMuted, setIsMuted] = useState(false)
   const [duration, setDuration] = useState(
     Number(activeVideo?.duration) || 0
   )
@@ -187,11 +195,16 @@ function VideoDetailModal({ content, onClose }) {
     navigationChapters[activeChapterIndex] || navigationChapters[0]
   const activeChapterStart = Number(activeChapter?.start_time_seconds) || 0
   const activeChapterEnd = Number(activeChapter?.end_time_seconds) || duration
-  const activeChapterDuration = Math.max(
-    Math.round(activeChapterEnd - activeChapterStart),
-    0
-  )
   const thumbnailTimes = getThumbnailTimes(duration)
+  const currentProgress = duration
+    ? Math.min(Math.max((currentTime / duration) * 100, 0), 100)
+    : 0
+  const activeChapterStartPercent = duration
+    ? Math.min(Math.max((activeChapterStart / duration) * 100, 0), 100)
+    : 0
+  const activeChapterEndPercent = duration
+    ? Math.min(Math.max((activeChapterEnd / duration) * 100, 0), 100)
+    : 0
 
   useEffect(() => {
     if (!activeVideo?.id) {
@@ -252,6 +265,16 @@ function VideoDetailModal({ content, onClose }) {
 
     player.currentTime = safeTime
     setCurrentTime(safeTime)
+
+    let nextActiveChapterIndex = 0
+
+    navigationChapters.forEach((chapter, index) => {
+      if (safeTime >= Number(chapter.start_time_seconds || 0)) {
+        nextActiveChapterIndex = index
+      }
+    })
+
+    setActiveChapterIndex(nextActiveChapterIndex)
 
     if (shouldPlay) {
       void player.play().catch((error) => {
@@ -314,6 +337,84 @@ function VideoDetailModal({ content, onClose }) {
     }
   }
 
+  const handlePlaybackToggle = () => {
+    const player = videoPlayerRef.current
+
+    if (!player) return
+
+    if (player.paused) {
+      void player.play().catch((error) => {
+        console.error('비디오 재생 실패:', error)
+      })
+      return
+    }
+
+    player.pause()
+  }
+
+  const handleSeekBy = (seconds) => {
+    const player = videoPlayerRef.current
+
+    if (!player) return
+
+    seekVideo(player.currentTime + seconds, !player.paused)
+  }
+
+  const handleTimelineSelect = (event) => {
+    const timelineBounds = event.currentTarget.getBoundingClientRect()
+
+    if (!timelineBounds.width || !duration) return
+
+    const selectedRatio = Math.min(
+      Math.max((event.clientX - timelineBounds.left) / timelineBounds.width, 0),
+      1
+    )
+    const player = videoPlayerRef.current
+
+    seekVideo(duration * selectedRatio, player ? !player.paused : false)
+  }
+
+  const handleVolumeChange = (event) => {
+    const nextVolume = Number(event.target.value)
+    const player = videoPlayerRef.current
+
+    if (!player) return
+
+    player.volume = nextVolume
+    player.muted = nextVolume === 0
+    setVolume(nextVolume)
+    setIsMuted(nextVolume === 0)
+  }
+
+  const handleMuteToggle = () => {
+    const player = videoPlayerRef.current
+
+    if (!player) return
+
+    const nextMuted = !player.muted
+
+    player.muted = nextMuted
+    setIsMuted(nextMuted)
+  }
+
+  const handleFullscreenToggle = () => {
+    const playerSection = videoPlayerSectionRef.current
+
+    if (!playerSection) return
+
+    if (document.fullscreenElement) {
+      void document.exitFullscreen?.()
+      return
+    }
+
+    if (playerSection.requestFullscreen) {
+      void playerSection.requestFullscreen()
+      return
+    }
+
+    videoPlayerRef.current?.webkitEnterFullscreen?.()
+  }
+
   const handleChapterSelect = (chapterIndex) => {
     const chapter = navigationChapters[chapterIndex]
 
@@ -326,18 +427,16 @@ function VideoDetailModal({ content, onClose }) {
     seekVideo(Number(chapter.start_time_seconds) || 0)
   }
 
-  const handleThumbnailSelect = (time) => {
-    setIsChapterTesting(false)
-    setIsChapterLooping(false)
-    seekVideo(time, true)
-  }
-
   const handlePlaybackRateChange = (nextRate) => {
     if (videoPlayerRef.current) {
       videoPlayerRef.current.playbackRate = nextRate
     }
 
     setPlaybackRate(nextRate)
+  }
+
+  const handlePlaybackRateSelect = (event) => {
+    handlePlaybackRateChange(Number(event.target.value))
   }
 
   const handleChapterTest = () => {
@@ -563,56 +662,213 @@ function VideoDetailModal({ content, onClose }) {
 
         {activeVideo?.file_url ? (
           <>
-            <section className={styles.videoPlayerSection}>
+            <section
+              ref={videoPlayerSectionRef}
+              className={styles.videoPlayerSection}
+            >
               <video
                 ref={videoPlayerRef}
                 src={activeVideo.file_url}
-                controls
                 playsInline
                 preload="metadata"
                 onLoadedMetadata={handleMetadataLoaded}
                 onTimeUpdate={handleTimeUpdate}
+                onPlay={() => setIsPlaying(true)}
+                onPause={() => setIsPlaying(false)}
+                onEnded={() => setIsPlaying(false)}
+                onClick={handlePlaybackToggle}
               >
                 브라우저가 비디오 재생을 지원하지 않습니다.
               </video>
+
+              <div className={styles.videoControlOverlay}>
+                <div className={styles.videoTransportControls}>
+                  <button
+                    type="button"
+                    onClick={() => handleSeekBy(-10)}
+                    aria-label="10초 뒤로 이동"
+                  >
+                    <img src={seekBackward10Icon} alt="" aria-hidden="true" />
+                  </button>
+
+                  <button
+                    type="button"
+                    className={styles.videoInlinePlayButton}
+                    onClick={handlePlaybackToggle}
+                    aria-label={isPlaying ? '비디오 일시정지' : '비디오 재생'}
+                  >
+                    <span aria-hidden="true">{isPlaying ? '❚❚' : '▶'}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleSeekBy(10)}
+                    aria-label="10초 앞으로 이동"
+                  >
+                    <img src={seekForward10Icon} alt="" aria-hidden="true" />
+                  </button>
+                </div>
+
+                <div className={styles.videoControlFooter}>
+                  <time>
+                    {formatVideoTime(currentTime)} / {formatVideoTime(duration)}
+                  </time>
+
+                  <div className={styles.videoVolumeControl}>
+                    <button
+                      type="button"
+                      onClick={handleMuteToggle}
+                      aria-label={isMuted ? '음소거 해제' : '음소거'}
+                    >
+                      <span aria-hidden="true">
+                        {isMuted || volume === 0 ? '⌁' : '◖))'}
+                      </span>
+                    </button>
+                    <input
+                      type="range"
+                      min="0"
+                      max="1"
+                      step="0.05"
+                      value={isMuted ? 0 : volume}
+                      onChange={handleVolumeChange}
+                      aria-label="비디오 음량"
+                      style={{
+                        '--video-volume': `${(isMuted ? 0 : volume) * 100}%`,
+                      }}
+                    />
+                  </div>
+
+                  <button
+                    type="button"
+                    className={styles.videoFullscreenButton}
+                    onClick={handleFullscreenToggle}
+                    aria-label="전체 화면으로 보기"
+                  >
+                    <span aria-hidden="true">⛶</span>
+                  </button>
+                </div>
+              </div>
             </section>
 
-            <div className={styles.videoThumbnailRail}>
-              {thumbnailTimes.map((time, index) => (
-                <button
-                  key={String(time) + '-' + index}
-                  type="button"
-                  className={styles.videoThumbnailButton}
-                  onClick={() => handleThumbnailSelect(time)}
-                  aria-label={formatVideoTime(time) + '부터 재생'}
-                >
-                  <span className={styles.videoThumbnailImage}>
-                    {thumbnails[index] ? (
-                      <img src={thumbnails[index]} alt="" aria-hidden="true" />
-                    ) : (
-                      <span aria-hidden="true">▶</span>
-                    )}
-                  </span>
-                  <time>{formatVideoTime(time)}</time>
-                </button>
-              ))}
+            <div className={styles.videoTimelineSection}>
+              <button
+                type="button"
+                className={styles.videoThumbnailRail}
+                onClick={handleTimelineSelect}
+                aria-label="비디오 타임라인에서 재생 위치 선택"
+              >
+                <span className={styles.videoThumbnailFilmstrip}>
+                  {thumbnailTimes.map((time, index) => (
+                    <span
+                      key={String(time) + '-' + index}
+                      className={styles.videoThumbnailImage}
+                    >
+                      {thumbnails[index] ? (
+                        <img src={thumbnails[index]} alt="" aria-hidden="true" />
+                      ) : (
+                        <span aria-hidden="true">▶</span>
+                      )}
+                    </span>
+                  ))}
+                </span>
 
-              <span
-                className={styles.videoThumbnailPlayhead}
-                style={{
-                  left:
-                    (duration
-                      ? Math.min((currentTime / duration) * 100, 100)
-                      : 0) + '%',
-                }}
-                aria-hidden="true"
-              />
+                {chapters.length > 0 && (
+                  <span
+                    className={styles.videoActiveChapterRange}
+                    style={{
+                      left: `${activeChapterStartPercent}%`,
+                      width: `${Math.max(
+                        activeChapterEndPercent - activeChapterStartPercent,
+                        0
+                      )}%`,
+                    }}
+                    aria-hidden="true"
+                  />
+                )}
+
+                {navigationChapters.slice(1).map((chapter) => (
+                  <span
+                    key={`marker-${chapter.id}`}
+                    className={styles.videoChapterMarker}
+                    style={{
+                      left: `${duration
+                        ? Math.min(
+                            (Number(chapter.start_time_seconds) / duration) * 100,
+                            100
+                          )
+                        : 0}%`,
+                    }}
+                    aria-hidden="true"
+                  />
+                ))}
+
+                <span
+                  className={styles.videoTimelineProgress}
+                  style={{ width: `${currentProgress}%` }}
+                  aria-hidden="true"
+                />
+                <span
+                  className={styles.videoThumbnailPlayhead}
+                  style={{ left: `${currentProgress}%` }}
+                  aria-hidden="true"
+                />
+              </button>
+
+              <div className={styles.videoTimelineTimes} aria-hidden="true">
+                <time>00:00</time>
+                <time>{formatVideoTime(duration)}</time>
+              </div>
             </div>
 
             <section
               className={styles.videoChapterSection}
               aria-labelledby="video-chapter-title"
             >
+              <div className={styles.videoPracticePanel}>
+                <button
+                  type="button"
+                  className={
+                    isChapterLooping
+                      ? styles.videoLoopButtonActive
+                      : styles.videoLoopButton
+                  }
+                  onClick={handleChapterLoopToggle}
+                  aria-pressed={isChapterLooping}
+                  disabled={activeChapterEnd <= activeChapterStart}
+                >
+                  <img src={practiceLoopIcon} alt="" aria-hidden="true" />
+                  <span>
+                    {isChapterLooping ? '구간 반복 ON' : '구간 반복'}
+                  </span>
+                </button>
+
+                <label className={styles.videoSpeedControl}>
+                  <img src={playbackSpeedIcon} alt="" aria-hidden="true" />
+                  <span className={styles.visuallyHidden}>재생 속도</span>
+                  <select
+                    value={playbackRate}
+                    onChange={handlePlaybackRateSelect}
+                    aria-label="재생 속도"
+                  >
+                    {PLAYBACK_RATES.map((rate) => (
+                      <option key={rate} value={rate}>
+                        {rate}×
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <button
+                  type="button"
+                  className={styles.videoChapterTestButton}
+                  onClick={handleChapterTest}
+                  aria-pressed={isChapterTesting}
+                  disabled={activeChapterEnd <= activeChapterStart}
+                >
+                  {isChapterTesting ? '■ 재생 중지' : '▶ 구간 재생'}
+                </button>
+              </div>
+
               <div className={styles.videoChapterHeader}>
                 <h3 id="video-chapter-title">곡 구간</h3>
                 <span>
@@ -670,74 +926,6 @@ function VideoDetailModal({ content, onClose }) {
                   {chapterErrorMessage}
                 </p>
               )}
-
-              <div className={styles.videoPracticePanel}>
-                <div className={styles.videoPracticeSummary}>
-                  <div>
-                    <span className={styles.videoPracticeEyebrow}>
-                      선택한 구간
-                    </span>
-                    <strong>{activeChapter?.title || '전체 영상'}</strong>
-                  </div>
-
-                  <span className={styles.videoPracticeDuration}>
-                    {activeChapterDuration >= 60
-                      ? Math.floor(activeChapterDuration / 60) +
-                        '분 ' +
-                        (activeChapterDuration % 60) +
-                        '초'
-                      : activeChapterDuration + '초'}
-                  </span>
-                </div>
-
-                <button
-                  type="button"
-                  className={styles.videoChapterTestButton}
-                  onClick={handleChapterTest}
-                  aria-pressed={isChapterTesting}
-                  disabled={activeChapterEnd <= activeChapterStart}
-                >
-                  {isChapterTesting ? '■ 재생 중지' : '▶ 구간 재생'}
-                </button>
-
-                <div className={styles.videoPracticeOptions}>
-                  <button
-                    type="button"
-                    className={
-                      isChapterLooping
-                        ? styles.videoLoopButtonActive
-                        : styles.videoLoopButton
-                    }
-                    onClick={handleChapterLoopToggle}
-                    aria-pressed={isChapterLooping}
-                    disabled={activeChapterEnd <= activeChapterStart}
-                  >
-                    {isChapterLooping ? '■ 반복 종료' : '↻ 반복 시작'}
-                  </button>
-
-                  <div
-                    className={styles.videoSpeedSelector}
-                    role="group"
-                    aria-label="재생 속도"
-                  >
-                    {PLAYBACK_RATES.map((rate) => (
-                      <button
-                        key={rate}
-                        type="button"
-                        className={
-                          playbackRate === rate
-                            ? styles.videoSpeedButtonActive
-                            : styles.videoSpeedButton
-                        }
-                        onClick={() => handlePlaybackRateChange(rate)}
-                        aria-pressed={playbackRate === rate}
-                      >
-                        {rate}×
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
 
               <form
                 className={styles.videoChapterForm}

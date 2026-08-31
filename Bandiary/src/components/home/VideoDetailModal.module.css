@@ -65,49 +65,273 @@
 }
 
 .videoPlayerSection {
-  width: 100%;
-  background: var(--color-media-background);
+  position: relative;
+  width: calc(100% - 28px);
+  margin: 0 14px;
+  padding: 3px;
+  aspect-ratio: 16 / 9;
+  overflow: visible;
+  border: 1px solid rgba(107, 78, 255, 0.36);
+  border-radius: 18px;
+  background: var(--color-primary-soft);
+  box-shadow:
+    0 0 22px rgba(107, 78, 255, 0.14),
+    0 12px 26px rgba(25, 24, 31, 0.14);
+  isolation: isolate;
+}
+
+.videoPlayerSection::after {
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  z-index: 4;
+  width: 64px;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--color-primary);
+  box-shadow: 0 2px 8px rgba(107, 78, 255, 0.34);
+  content: '';
+  pointer-events: none;
+  transform: translateX(-50%);
 }
 
 .videoPlayerSection video {
+  position: relative;
+  z-index: 1;
   width: 100%;
-  max-height: 320px;
+  height: 100%;
   display: block;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
   background: var(--color-media-background);
+  cursor: pointer;
   object-fit: contain;
+}
+
+.videoControlOverlay {
+  position: absolute;
+  inset: 4px;
+  z-index: 2;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  border-radius: 14px;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.04) 24%,
+    rgba(0, 0, 0, 0.68) 100%
+  );
+  color: #fff;
+  pointer-events: none;
+}
+
+.videoTransportControls {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  transform: translate(-50%, -50%);
+}
+
+.videoTransportControls button,
+.videoControlFooter button {
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: #fff;
+  pointer-events: auto;
+}
+
+.videoTransportControls button:not(.videoInlinePlayButton) {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  border-radius: 50%;
+  background: rgba(20, 20, 23, 0.44);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.videoTransportControls button:not(.videoInlinePlayButton) img {
+  width: 30px;
+  height: 30px;
+  display: block;
+}
+
+.videoTransportControls .videoInlinePlayButton {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(15, 15, 18, 0.76);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.26);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.videoInlinePlayButton span {
+  margin-left: 2px;
+  font-size: 21px;
+}
+
+.videoControlFooter {
+  min-height: 45px;
+  padding: 8px 13px 7px;
+  display: grid;
+  grid-template-columns: minmax(90px, auto) 1fr 32px;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.videoControlFooter time {
+  font-size: 11px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.videoVolumeControl {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  pointer-events: auto;
+}
+
+.videoVolumeControl button {
+  width: 26px;
+  height: 26px;
+  font-size: 13px;
+}
+
+.videoVolumeControl input {
+  width: min(74px, 100%);
+  height: 18px;
+  margin: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.videoVolumeControl input::-webkit-slider-runnable-track {
+  height: 3px;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    var(--color-primary) 0%,
+    var(--color-primary) var(--video-volume),
+    rgba(255, 255, 255, 0.4) var(--video-volume),
+    rgba(255, 255, 255, 0.4) 100%
+  );
+}
+
+.videoVolumeControl input::-webkit-slider-thumb {
+  width: 11px;
+  height: 11px;
+  margin-top: -4px;
+  appearance: none;
+  -webkit-appearance: none;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: var(--color-primary);
+}
+
+.videoVolumeControl input::-moz-range-track {
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.videoVolumeControl input::-moz-range-progress {
+  height: 3px;
+  border-radius: 999px;
+  background: var(--color-primary);
+}
+
+.videoVolumeControl input::-moz-range-thumb {
+  width: 9px;
+  height: 9px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: var(--color-primary);
+}
+
+.videoFullscreenButton {
+  width: 32px;
+  height: 32px;
+  font-size: 22px;
+}
+
+.videoPlayerSection:fullscreen {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  aspect-ratio: auto;
+  border: 0;
+  border-radius: 0;
+  background: #000;
+  box-shadow: none;
+}
+
+.videoPlayerSection:fullscreen::after {
+  display: none;
+}
+
+.videoPlayerSection:fullscreen video,
+.videoPlayerSection:fullscreen .videoControlOverlay {
+  border: 0;
+  border-radius: 0;
+}
+
+.videoPlayerSection:fullscreen .videoControlOverlay {
+  inset: 0;
+}
+
+.videoTimelineSection {
+  margin: 14px 14px 0;
 }
 
 .videoThumbnailRail {
   position: relative;
-  margin: 14px 14px 0;
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 4px;
+  width: 100%;
+  height: 58px;
+  padding: 0;
+  overflow: hidden;
+  display: block;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-media-background);
+  cursor: crosshair;
 }
 
-.videoThumbnailButton {
-  min-width: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 5px;
-  border-radius: 8px;
-  background: transparent;
+.videoThumbnailFilmstrip {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
 .videoThumbnailImage {
-  position: relative;
-  aspect-ratio: 16 / 9;
+  min-width: 0;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
+  border-right: 1px solid rgba(255, 255, 255, 0.16);
   background: var(--color-media-background);
   color: rgba(255, 255, 255, 0.72);
   font-size: 11px;
+}
+
+.videoThumbnailImage:last-child {
+  border-right: 0;
 }
 
 .videoThumbnailImage img {
@@ -117,45 +341,188 @@
   object-fit: cover;
 }
 
-.videoThumbnailButton time {
-  color: var(--color-text-muted);
-  font-size: 9px;
-  font-weight: 750;
-  font-variant-numeric: tabular-nums;
-  text-align: center;
+.videoActiveChapterRange {
+  position: absolute;
+  top: 0;
+  bottom: 4px;
+  z-index: 2;
+  border-right: 2px solid rgba(255, 255, 255, 0.88);
+  border-left: 2px solid rgba(255, 255, 255, 0.88);
+  background: rgba(107, 78, 255, 0.34);
+  box-shadow: inset 0 0 0 1px rgba(107, 78, 255, 0.52);
+  pointer-events: none;
+}
+
+.videoChapterMarker {
+  position: absolute;
+  top: 0;
+  bottom: 4px;
+  z-index: 3;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.7);
+  pointer-events: none;
+}
+
+.videoTimelineProgress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 4;
+  height: 4px;
+  border-radius: 0 999px 999px 0;
+  background: var(--color-primary);
+  pointer-events: none;
 }
 
 .videoThumbnailPlayhead {
   position: absolute;
-  top: -4px;
-  bottom: 17px;
-  z-index: 2;
-  width: 3px;
-  border-radius: 999px;
+  top: 0;
+  bottom: 0;
+  z-index: 5;
+  width: 2px;
   background: var(--color-primary);
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.86);
   pointer-events: none;
   transform: translateX(-50%);
 }
 
-.videoThumbnailPlayhead::before {
+.videoThumbnailPlayhead::after {
   position: absolute;
-  top: -3px;
+  bottom: -1px;
   left: 50%;
-  width: 9px;
-  height: 9px;
+  width: 10px;
+  height: 10px;
+  border: 2px solid #fff;
   border-radius: 50%;
   background: var(--color-primary);
   content: '';
-  transform: translateX(-50%);
+  transform: translate(-50%, 35%);
+}
+
+.videoTimelineTimes {
+  margin-top: 6px;
+  display: flex;
+  justify-content: space-between;
+  color: var(--color-text-muted);
+  font-size: 10px;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
 }
 
 .videoChapterSection {
-  padding: 20px 20px 0;
+  padding: 0 16px;
+}
+
+.videoPracticePanel {
+  margin-top: 13px;
+  padding: 8px;
+  display: grid;
+  grid-template-columns: minmax(112px, 1.1fr) 82px minmax(104px, 1fr);
+  align-items: stretch;
+  gap: 7px;
+  border: 1px solid var(--color-divider);
+  border-radius: 16px;
+  background: var(--color-surface-subtle);
+}
+
+.videoLoopButton,
+.videoLoopButtonActive,
+.videoChapterTestButton,
+.videoSpeedControl {
+  min-width: 0;
+  min-height: 44px;
+  border-radius: 12px;
+}
+
+.videoLoopButton,
+.videoLoopButtonActive {
+  padding: 0 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.videoLoopButton {
+  border: 1px solid var(--color-primary-border);
+  background: var(--color-surface);
+  color: var(--color-primary);
+}
+
+.videoLoopButtonActive {
+  border: 1px solid var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-on-accent);
+  box-shadow: var(--shadow-button);
+}
+
+.videoLoopButton img,
+.videoLoopButtonActive img {
+  width: 19px;
+  height: 19px;
+  flex: 0 0 auto;
+}
+
+.videoLoopButtonActive img {
+  filter: brightness(0) invert(1);
+}
+
+.videoSpeedControl {
+  padding: 0 7px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.videoSpeedControl img {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+}
+
+.videoSpeedControl select {
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.videoChapterTestButton {
+  padding: 0 9px;
+  background: var(--color-primary);
+  color: var(--color-on-accent);
+  font-size: 11px;
+  font-weight: 900;
+  white-space: nowrap;
+  box-shadow: var(--shadow-button);
+}
+
+.videoChapterTestButton:disabled,
+.videoLoopButton:disabled,
+.videoLoopButtonActive:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+  box-shadow: none;
 }
 
 .videoChapterHeader {
-  margin-bottom: 10px;
+  margin: 21px 2px 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -178,7 +545,7 @@
 
 .videoChapterList {
   display: grid;
-  grid-auto-columns: minmax(104px, 1fr);
+  grid-auto-columns: minmax(100px, 1fr);
   grid-auto-flow: column;
   gap: 8px;
   overflow-x: auto;
@@ -200,43 +567,16 @@
 .videoChapterButton,
 .videoChapterActive {
   width: 100%;
-  min-height: 82px;
-  padding: 12px 10px;
+  min-height: 66px;
+  padding: 10px 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 7px;
+  gap: 5px;
   border: 1px solid var(--color-border);
-  border-radius: 14px;
+  border-radius: 13px;
   text-align: center;
-}
-
-.videoChapterDeleteButton {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  width: 24px;
-  height: 24px;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: var(--color-danger-soft);
-  color: var(--color-danger);
-  font-size: 18px;
-  font-weight: 900;
-  line-height: 1;
-}
-
-.videoChapterDeleteButton:active {
-  transform: scale(0.92);
-}
-
-.videoChapterDeleteButton:disabled {
-  cursor: not-allowed;
-  opacity: 0.45;
 }
 
 .videoChapterButton {
@@ -254,21 +594,16 @@
   max-width: 100%;
   overflow: hidden;
   color: var(--color-text-primary);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 900;
   line-height: 1.35;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.videoChapterActive strong,
-.videoChapterActive time {
-  color: var(--color-primary);
-}
-
 .videoChapterButton time,
 .videoChapterActive time {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
 }
@@ -277,153 +612,44 @@
   color: var(--color-text-muted);
 }
 
+.videoChapterActive strong,
+.videoChapterActive time {
+  color: var(--color-primary);
+}
+
+.videoChapterDeleteButton {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+  font-size: 17px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.videoChapterDeleteButton:active {
+  transform: scale(0.92);
+}
+
+.videoChapterDeleteButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
 .videoChapterError {
   margin: 4px 2px 0;
   color: var(--color-danger);
   font-size: 11px;
   font-weight: 800;
   line-height: 1.4;
-}
-
-.videoPracticePanel {
-  margin-top: 12px;
-  padding: 14px;
-  border: 1px solid var(--color-primary-border);
-  border-radius: 17px;
-  background: var(--color-primary-soft);
-}
-
-.videoPracticeSummary {
-  margin-bottom: 13px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.videoPracticeSummary > div {
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.videoPracticeEyebrow {
-  color: var(--color-primary);
-  font-size: 10px;
-  font-weight: 850;
-}
-
-.videoPracticeSummary strong {
-  overflow: hidden;
-  color: var(--color-text-primary);
-  font-size: 16px;
-  font-weight: 900;
-  line-height: 1.35;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.videoPracticeDuration {
-  flex: 0 0 auto;
-  min-width: 48px;
-  padding: 6px 9px;
-  border-radius: 999px;
-  background: var(--color-surface);
-  color: var(--color-primary);
-  font-size: 11px;
-  font-weight: 900;
-  font-variant-numeric: tabular-nums;
-  text-align: center;
-}
-
-.videoChapterTestButton {
-  width: 100%;
-  min-height: 50px;
-  padding: 0 16px;
-  border-radius: 14px;
-  background: var(--color-primary);
-  color: var(--color-on-accent);
-  font-size: 14px;
-  font-weight: 900;
-  box-shadow: var(--shadow-button);
-}
-
-.videoPracticeOptions {
-  margin-top: 9px;
-  display: grid;
-  grid-template-columns: minmax(106px, 0.85fr) minmax(0, 1.6fr);
-  gap: 8px;
-}
-
-.videoLoopButton,
-.videoLoopButtonActive {
-  min-height: 46px;
-  padding: 0 9px;
-  border-radius: 13px;
-  font-size: 12px;
-  font-weight: 900;
-  line-height: 1.2;
-}
-
-.videoLoopButton {
-  border: 1px solid var(--color-primary-border);
-  background: var(--color-primary-soft);
-  color: var(--color-primary);
-}
-
-.videoLoopButtonActive {
-  border: 1px solid var(--color-primary);
-  background: var(--color-primary);
-  color: var(--color-on-accent);
-  box-shadow: var(--shadow-button);
-}
-
-.videoSpeedSelector {
-  min-width: 0;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  overflow: hidden;
-  border: 1px solid var(--color-border);
-  border-radius: 13px;
-  background: var(--color-surface);
-}
-
-.videoSpeedButton,
-.videoSpeedButtonActive {
-  min-width: 0;
-  min-height: 44px;
-  padding: 0 4px;
-  border-radius: 0;
-  color: var(--color-primary);
-  font-size: 11px;
-  font-weight: 900;
-  font-variant-numeric: tabular-nums;
-}
-
-.videoSpeedButton + .videoSpeedButton,
-.videoSpeedButton + .videoSpeedButtonActive,
-.videoSpeedButtonActive + .videoSpeedButton,
-.videoSpeedButtonActive + .videoSpeedButtonActive {
-  border-left: 1px solid var(--color-border);
-}
-
-.videoSpeedButton {
-  background: var(--color-surface);
-  color: var(--color-text-secondary);
-}
-
-.videoSpeedButtonActive {
-  background: var(--color-primary);
-  color: var(--color-on-accent);
-}
-
-.videoChapterTestButton:disabled,
-.videoLoopButton:disabled,
-.videoLoopButtonActive:disabled {
-  cursor: not-allowed;
-  opacity: 0.45;
-  box-shadow: none;
 }
 
 .videoChapterForm {
@@ -548,25 +774,60 @@
   font-weight: 800;
 }
 
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .videoDetailClose:focus-visible,
-.videoThumbnailButton:focus-visible,
+.videoTransportControls button:focus-visible,
+.videoControlFooter button:focus-visible,
+.videoVolumeControl input:focus-visible,
+.videoThumbnailRail:focus-visible,
+.videoLoopButton:focus-visible,
+.videoLoopButtonActive:focus-visible,
+.videoSpeedControl:focus-within,
+.videoChapterTestButton:focus-visible,
 .videoChapterButton:focus-visible,
 .videoChapterActive:focus-visible,
 .videoChapterDeleteButton:focus-visible,
-.videoChapterTestButton:focus-visible,
-.videoLoopButton:focus-visible,
-.videoLoopButtonActive:focus-visible,
-.videoSpeedButton:focus-visible,
-.videoSpeedButtonActive:focus-visible,
 .videoChapterSubmitButton:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 
+@media (max-width: 370px) {
+  .videoPracticePanel {
+    grid-template-columns: minmax(104px, 1fr) 76px minmax(96px, 1fr);
+    gap: 5px;
+    padding: 6px;
+  }
+
+  .videoLoopButton,
+  .videoLoopButtonActive,
+  .videoChapterTestButton {
+    padding-right: 6px;
+    padding-left: 6px;
+    font-size: 10px;
+  }
+
+  .videoTransportControls {
+    gap: 14px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .videoDetailClose,
   .videoChapterButton,
-  .videoChapterActive {
+  .videoChapterActive,
+  .videoThumbnailPlayhead,
+  .videoTimelineProgress {
     transition: none;
   }
 }
