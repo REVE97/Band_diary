@@ -1,21 +1,37 @@
 /* Local styles for LoginPage.jsx */
 
 .page {
-  padding-bottom: 20px;
-}
-
-.primaryButton {
-  color: var(--color-on-accent);
-  background: var(--color-primary);
-  font-weight: 900;
-  box-shadow: var(--shadow-button);
+  width: 100%;
+  min-height: 100%;
 }
 
 .primaryButton {
   width: 100%;
-  height: 48px;
-  border-radius: 14px;
-  font-size: 15px;
+  height: 52px;
+  border-radius: 16px;
+  color: var(--color-on-accent);
+  background: linear-gradient(
+    135deg,
+    #765bff 0%,
+    var(--color-primary) 52%,
+    #5f43f6 100%
+  );
+  font-size: 16px;
+  font-weight: 900;
+  box-shadow:
+    0 10px 20px rgba(107, 78, 255, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.34),
+    inset 0 -1px 0 rgba(56, 35, 168, 0.2);
+  transition:
+    box-shadow 160ms ease,
+    transform 140ms ease;
+}
+
+.primaryButton:active {
+  box-shadow:
+    0 5px 12px rgba(107, 78, 255, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  transform: scale(0.985);
 }
 
 .primaryButton:disabled {
@@ -25,10 +41,12 @@
 }
 
 .loginPage {
-  min-height: calc(100vh - 64px - 72px);
+  min-height: 100%;
+  padding: 20px 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: var(--color-surface);
 }
 
 .loginSplash {
@@ -69,60 +87,129 @@
 }
 
 .loginCard {
+  position: relative;
+  isolation: isolate;
   width: 100%;
-  padding: 28px 20px;
-  border-radius: 24px;
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  box-shadow: var(--shadow-card);
+  max-width: 340px;
+  overflow: hidden;
+  padding: 38px 28px 32px;
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  border-radius: 29px;
+  background:
+    radial-gradient(
+      circle at 17% -18%,
+      rgba(255, 255, 255, 0.7),
+      transparent 42%
+    ),
+    radial-gradient(
+      circle at 84% 118%,
+      rgba(107, 78, 255, 0.055),
+      transparent 46%
+    ),
+    rgba(248, 248, 252, 0.48);
+  box-shadow:
+    0 14px 38px rgba(25, 24, 31, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 0 rgba(91, 84, 122, 0.12);
   text-align: center;
+  backdrop-filter: blur(18px) saturate(175%);
+  -webkit-backdrop-filter: blur(18px) saturate(175%);
+}
+
+.loginCard::before {
+  content: "";
+  position: absolute;
+  top: 1px;
+  right: 16px;
+  left: 16px;
+  z-index: 0;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.34),
+    transparent
+  );
+  filter: blur(7px);
+  pointer-events: none;
+}
+
+.loginCard::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+  pointer-events: none;
+}
+
+.loginCard > * {
+  position: relative;
+  z-index: 1;
 }
 
 .loginLogo {
   display: block;
-  width: 120px;
+  width: 126px;
   height: auto;
-  margin: 0 auto 10px;
+  margin: 0 auto 12px;
   object-fit: contain;
 }
 
-.loginCard p {
-  margin: 0 0 24px;
+.loginLogo + p {
+  margin: 0 0 32px;
   color: var(--color-text-muted);
   font-size: 14px;
+  line-height: 1.5;
 }
 
 .loginForm {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-bottom: 12px;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
 .loginForm input,
 .loginForm select {
   width: 100%;
-  height: 46px;
-  padding: 0 14px;
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
-  background: var(--color-surface);
+  height: 52px;
+  padding: 0 16px;
+  border: 1px solid rgba(86, 85, 96, 0.15);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.36);
   color: var(--color-text-primary);
+  /* iOS에서 입력 포커스 시 화면이 확대되지 않도록 16px 이상을 유지한다. */
   font-size: 16px;
+  line-height: 1;
   outline: none;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 0 rgba(91, 84, 122, 0.06);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
 }
 
 .loginForm input:focus,
 .loginForm select:focus {
-  border-color: var(--color-primary);
-  box-shadow: var(--focus-ring-primary);
+  border-color: rgba(107, 78, 255, 0.72);
+  background: rgba(255, 255, 255, 0.58);
+  box-shadow:
+    var(--focus-ring-primary),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92);
 }
 
 .loginError {
-  margin: 0 0 12px;
+  margin: 0 0 14px;
   color: var(--color-danger);
   font-size: 12px;
   font-weight: 800;
+  line-height: 1.4;
 }
 
 .loginInputWrap {
@@ -133,14 +220,13 @@
 .loginInputWrap input {
   position: relative;
   z-index: 1;
-  padding-right: 46px;
-  background: var(--color-surface);
+  padding-right: 48px;
 }
 
 .loginInputPlaceholder {
   position: absolute;
   top: 50%;
-  left: 14px;
+  left: 16px;
   z-index: 2;
   color: var(--color-text-subtle);
   font-size: 16px;
@@ -152,7 +238,7 @@
 .loginClearButton {
   position: absolute;
   top: 50%;
-  right: 12px;
+  right: 14px;
   z-index: 3;
   width: 24px;
   height: 24px;
@@ -176,22 +262,87 @@
   transform: translateY(-50%) scale(0.92);
 }
 
-.secondaryButton {
-  width: 100%;
-  height: 48px;
-  border-radius: 14px;
-  background: var(--color-primary-soft);
+.signupPrompt {
+  margin: 14px 0 -8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  color: rgba(86, 85, 96, 0.76);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+
+.signupTextLink {
+  min-width: 0;
+  min-height: 0;
+  margin: -7px -3px;
+  padding: 7px 3px;
+  border-radius: 6px;
+  background: transparent;
   color: var(--color-primary);
-  font-size: 15px;
-  font-weight: 900;
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  transition:
+    opacity 140ms ease,
+    transform 140ms ease;
 }
 
-.secondaryButton:active {
-  transform: scale(0.98);
+.signupTextLink:active {
+  opacity: 0.64;
+  transform: scale(0.97);
 }
 
-.signupLinkButton {
-  margin-top: 10px;
+.signupTextLink:focus-visible {
+  outline: 2px solid rgba(107, 78, 255, 0.48);
+  outline-offset: 1px;
+}
+
+@supports not (
+  (-webkit-backdrop-filter: blur(1px)) or
+    (backdrop-filter: blur(1px))
+) {
+  .loginCard {
+    background: rgba(248, 248, 252, 0.96);
+  }
+
+  .loginForm input,
+  .loginForm select {
+    background: rgba(255, 255, 255, 0.92);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .primaryButton:hover {
+    box-shadow:
+      0 12px 24px rgba(107, 78, 255, 0.26),
+      inset 0 1px 0 rgba(255, 255, 255, 0.38),
+      inset 0 -1px 0 rgba(56, 35, 168, 0.2);
+    transform: translateY(-1px);
+  }
+
+  .signupTextLink:hover {
+    opacity: 0.72;
+  }
+}
+
+@media (max-width: 360px) {
+  .loginCard {
+    padding: 34px 20px 28px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .primaryButton,
+  .signupTextLink,
+  .loginForm input,
+  .loginForm select {
+    transition: none;
+  }
 }
 
 @keyframes loginSplashEnter {

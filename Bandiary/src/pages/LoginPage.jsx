@@ -42,21 +42,28 @@ function LoginPage() {
   )
   const [isLoginSplashLeaving, setIsLoginSplashLeaving] = useState(false)
 
-  // users 테이블 데이터 조회
-  const getUsers = async () => {
-    const { data, error } = await supabase.from('users').select('*')
+  useEffect(() => {
+    let isActive = true
 
-    if (error) {
-      console.error(error)
-      setErrorMessage('사용자 정보를 불러오지 못했습니다.')
-      return
+    const loadUsers = async () => {
+      const { data, error } = await supabase.from('users').select('*')
+
+      if (!isActive) return
+
+      if (error) {
+        console.error(error)
+        setErrorMessage('사용자 정보를 불러오지 못했습니다.')
+        return
+      }
+
+      setUsers(data)
     }
 
-    setUsers(data)
-  }
+    loadUsers()
 
-  useEffect(() => {
-    getUsers()
+    return () => {
+      isActive = false
+    }
   }, [])
 
   useEffect(() => {
@@ -107,6 +114,7 @@ function LoginPage() {
       try {
         inputRef.current.setSelectionRange(0, 0)
       } catch {
+        // 일부 입력 환경에서는 selection range API를 지원하지 않는다.
       }
     })
   }
@@ -148,12 +156,8 @@ function LoginPage() {
     navigate('/home')
   }
 
-  const goSignup = () => {
-    navigate('/signup')
-  }
-
-  const naviBlock = () => {
-    alert('관리자에게 문의해주세요.\nzxcv9675@naver.com')
+  const handleSignupContact = () => {
+    window.alert('회원가입은 관리자에게 문의해주세요.\nzxcv9675@naver.com')
   }
 
   return (
@@ -263,13 +267,17 @@ function LoginPage() {
           로그인
         </button>
 
-        <button
-          type="button"
-          className={styles.secondaryButton + " " + styles.signupLinkButton}
-          onClick={naviBlock}
-        >
-          회원가입
-        </button>
+        <p className={styles.signupPrompt}>
+          <span>밴드 기록을 시작해볼까요?</span>
+          <button
+            type="button"
+            className={styles.signupTextLink}
+            onClick={handleSignupContact}
+            aria-label="Sign up 관리자 문의"
+          >
+            Sign up
+          </button>
+        </p>
       </div>
     </div>
   )

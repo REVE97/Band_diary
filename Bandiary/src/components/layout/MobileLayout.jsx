@@ -7,7 +7,7 @@ import styles from './MobileLayout.module.css'
 function MobileLayout({ children }) {
   const location = useLocation()
 
-  const isLoginPage = location.pathname === '/login' || location.pathname === '/signup'
+  const isLoginPage = location.pathname === '/login'
 
   return (
     <div className={styles.appRoot}>

@@ -6,7 +6,6 @@ import HomePage from './pages/HomePage'
 import PlacePage from './pages/PlacePage'
 import MusicsheetPage from './pages/MusicsheetPage'
 import LoginPage from './pages/LoginPage'
-import SignupPage from './pages/SignupPage'
 import SchedulePage from './pages/SchedulePage'
 import NoticePage from './pages/NoticePage'
 
@@ -22,7 +21,6 @@ function App() {
           <Routes>
           <Route path='/' element={<Navigate to="/login" replace />}></Route>
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
           <Route path="/home" element={
             <ProtectedRoute>
               <HomePage />
