@@ -12,17 +12,6 @@ import useToast from '../components/common/useToast'
 import addIcon from '../assets/images/add.svg'
 import styles from './SchedulePage.module.css'
 
-const initialScheduleForm = {
-  type: '합주',
-  title: '',
-  scheduleDate: '',
-  startTime: '20:00',
-  endTime: '22:00',
-  location: '',
-  description: '',
-  color: '#6b4eff',
-}
-
 const getScheduleTypeColor = (type) => {
   if (type === '합주') return '#4dabf7'
   if (type === '공연') return '#9b5de5'
@@ -44,6 +33,17 @@ const getLocalDateKey = (date) => {
 
   return `${year}-${month}-${day}`
 }
+
+const createInitialScheduleForm = () => ({
+  type: '합주',
+  title: '',
+  scheduleDate: getLocalDateKey(new Date()),
+  startTime: '20:00',
+  endTime: '22:00',
+  location: '',
+  description: '',
+  color: '#6b4eff',
+})
 
 const createLocalDate = (dateValue) => {
   if (!dateValue) return null
@@ -99,7 +99,7 @@ function SchedulePage() {
   const [selectedSchedule, setSelectedSchedule] = useState(null)
 
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false)
-  const [scheduleForm, setScheduleForm] = useState(initialScheduleForm)
+  const [scheduleForm, setScheduleForm] = useState(createInitialScheduleForm)
   const [errorMessage, setErrorMessage] = useState('')
 
   const [deleteScheduleTarget, setDeleteScheduleTarget] = useState(null)
@@ -172,14 +172,14 @@ function SchedulePage() {
   }, [scheduleList])
 
   const handleOpenScheduleModal = () => {
-    setScheduleForm(initialScheduleForm)
+    setScheduleForm(createInitialScheduleForm())
     setErrorMessage('')
     setIsScheduleModalOpen(true)
   }
 
   const handleCloseScheduleModal = () => {
     setIsScheduleModalOpen(false)
-    setScheduleForm(initialScheduleForm)
+    setScheduleForm(createInitialScheduleForm())
     setErrorMessage('')
   }
 

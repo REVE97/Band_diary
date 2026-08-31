@@ -94,6 +94,7 @@ const unlockBackground = () => {
 
 function ModalPortal({
   children,
+  initialFocusRef,
   onBackdropClick,
   onBackdropMouseDown,
   onEscapeKey,
@@ -123,11 +124,13 @@ function ModalPortal({
     modalStack.push(modalId)
     updateModalStackSnapshot()
 
-    const firstFocusableElement = layerRef.current?.querySelector(
-      'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
-    )
+    const firstFocusableElement =
+      initialFocusRef?.current ||
+      layerRef.current?.querySelector(
+        'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      )
 
-    firstFocusableElement?.focus()
+    firstFocusableElement?.focus({ preventScroll: true })
 
     return () => {
       const modalIndex = modalStack.indexOf(modalId)
@@ -147,7 +150,7 @@ function ModalPortal({
         previouslyFocusedElement.focus()
       }
     }
-  }, [modalId])
+  }, [initialFocusRef, modalId])
 
   useLayoutEffect(() => {
     if (!isTopModal || !onEscapeKey) return undefined

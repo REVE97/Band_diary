@@ -1,3 +1,5 @@
+import { useRef } from 'react'
+
 import ModalPortal from '../common/ModalPortal'
 
 import styles from './ScheduleAddModal.module.css'
@@ -20,10 +22,14 @@ function ScheduleAddModal({
   onSubmit,
   onInputChange,
 }) {
+  const dialogRef = useRef(null)
+
   return (
-    <ModalPortal onEscapeKey={onClose}>
+    <ModalPortal initialFocusRef={dialogRef} onEscapeKey={onClose}>
       <div
+        ref={dialogRef}
         className={`${styles.placeModalCard} ${styles.scheduleModalCard}`}
+        tabIndex={-1}
         role="dialog"
         aria-modal="true"
         aria-labelledby="schedule-add-modal-title"
@@ -56,29 +62,38 @@ function ScheduleAddModal({
             onChange={onInputChange}
           />
 
-          <input
-            type="date"
-            name="scheduleDate"
-            value={scheduleForm.scheduleDate}
-            onChange={onInputChange}
-          />
-
-          <div className={styles.scheduleTimeRow}>
+          <label className={styles.nativeDateTimeField}>
             <input
-              type="time"
-              name="startTime"
-              value={scheduleForm.startTime}
+              type="date"
+              name="scheduleDate"
+              value={scheduleForm.scheduleDate}
+              aria-label="일정 날짜"
               onChange={onInputChange}
             />
+          </label>
+
+          <div className={styles.scheduleTimeRow}>
+            <label className={styles.nativeDateTimeField}>
+              <input
+                type="time"
+                name="startTime"
+                value={scheduleForm.startTime}
+                aria-label="시작 시간"
+                onChange={onInputChange}
+              />
+            </label>
 
             <span>~</span>
 
-            <input
-              type="time"
-              name="endTime"
-              value={scheduleForm.endTime}
-              onChange={onInputChange}
-            />
+            <label className={styles.nativeDateTimeField}>
+              <input
+                type="time"
+                name="endTime"
+                value={scheduleForm.endTime}
+                aria-label="종료 시간"
+                onChange={onInputChange}
+              />
+            </label>
           </div>
 
           <input

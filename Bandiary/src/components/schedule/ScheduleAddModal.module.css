@@ -115,6 +115,38 @@
 
 .scheduleModalCard {
   max-width: 390px;
+  outline: none;
+}
+
+.nativeDateTimeField {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  height: 46px;
+  padding-inline: 14px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-surface);
+}
+
+.nativeDateTimeField:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: var(--focus-ring-primary);
+}
+
+.scheduleForm .nativeDateTimeField input {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .scheduleForm textarea {
@@ -139,9 +171,12 @@
   align-items: center;
 }
 
-.scheduleTimeRow input {
-  min-width: 0;
+.scheduleTimeRow .nativeDateTimeField {
   padding-inline: 8px;
+}
+
+.scheduleTimeRow input {
+  text-align: center;
 }
 
 .scheduleTimeRow span {
@@ -206,9 +241,5 @@
   .scheduleTimeRow {
     grid-template-columns: minmax(0, 1fr) 12px minmax(0, 1fr);
     gap: 4px;
-  }
-
-  .scheduleTimeRow input {
-    padding-inline: 6px;
   }
 }
