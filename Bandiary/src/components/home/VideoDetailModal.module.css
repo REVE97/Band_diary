@@ -414,21 +414,68 @@
 }
 
 .videoPracticePanel {
+  position: relative;
+  isolation: isolate;
   margin-top: 13px;
   padding: 8px;
   display: grid;
   grid-template-columns: minmax(112px, 1.1fr) 82px minmax(104px, 1fr);
   align-items: stretch;
   gap: 7px;
-  border: 1px solid var(--color-divider);
+  border: 1px solid rgba(255, 255, 255, 0.78);
   border-radius: 16px;
-  background: var(--color-surface-subtle);
+  background:
+    radial-gradient(
+      circle at 17% -28%,
+      rgba(255, 255, 255, 0.62),
+      transparent 44%
+    ),
+    radial-gradient(
+      circle at 80% 135%,
+      rgba(107, 78, 255, 0.12),
+      transparent 48%
+    ),
+    rgba(248, 248, 252, 0.38);
+  box-shadow:
+    0 10px 28px rgba(25, 24, 31, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.86),
+    inset 0 -1px 0 rgba(91, 84, 122, 0.14);
+  backdrop-filter: blur(18px) saturate(175%);
+  -webkit-backdrop-filter: blur(18px) saturate(175%);
+}
+
+.videoPracticePanel::before {
+  position: absolute;
+  top: 1px;
+  right: 9px;
+  left: 9px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  content: '';
+  filter: blur(5px);
+  pointer-events: none;
+}
+
+.videoPracticePanel::after {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+  content: '';
+  pointer-events: none;
 }
 
 .videoLoopButton,
 .videoLoopButtonActive,
 .videoChapterTestButton,
 .videoSpeedControl {
+  position: relative;
+  z-index: 1;
   min-width: 0;
   min-height: 44px;
   border-radius: 12px;
@@ -449,13 +496,13 @@
 .videoLoopButton {
   border: 1px solid var(--color-primary-border);
   background: var(--color-surface);
-  color: var(--color-primary);
+  color: #000;
 }
 
 .videoLoopButtonActive {
-  border: 1px solid var(--color-primary);
-  background: var(--color-primary);
-  color: var(--color-on-accent);
+  border: 1px solid var(--color-primary-border);
+  background: var(--color-primary-soft);
+  color: #000;
   box-shadow: var(--shadow-button);
 }
 
@@ -464,10 +511,7 @@
   width: 19px;
   height: 19px;
   flex: 0 0 auto;
-}
-
-.videoLoopButtonActive img {
-  filter: brightness(0) invert(1);
+  filter: brightness(0);
 }
 
 .videoSpeedControl {
@@ -483,6 +527,7 @@
   width: 18px;
   height: 18px;
   flex: 0 0 auto;
+  filter: brightness(0);
 }
 
 .videoSpeedControl select {
@@ -495,7 +540,7 @@
   appearance: none;
   -webkit-appearance: none;
   background: transparent;
-  color: var(--color-text-primary);
+  color: #000;
   cursor: pointer;
   font-size: 11px;
   font-weight: 900;
@@ -505,12 +550,17 @@
 
 .videoChapterTestButton {
   padding: 0 9px;
-  background: var(--color-primary);
-  color: var(--color-on-accent);
+  border: 1px solid var(--color-primary-border);
+  background: var(--color-surface);
+  color: #000;
   font-size: 11px;
   font-weight: 900;
   white-space: nowrap;
   box-shadow: var(--shadow-button);
+}
+
+.videoChapterTestButton[aria-pressed='true'] {
+  background: var(--color-primary-soft);
 }
 
 .videoChapterTestButton:disabled,
@@ -521,35 +571,36 @@
   box-shadow: none;
 }
 
-.videoChapterHeader {
-  margin: 21px 2px 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.videoChapterHeader h3 {
-  margin: 0;
-  color: var(--color-text-primary);
-  font-size: 16px;
-  font-weight: 900;
-  letter-spacing: -0.3px;
-}
-
-.videoChapterHeader span {
-  color: var(--color-text-muted);
-  font-size: 11px;
-  font-weight: 800;
-}
-
 .videoChapterList {
+  position: relative;
+  isolation: isolate;
   display: grid;
   grid-auto-columns: minmax(100px, 1fr);
   grid-auto-flow: column;
   gap: 8px;
   overflow-x: auto;
-  padding: 2px 2px 8px;
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  border-radius: 16px;
+  background:
+    radial-gradient(
+      circle at 17% -28%,
+      rgba(255, 255, 255, 0.62),
+      transparent 44%
+    ),
+    radial-gradient(
+      circle at 80% 135%,
+      rgba(107, 78, 255, 0.12),
+      transparent 48%
+    ),
+    rgba(248, 248, 252, 0.38);
+  box-shadow:
+    0 10px 28px rgba(25, 24, 31, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.86),
+    inset 0 -1px 0 rgba(91, 84, 122, 0.14),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(18px) saturate(175%);
+  -webkit-backdrop-filter: blur(18px) saturate(175%);
   scroll-snap-type: x proximity;
   scrollbar-width: none;
 }
@@ -574,7 +625,7 @@
   align-items: center;
   justify-content: center;
   gap: 5px;
-  border: 1px solid var(--color-border);
+  border: 0;
   border-radius: 13px;
   text-align: center;
 }
@@ -584,9 +635,7 @@
 }
 
 .videoChapterActive {
-  border-color: var(--color-primary);
   background: var(--color-primary-soft);
-  box-shadow: var(--focus-ring-primary);
 }
 
 .videoChapterButton strong,
@@ -603,18 +652,10 @@
 
 .videoChapterButton time,
 .videoChapterActive time {
+  color: var(--color-text-muted);
   font-size: 10px;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
-}
-
-.videoChapterButton time {
-  color: var(--color-text-muted);
-}
-
-.videoChapterActive strong,
-.videoChapterActive time {
-  color: var(--color-primary);
 }
 
 .videoChapterDeleteButton {
@@ -657,13 +698,64 @@
 }
 
 .videoChapterInputPanel {
-  padding: 12px;
+  position: relative;
+  isolation: isolate;
+  padding: 14px;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  border: 1px solid var(--color-primary-border);
+  border: 1px solid rgba(255, 255, 255, 0.78);
   border-radius: 17px;
-  background: var(--color-primary-soft);
+  background:
+    radial-gradient(
+      circle at 17% -28%,
+      rgba(255, 255, 255, 0.62),
+      transparent 44%
+    ),
+    radial-gradient(
+      circle at 80% 135%,
+      rgba(107, 78, 255, 0.12),
+      transparent 48%
+    ),
+    rgba(248, 248, 252, 0.38);
+  box-shadow:
+    0 10px 28px rgba(25, 24, 31, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.86),
+    inset 0 -1px 0 rgba(91, 84, 122, 0.14);
+  backdrop-filter: blur(18px) saturate(175%);
+  -webkit-backdrop-filter: blur(18px) saturate(175%);
+}
+
+.videoChapterInputPanel::before {
+  position: absolute;
+  top: 1px;
+  right: 9px;
+  left: 9px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  content: '';
+  filter: blur(5px);
+  pointer-events: none;
+}
+
+.videoChapterInputPanel::after {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+  content: '';
+  pointer-events: none;
+}
+
+.videoChapterInputPanel > * {
+  position: relative;
+  z-index: 1;
 }
 
 .videoChapterField {
@@ -698,8 +790,9 @@
 .videoChapterTimeFields {
   min-width: 0;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 9px;
+  grid-template-columns: minmax(0, 1fr) 18px minmax(0, 1fr);
+  align-items: end;
+  gap: 6px;
 }
 
 .videoChapterTimeFields input {
@@ -708,6 +801,16 @@
   font-weight: 900;
   font-variant-numeric: tabular-nums;
   text-align: center;
+}
+
+.videoChapterTimeDirection {
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+  font-size: 18px;
+  font-weight: 800;
 }
 
 .videoChapterField input:focus {
@@ -729,13 +832,6 @@
   font-size: 14px;
   font-weight: 900;
   box-shadow: var(--shadow-button);
-}
-
-.videoChapterSubmitButton img {
-  width: 17px;
-  height: 17px;
-  display: block;
-  object-fit: contain;
 }
 
 .videoChapterSubmitButton:disabled {
@@ -792,7 +888,7 @@
 .videoThumbnailRail:focus-visible,
 .videoLoopButton:focus-visible,
 .videoLoopButtonActive:focus-visible,
-.videoSpeedControl:focus-within,
+.videoSpeedControl:has(select:focus-visible),
 .videoChapterTestButton:focus-visible,
 .videoChapterButton:focus-visible,
 .videoChapterActive:focus-visible,
@@ -800,6 +896,23 @@
 .videoChapterSubmitButton:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
+}
+
+@supports not (
+  (-webkit-backdrop-filter: blur(1px)) or
+    (backdrop-filter: blur(1px))
+) {
+  .videoPracticePanel {
+    background: rgba(248, 248, 252, 0.96);
+  }
+
+  .videoChapterList {
+    background: rgba(248, 248, 252, 0.96);
+  }
+
+  .videoChapterInputPanel {
+    background: rgba(248, 248, 252, 0.96);
+  }
 }
 
 @media (max-width: 370px) {

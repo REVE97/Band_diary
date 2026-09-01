@@ -7,7 +7,6 @@ import PlaceResultModal from '../place/PlaceResultModal'
 import { formatDate } from '../../features/common'
 import supabase from '../../api/supabase'
 
-import chapterAddIcon from '../../assets/images/chapter-add.svg'
 import playbackSpeedIcon from '../../assets/images/playback-speed.svg'
 import practiceLoopIcon from '../../assets/images/practice-loop.svg'
 import seekBackward10Icon from '../../assets/images/seek-backward-10.svg'
@@ -149,9 +148,6 @@ function VideoDetailModal({ content, onClose }) {
   const activeVideo = videoFiles[0] || null
 
   const [chapters, setChapters] = useState([])
-  const [isChapterLoading, setIsChapterLoading] = useState(
-    Boolean(activeVideo?.id)
-  )
   const [chapterErrorMessage, setChapterErrorMessage] = useState('')
   const [currentTime, setCurrentTime] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -219,12 +215,10 @@ function VideoDetailModal({ content, onClose }) {
         if (error) {
           console.error('비디오 구간 조회 실패:', error)
           setChapterErrorMessage('등록된 곡 구간을 불러오지 못했습니다.')
-          setIsChapterLoading(false)
           return
         }
 
         setChapters(data || [])
-        setIsChapterLoading(false)
     })
 
     return () => {
@@ -822,7 +816,7 @@ function VideoDetailModal({ content, onClose }) {
 
             <section
               className={styles.videoChapterSection}
-              aria-labelledby="video-chapter-title"
+              aria-label="곡 구간"
             >
               <div className={styles.videoPracticePanel}>
                 <button
@@ -867,17 +861,6 @@ function VideoDetailModal({ content, onClose }) {
                 >
                   {isChapterTesting ? '■ 재생 중지' : '▶ 구간 재생'}
                 </button>
-              </div>
-
-              <div className={styles.videoChapterHeader}>
-                <h3 id="video-chapter-title">곡 구간</h3>
-                <span>
-                  {isChapterLoading
-                    ? '불러오는 중'
-                    : chapters.length > 0
-                      ? chapters.length + '개'
-                      : '전체 재생'}
-                </span>
               </div>
 
               <div className={styles.videoChapterList}>
@@ -960,6 +943,13 @@ function VideoDetailModal({ content, onClose }) {
                       />
                     </div>
 
+                    <span
+                      className={styles.videoChapterTimeDirection}
+                      aria-hidden="true"
+                    >
+                      →
+                    </span>
+
                     <div className={styles.videoChapterField}>
                       <label htmlFor="video-chapter-end-time">
                         종료 시간
@@ -976,28 +966,17 @@ function VideoDetailModal({ content, onClose }) {
                     </div>
                   </div>
 
+                  <p className={styles.videoChapterInputGuide}>
+                    MM:SS 형식으로 직접 입력해주세요.
+                  </p>
+
                   <button
                     type="submit"
                     className={styles.videoChapterSubmitButton}
                     disabled={isChapterSubmitting}
                   >
-                    {isChapterSubmitting ? (
-                      '등록 중...'
-                    ) : (
-                      <>
-                        <img
-                          src={chapterAddIcon}
-                          alt=""
-                          aria-hidden="true"
-                        />
-                        <span>구간 추가</span>
-                      </>
-                    )}
+                    {isChapterSubmitting ? '등록 중...' : '구간 추가'}
                   </button>
-
-                  <p className={styles.videoChapterInputGuide}>
-                    제목과 시작·종료 시간을 입력해주세요. 예: 0130 → 01:30
-                  </p>
                 </div>
 
                 {chapterFormErrorMessage && (
