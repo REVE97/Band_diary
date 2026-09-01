@@ -243,7 +243,7 @@
 }
 
 .profileMemberCount {
-  color: var(--color-primary);
+  color: var(--color-text-subtle);
   font-size: 12px;
   font-weight: 900;
 }
