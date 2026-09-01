@@ -36,11 +36,12 @@ function AppHeader() {
   return (
     <>
       <header className={styles.header}>
-        <Link to="/home" className={styles.logo}>
+        <Link to="/home" className={styles.logo} draggable={false}>
           <img
             src={logo}
             alt="Bandiary 로고"
             aria-label="로고"
+            draggable={false}
           />
         </Link>
 
@@ -50,7 +51,7 @@ function AppHeader() {
           aria-label="로그아웃 기능"
           onClick={openLogoutModal}
         >
-          <img src={logoutIcon} alt="" />
+          <img src={logoutIcon} alt="" draggable={false} />
         </button>
       </header>
 

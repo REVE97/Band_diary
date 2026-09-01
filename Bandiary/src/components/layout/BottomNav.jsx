@@ -43,6 +43,7 @@ function BottomNav() {
           <NavLink
             key={item.path}
             to={item.path}
+            draggable={false}
             className={({ isActive }) =>
               `${styles.item} ${isActive ? styles.active : ''}`
             }
