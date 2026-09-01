@@ -37,7 +37,7 @@ const getPinColorClass = (index) => {
   return colorClasses[index % colorClasses.length]
 }
 
-function PictureDetailModal({ content, onClose }) {
+function PictureDetailModal({ content, members = [], onClose }) {
   const { showToast } = useToast()
   const feedbackItemRefs = useRef(new Map())
   const pictureFiles = Array.isArray(content.pictureFiles)
@@ -47,9 +47,15 @@ function PictureDetailModal({ content, onClose }) {
       )
     : []
   const activePicture = pictureFiles[0] || null
+  const feedbackMembers = Array.isArray(members)
+    ? members.filter(
+        (member) => typeof member === 'string' && member.trim()
+      )
+    : []
 
   const [pictureFeedbacks, setPictureFeedbacks] = useState([])
   const [draftPoint, setDraftPoint] = useState(null)
+  const [selectedMember, setSelectedMember] = useState('')
   const [feedbackText, setFeedbackText] = useState('')
   const [feedbackErrorMessage, setFeedbackErrorMessage] = useState('')
   const [isFeedbackLoading, setIsFeedbackLoading] = useState(
@@ -137,8 +143,20 @@ function PictureDetailModal({ content, onClose }) {
     setFeedbackErrorMessage('')
   }
 
-  const handleSelectFeedback = (event, feedbackId) => {
+  const handleFeedbackMemberChange = (event) => {
+    setSelectedMember(event.target.value)
+    setFeedbackErrorMessage('')
+  }
+
+  const handleSelectFeedback = (event, feedbackId, shouldToggle = false) => {
     event.stopPropagation()
+
+    if (shouldToggle && selectedFeedbackId === feedbackId) {
+      setSelectedFeedbackId(null)
+      event.currentTarget.blur()
+      return
+    }
+
     setSelectedFeedbackId(feedbackId)
 
     feedbackItemRefs.current.get(feedbackId)?.scrollIntoView({
@@ -150,11 +168,6 @@ function PictureDetailModal({ content, onClose }) {
   const handleAddFeedback = async (event) => {
     event.preventDefault()
 
-    if (!storageInfo?.userId) {
-      setFeedbackErrorMessage('로그인 사용자 정보를 찾을 수 없습니다.')
-      return
-    }
-
     if (!activePicture?.id) {
       setFeedbackErrorMessage(
         '사진 데이터를 찾을 수 없습니다. Supabase 사진 테이블을 확인해주세요.'
@@ -164,6 +177,16 @@ function PictureDetailModal({ content, onClose }) {
 
     if (!draftPoint) {
       setFeedbackErrorMessage('사진에서 피드백을 남길 위치를 선택해주세요.')
+      return
+    }
+
+    if (feedbackMembers.length === 0) {
+      setFeedbackErrorMessage('프로필에 밴드 멤버를 먼저 등록해주세요.')
+      return
+    }
+
+    if (!selectedMember || !feedbackMembers.includes(selectedMember)) {
+      setFeedbackErrorMessage('피드백 작성자를 선택해주세요.')
       return
     }
 
@@ -179,7 +202,7 @@ function PictureDetailModal({ content, onClose }) {
       .insert([
         {
           content_picture_id: activePicture.id,
-          name: storageInfo.userId,
+          name: selectedMember,
           description: feedbackText.trim(),
           x: draftPoint.x,
           y: draftPoint.y,
@@ -194,6 +217,7 @@ function PictureDetailModal({ content, onClose }) {
     }
 
     setDraftPoint(null)
+    setSelectedMember('')
     setFeedbackText('')
     setFeedbackErrorMessage('')
     setIsFeedbackSubmitting(false)
@@ -300,7 +324,7 @@ function PictureDetailModal({ content, onClose }) {
                           top: `${getCoordinate(feedback.y)}%`,
                         }}
                         onClick={(event) =>
-                          handleSelectFeedback(event, feedback.id)
+                          handleSelectFeedback(event, feedback.id, true)
                         }
                         aria-label={`${pinNumber}번 사진 피드백 보기`}
                       >
@@ -341,7 +365,7 @@ function PictureDetailModal({ content, onClose }) {
             aria-labelledby="picture-feedback-title"
           >
             <div className={styles.pictureFeedbackHeader}>
-              <h3 id="picture-feedback-title">사진 피드백</h3>
+              <h3 id="picture-feedback-title">피드백</h3>
               <span>{pictureFeedbacks.length}개</span>
             </div>
 
@@ -421,9 +445,30 @@ function PictureDetailModal({ content, onClose }) {
               onSubmit={handleAddFeedback}
             >
               <div className={styles.pictureFeedbackInputRow}>
+                <select
+                  value={selectedMember}
+                  onChange={handleFeedbackMemberChange}
+                  aria-label="사진 피드백 작성자"
+                  disabled={
+                    isFeedbackSubmitting || feedbackMembers.length === 0
+                  }
+                >
+                  <option value="">
+                    {feedbackMembers.length > 0
+                      ? '이름 선택'
+                      : '등록된 멤버 없음'}
+                  </option>
+
+                  {feedbackMembers.map((member, index) => (
+                    <option key={`${member}-${index}`} value={member}>
+                      {member}
+                    </option>
+                  ))}
+                </select>
+
                 <textarea
                   value={feedbackText}
-                  placeholder="선택한 위치에 피드백 남기기"
+                  placeholder="피드백 남기기"
                   maxLength={1000}
                   onChange={handleFeedbackInputChange}
                   aria-label="사진 피드백 내용"

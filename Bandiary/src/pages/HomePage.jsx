@@ -1604,6 +1604,7 @@ function HomePage() {
       {detailContent?.type === '사진' && (
         <PictureDetailModal
           content={detailContent}
+          members={members}
           onClose={handleCloseDetailModal}
         />
       )}
