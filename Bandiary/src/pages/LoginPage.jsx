@@ -148,7 +148,6 @@ function LoginPage() {
       JSON.stringify({
         id: matchedUser.id,
         userId: matchedUser.userId,
-        name: matchedUser.name,
         isLoggedIn: true,
       })
     )

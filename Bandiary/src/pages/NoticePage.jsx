@@ -473,7 +473,7 @@ function NoticePage() {
       {/* 등록 모달 */}
       {isAddModalOpen && (
         <NoticeAddModal
-          userName={storageInfo?.name ?? ''}
+          userId={storageInfo?.userId ?? ''}
           onClose={() =>
             setIsAddModalOpen(false)
           }
@@ -497,7 +497,7 @@ function NoticePage() {
         <NoticeAddModal
           mode="edit"
           notice={editingNotice}
-          userName={storageInfo?.name ?? ''}
+          userId={storageInfo?.userId ?? ''}
           onClose={() =>
             setEditingNotice(null)
           }

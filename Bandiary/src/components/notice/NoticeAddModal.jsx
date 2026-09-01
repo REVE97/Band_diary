@@ -10,7 +10,7 @@ import supabase from '../../api/supabase'
 import styles from './NoticeAddModal.module.css'
 
 function NoticeAddModal({
-  userName,
+  userId,
   onClose,
   onAdded,
   mode = 'add',
@@ -235,12 +235,12 @@ function NoticeAddModal({
       return
     }
 
-    // 사용자 이름
-    const sessionName =
-      userName?.trim()
+    // 사용자 아이디
+    const sessionUserId =
+      userId?.trim()
 
-    // 사용자 이름 확인
-    if (!sessionName) {
+    // 사용자 아이디 확인
+    if (!sessionUserId) {
       setResultModal({
         type: 'fail',
         title: '사용자 정보 확인 실패',
@@ -326,7 +326,7 @@ function NoticeAddModal({
         .insert([
           {
             type,
-            name: sessionName,
+            name: sessionUserId,
             title: trimmedTitle,
             content: trimmedContent,
             imageUrl,

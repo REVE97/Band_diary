@@ -1429,7 +1429,7 @@ function HomePage() {
           <div className={styles.profileAvatar}>
             <img
               src={profileInfo[0]?.profileImageUrl || profile}
-              alt={`${profileInfo[0]?.name || 'Guest'} 프로필`}
+              alt={`${profileInfo[0]?.userId || 'Guest'} 프로필`}
             />
           </div>
 
