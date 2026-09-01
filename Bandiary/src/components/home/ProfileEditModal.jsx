@@ -4,6 +4,8 @@ import ModalPortal from '../common/ModalPortal'
 
 import profile from '../../assets/images/default_profile.svg'
 import editIcon from '../../assets/images/edit.svg'
+import addIcon from '../../assets/images/add.svg'
+import memberRemoveIcon from '../../assets/images/member-remove.svg'
 import styles from './ProfileEditModal.module.css'
 
 function ProfileEditModal({
@@ -13,9 +15,16 @@ function ProfileEditModal({
   onClose,
   onSubmit,
   onInputChange,
+  onMembersChange,
   onImageChange,
 }) {
   const [selectedFileName, setSelectedFileName] = useState('선택된 파일 없음')
+  const [memberName, setMemberName] = useState('')
+  const [memberErrorMessage, setMemberErrorMessage] = useState('')
+
+  const members = Array.isArray(profileForm.members)
+    ? profileForm.members
+    : []
 
   // 프로필 이미지 input 접근
   const fileInputRef = useRef(null)
@@ -35,6 +44,38 @@ function ProfileEditModal({
     }
 
     onImageChange(event)
+  }
+
+  const handleMemberAdd = () => {
+    const newMemberName = memberName.trim()
+
+    if (!newMemberName) {
+      setMemberErrorMessage('밴드원 이름을 입력해주세요.')
+      return
+    }
+
+    if (members.includes(newMemberName)) {
+      setMemberErrorMessage('이미 등록된 밴드원입니다.')
+      return
+    }
+
+    onMembersChange([...members, newMemberName])
+    setMemberName('')
+    setMemberErrorMessage('')
+  }
+
+  const handleMemberDelete = (memberIndex) => {
+    onMembersChange(
+      members.filter((_, index) => index !== memberIndex)
+    )
+    setMemberErrorMessage('')
+  }
+
+  const handleMemberKeyDown = (event) => {
+    if (event.key !== 'Enter') return
+
+    event.preventDefault()
+    handleMemberAdd()
   }
 
   return (
@@ -103,37 +144,93 @@ function ProfileEditModal({
         {/* 프로필 상세 항목 */}
         <div className={styles.profileEditForm}>
 
-          {/* 이름 */}
+          {/* 설명 */}
           <div className={styles.profileEditField}>
-            <label htmlFor="profileName">
-              이름
+            <label htmlFor="profileDescription">
+              설명
             </label>
 
-            <input
-              id="profileName"
-              type="text"
-              name="name"
-              value={profileForm.name}
-              placeholder="이름을 입력해주세요"
-              onChange={onInputChange}
-            />
+            <div className={styles.profileDescriptionInputWrap}>
+              <textarea
+                id="profileDescription"
+                name="description"
+                value={profileForm.description}
+                maxLength={20}
+                placeholder="밴드 설명을 입력해주세요"
+                onChange={onInputChange}
+              />
+
+              <span className={styles.profileDescriptionCount}>
+                {profileForm.description.length} / 20
+              </span>
+            </div>
           </div>
 
-          {/* 밴드 */}
+          {/* 밴드원 */}
           <div className={styles.profileEditField}>
-            <label htmlFor="profileBandName">
-              밴드
-            </label>
+            <div className={styles.profileEditFieldHeader}>
+              <span className={styles.profileMemberLabel}>밴드원</span>
+              <span className={styles.profileMemberCount}>{members.length}명</span>
+            </div>
 
-            <select
-              id="profileBandName"
-              name="bandName"
-              value={profileForm.bandName}
-              onChange={onInputChange}
+            {members.length > 0 ? (
+              <div className={styles.profileMemberList}>
+                {members.map((member, index) => (
+                  <div
+                    key={`${member}-${index}`}
+                    className={styles.profileMemberChip}
+                  >
+                    <span>{member}</span>
+
+                    <button
+                      type="button"
+                      aria-label={`${member} 삭제`}
+                      onClick={() => handleMemberDelete(index)}
+                    >
+                      <img src={memberRemoveIcon} alt="" aria-hidden="true" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className={styles.profileMemberEmpty}>
+                등록된 밴드원이 없습니다.
+              </p>
+            )}
+
+            <div className={styles.profileMemberAddRow}>
+              <input
+                type="text"
+                value={memberName}
+                placeholder="밴드원 이름 입력"
+                aria-label="추가할 밴드원 이름"
+                onChange={(event) => {
+                  setMemberName(event.target.value)
+                  setMemberErrorMessage('')
+                }}
+                onKeyDown={handleMemberKeyDown}
+              />
+
+              <button
+                type="button"
+                className={styles.profileMemberAddButton}
+                aria-label="밴드원 추가"
+                onClick={handleMemberAdd}
+              >
+                <img src={addIcon} alt="" aria-hidden="true" />
+              </button>
+            </div>
+
+            <p
+              className={
+                memberErrorMessage
+                  ? styles.profileMemberError
+                  : styles.profileMemberHelp
+              }
             >
-              <option value="">밴드를 선택해주세요</option>
-              <option value="11F">11F</option>
-            </select>
+              {memberErrorMessage ||
+                '이름을 입력한 후 + 버튼을 눌러주세요.'}
+            </p>
           </div>
 
         </div>
@@ -144,14 +241,16 @@ function ProfileEditModal({
           </p>
         )}
 
-        {/* 프로필 수정 저장 */}
-        <button
-          type="button"
-          className={styles.primaryButton + " " + styles.profileEditSubmitButton}
-          onClick={onSubmit}
-        >
-          저장하기
-        </button>
+        <div className={styles.profileEditSubmitArea}>
+          {/* 프로필 수정 저장 */}
+          <button
+            type="button"
+            className={styles.primaryButton + " " + styles.profileEditSubmitButton}
+            onClick={onSubmit}
+          >
+            저장하기
+          </button>
+        </div>
       </div>
     </ModalPortal>
   )

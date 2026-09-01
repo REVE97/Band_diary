@@ -22,8 +22,8 @@ import usersIcon from '../assets/images/users.svg'
 import styles from './HomePage.module.css'
 
 const initialProfileForm = {
-  name: '',
-  bandName: '',
+  description: '',
+  members: [],
 }
 
 const initialContentForm = {
@@ -569,8 +569,10 @@ function HomePage() {
     const currentProfile = profileInfo[0]
 
     setProfileForm({
-      name: currentProfile?.name || '',
-      bandName: currentProfile?.bandName || '',
+      description: currentProfile?.description || '',
+      members: Array.isArray(currentProfile?.members)
+        ? [...currentProfile.members]
+        : [],
     })
 
     setProfileImageFile(null)
@@ -602,6 +604,15 @@ function HomePage() {
     setProfileForm((prev) => ({
       ...prev,
       [name]: value,
+    }))
+
+    setErrorMessage('')
+  }
+
+  const handleProfileMembersChange = (members) => {
+    setProfileForm((prev) => ({
+      ...prev,
+      members,
     }))
 
     setErrorMessage('')
@@ -661,6 +672,18 @@ function HomePage() {
       return
     }
 
+    const description = profileForm.description.trim()
+    const members = Array.isArray(profileForm.members)
+      ? profileForm.members
+          .map((member) => member.trim())
+          .filter(Boolean)
+      : []
+
+    if (description.length > 20) {
+      setErrorMessage('설명은 20자 이내로 입력해주세요.')
+      return
+    }
+
     let uploadedProfileImagePath = ''
 
     try {
@@ -675,8 +698,8 @@ function HomePage() {
       }
 
       const payload = {
-        name: profileForm.name.trim() || null,
-        bandName: profileForm.bandName.trim() || null,
+        description: description || null,
+        members,
         profileImageUrl,
       }
 
@@ -1546,6 +1569,7 @@ function HomePage() {
           onClose={handleCloseProfileModal}
           onSubmit={handleUpdateProfile}
           onInputChange={handleProfileInputChange}
+          onMembersChange={handleProfileMembersChange}
           onImageChange={handleProfileImageChange}
         />
       )}
