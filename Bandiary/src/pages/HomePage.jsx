@@ -18,6 +18,7 @@ import addIcon from '../assets/images/add.svg'
 import editIcon from '../assets/images/edit.svg'
 import instagramIcon from '../assets/images/instagram.svg'
 import discordIcon from '../assets/images/discord.svg'
+import usersIcon from '../assets/images/users.svg'
 import styles from './HomePage.module.css'
 
 const initialProfileForm = {
@@ -36,6 +37,8 @@ function HomePage() {
   // 프로필 데이터 상태값
   const [profileInfo, setProfileInfo] = useState([])
   const [profileForm, setProfileForm] = useState(initialProfileForm)
+  const [isMembersTooltipOpen, setIsMembersTooltipOpen] = useState(false)
+  const membersTooltipRef = useRef(null)
 
   const [profileImageFile, setProfileImageFile] = useState(null)
   const [profileImagePreview, setProfileImagePreview] = useState('')
@@ -83,6 +86,10 @@ function HomePage() {
 
   // 관리자 여부 확인
   const isAdmin = storageInfo?.userId === 'admin'
+
+  const members = Array.isArray(profileInfo[0]?.members)
+    ? profileInfo[0].members
+    : []
 
   // 비디오, 사진, 오디오 개수
   const videoCount = content.filter((item) => item.type === '비디오').length
@@ -242,6 +249,36 @@ function HomePage() {
     void Promise.all([getUsers(), getContent()])
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    if (!isMembersTooltipOpen) return undefined
+
+    const handleMembersTooltipClose = (event) => {
+      if (
+        event.type === 'keydown' &&
+        event.key !== 'Escape'
+      ) {
+        return
+      }
+
+      if (
+        event.type === 'pointerdown' &&
+        membersTooltipRef.current?.contains(event.target)
+      ) {
+        return
+      }
+
+      setIsMembersTooltipOpen(false)
+    }
+
+    document.addEventListener('pointerdown', handleMembersTooltipClose)
+    document.addEventListener('keydown', handleMembersTooltipClose)
+
+    return () => {
+      document.removeEventListener('pointerdown', handleMembersTooltipClose)
+      document.removeEventListener('keydown', handleMembersTooltipClose)
+    }
+  }, [isMembersTooltipOpen])
 
   // Storage public URL에서 bucket 내부 path만 추출
   const getStorageFilePathFromUrl = (bucketName, fileUrl) => {
@@ -1391,12 +1428,51 @@ function HomePage() {
 
         {/* 프로필 상세 정보 */}
         <div className={styles.profileSummary}>
-          <h2>
-            {profileInfo[0]?.name || 'Guest'}
-          </h2>
+          <div className={styles.profileMetadata}>
+            <h2>
+              {profileInfo[0]?.bandName || '밴드를 설정해주세요'}
+            </h2>
+
+            <div className={styles.memberInfo} ref={membersTooltipRef}>
+              <button
+                type="button"
+                className={styles.membersButton}
+                aria-label={`밴드 멤버 ${members.length}명 보기`}
+                aria-expanded={isMembersTooltipOpen}
+                aria-controls="profile-members-tooltip"
+                onClick={() =>
+                  setIsMembersTooltipOpen((isOpen) => !isOpen)
+                }
+              >
+                <img src={usersIcon} alt="" aria-hidden="true" />
+              </button>
+
+              <span>{members.length}명</span>
+
+              {isMembersTooltipOpen && (
+                <div
+                  id="profile-members-tooltip"
+                  className={styles.membersTooltip}
+                  role="tooltip"
+                >
+                  <strong>밴드 멤버</strong>
+
+                  {members.length > 0 ? (
+                    <ul>
+                      {members.map((member, index) => (
+                        <li key={`${member}-${index}`}>{member}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <span>등록된 멤버가 없습니다.</span>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
 
           <p>
-            {profileInfo[0]?.bandName + "\tBAND" || '밴드를 설정해주세요'}
+            {profileInfo[0]?.description || '밴드 소개를 작성해주세요'}
           </p>
 
           {/* SNS */}
