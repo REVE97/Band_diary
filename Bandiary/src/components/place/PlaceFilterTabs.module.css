@@ -1,6 +1,6 @@
 .row {
   composes: row from "../home/ContentFilterTabs.module.css";
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  --filter-column-count: 4;
 }
 
 .button {
