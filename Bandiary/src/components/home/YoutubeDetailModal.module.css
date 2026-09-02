@@ -66,18 +66,34 @@
 
 .youtubePlayerSection {
   position: relative;
+  isolation: isolate;
   width: calc(100% - 28px);
   min-height: 200px;
   margin: 0 14px;
   padding: 3px;
   aspect-ratio: 16 / 9;
-  overflow: hidden;
-  border: 1px solid rgba(255, 0, 51, 0.34);
+  overflow: visible;
+  border: 1px solid rgba(107, 78, 255, 0.36);
   border-radius: 18px;
-  background: var(--color-media-background);
+  background: var(--color-primary-soft);
   box-shadow:
-    0 0 22px rgba(255, 0, 51, 0.12),
+    0 0 22px rgba(107, 78, 255, 0.14),
     0 12px 26px rgba(25, 24, 31, 0.14);
+}
+
+.youtubePlayerSection::after {
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  z-index: 4;
+  width: 64px;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--color-primary);
+  box-shadow: 0 2px 8px rgba(107, 78, 255, 0.34);
+  content: '';
+  pointer-events: none;
+  transform: translateX(-50%);
 }
 
 .youtubePlayerSection iframe {
@@ -86,9 +102,574 @@
   width: 100%;
   height: 100%;
   display: block;
-  border: 0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 14px;
   background: var(--color-media-background);
+}
+
+.youtubeTimelineSection {
+  margin: 14px 14px 0;
+}
+
+.youtubeTimelineRail {
+  position: relative;
+  width: 100%;
+  height: 58px;
+  padding: 0;
+  overflow: hidden;
+  display: block;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-media-background);
+  cursor: crosshair;
+}
+
+.youtubeTimelineRail:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.youtubeTimelineThumbnail {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  opacity: 0.72;
+  pointer-events: none;
+}
+
+.youtubeActiveChapterRange {
+  position: absolute;
+  top: 0;
+  bottom: 4px;
+  z-index: 2;
+  border-right: 2px solid rgba(255, 255, 255, 0.88);
+  border-left: 2px solid rgba(255, 255, 255, 0.88);
+  background: rgba(107, 78, 255, 0.34);
+  box-shadow: inset 0 0 0 1px rgba(107, 78, 255, 0.52);
+  pointer-events: none;
+}
+
+.youtubeChapterMarker {
+  position: absolute;
+  top: 0;
+  bottom: 4px;
+  z-index: 3;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.7);
+  pointer-events: none;
+}
+
+.youtubeTimelineProgress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 4;
+  height: 4px;
+  border-radius: 0 999px 999px 0;
+  background: var(--color-primary);
+  pointer-events: none;
+}
+
+.youtubeTimelinePlayhead {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 5;
+  width: 2px;
+  background: var(--color-primary);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.86);
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+
+.youtubeTimelinePlayhead::after {
+  position: absolute;
+  bottom: -1px;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: var(--color-primary);
+  content: '';
+  transform: translate(-50%, 35%);
+}
+
+.youtubeTimelineTimes {
+  margin-top: 6px;
+  display: flex;
+  justify-content: space-between;
+  color: var(--color-text-muted);
+  font-size: 10px;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+}
+
+.youtubeChapterSection {
+  padding: 0 14px;
+}
+
+.youtubePracticePanel {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  max-width: 100%;
+  margin-top: 13px;
+  padding: 8px;
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1.1fr)
+    minmax(0, 0.75fr)
+    minmax(0, 1fr);
+  align-items: stretch;
+  gap: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  border-radius: 16px;
+  background:
+    radial-gradient(
+      circle at 17% -28%,
+      rgba(255, 255, 255, 0.62),
+      transparent 44%
+    ),
+    radial-gradient(
+      circle at 80% 135%,
+      rgba(107, 78, 255, 0.12),
+      transparent 48%
+    ),
+    rgba(248, 248, 252, 0.38);
+  box-shadow:
+    0 10px 28px rgba(25, 24, 31, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.86),
+    inset 0 -1px 0 rgba(91, 84, 122, 0.14);
+  backdrop-filter: blur(18px) saturate(175%);
+  -webkit-backdrop-filter: blur(18px) saturate(175%);
+}
+
+.youtubePracticePanel::before {
+  position: absolute;
+  top: 1px;
+  right: 9px;
+  left: 9px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  content: '';
+  filter: blur(5px);
+  pointer-events: none;
+}
+
+.youtubePracticePanel::after {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+  content: '';
+  pointer-events: none;
+}
+
+.youtubeLoopButton,
+.youtubeLoopButtonActive,
+.youtubeChapterTestButton,
+.youtubeSpeedControl {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  min-height: 44px;
+  border-radius: 12px;
+}
+
+.youtubeLoopButton,
+.youtubeLoopButtonActive {
+  padding: 0 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.youtubeLoopButton {
+  border: 1px solid var(--color-primary-border);
+  background: var(--color-surface);
+  color: #000;
+}
+
+.youtubeLoopButtonActive {
+  border: 1px solid var(--color-primary-border);
+  background: var(--color-primary-soft);
+  color: #000;
+  box-shadow: var(--shadow-button);
+}
+
+.youtubeLoopButton img,
+.youtubeLoopButtonActive img {
+  width: 19px;
+  height: 19px;
+  flex: 0 0 auto;
+  filter: brightness(0);
+}
+
+.youtubeSpeedControl {
+  padding: 0 7px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.youtubeSpeedControl img {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  filter: brightness(0);
+}
+
+.youtubeSpeedControl select {
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  color: #000;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.youtubeChapterTestButton {
+  padding: 0 9px;
+  border: 1px solid var(--color-primary-border);
+  background: var(--color-surface);
+  color: #000;
+  font-size: 11px;
+  font-weight: 900;
+  white-space: nowrap;
+  box-shadow: var(--shadow-button);
+}
+
+.youtubeChapterTestButton[aria-pressed='true'] {
+  background: var(--color-primary-soft);
+}
+
+.youtubeChapterTestButton:disabled,
+.youtubeLoopButton:disabled,
+.youtubeLoopButtonActive:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+  box-shadow: none;
+}
+
+.youtubeChapterList {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  max-width: 100%;
+  display: grid;
+  grid-auto-columns: calc((100% - 8px) / 2);
+  grid-auto-flow: column;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  border-radius: 16px;
+  background:
+    radial-gradient(
+      circle at 17% -28%,
+      rgba(255, 255, 255, 0.62),
+      transparent 44%
+    ),
+    radial-gradient(
+      circle at 80% 135%,
+      rgba(107, 78, 255, 0.12),
+      transparent 48%
+    ),
+    rgba(248, 248, 252, 0.38);
+  box-shadow:
+    0 10px 28px rgba(25, 24, 31, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.86),
+    inset 0 -1px 0 rgba(91, 84, 122, 0.14),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(18px) saturate(175%);
+  -webkit-backdrop-filter: blur(18px) saturate(175%);
+  scroll-padding-inline: 8px;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+}
+
+.youtubeChapterList::-webkit-scrollbar {
+  display: none;
+}
+
+.youtubeChapterItem {
+  position: relative;
+  min-width: 0;
+  scroll-snap-align: start;
+}
+
+.youtubeChapterButton,
+.youtubeChapterActive {
+  width: 100%;
+  min-height: 66px;
+  padding: 10px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border: 0;
+  border-radius: 13px;
+  text-align: center;
+}
+
+.youtubeChapterButton {
+  background: var(--color-surface);
+}
+
+.youtubeChapterActive {
+  background: var(--color-primary-soft);
+}
+
+.youtubeChapterButton strong,
+.youtubeChapterActive strong {
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--color-text-primary);
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.youtubeChapterButton time,
+.youtubeChapterActive time {
+  color: var(--color-text-muted);
+  font-size: 10px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.youtubeChapterButton:disabled,
+.youtubeChapterActive:disabled,
+.youtubeSpeedControl select:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.youtubeChapterDeleteButton {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+  font-size: 17px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.youtubeChapterDeleteButton:active {
+  transform: scale(0.92);
+}
+
+.youtubeChapterDeleteButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.youtubeChapterError {
+  margin: 4px 2px 0;
+  color: var(--color-danger);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.youtubeChapterForm {
+  margin-top: 12px;
+}
+
+.youtubeChapterInputPanel {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  max-width: 100%;
+  padding: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  border-radius: 17px;
+  background:
+    radial-gradient(
+      circle at 17% -28%,
+      rgba(255, 255, 255, 0.62),
+      transparent 44%
+    ),
+    radial-gradient(
+      circle at 80% 135%,
+      rgba(107, 78, 255, 0.12),
+      transparent 48%
+    ),
+    rgba(248, 248, 252, 0.38);
+  box-shadow:
+    0 10px 28px rgba(25, 24, 31, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.86),
+    inset 0 -1px 0 rgba(91, 84, 122, 0.14);
+  backdrop-filter: blur(18px) saturate(175%);
+  -webkit-backdrop-filter: blur(18px) saturate(175%);
+}
+
+.youtubeChapterInputPanel::before {
+  position: absolute;
+  top: 1px;
+  right: 9px;
+  left: 9px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  content: '';
+  filter: blur(5px);
+  pointer-events: none;
+}
+
+.youtubeChapterInputPanel::after {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+  content: '';
+  pointer-events: none;
+}
+
+.youtubeChapterInputPanel > * {
+  position: relative;
+  z-index: 1;
+}
+
+.youtubeChapterField {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.youtubeChapterField label {
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.youtubeChapterField input {
+  width: 100%;
+  min-width: 0;
+  height: 46px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  outline: none;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.youtubeChapterTimeFields {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 18px minmax(0, 1fr);
+  align-items: end;
+  gap: 6px;
+}
+
+.youtubeChapterTimeFields input {
+  color: var(--color-primary);
+  font-size: 16px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.youtubeChapterTimeDirection {
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.youtubeChapterField input:focus {
+  border-color: var(--color-primary);
+  box-shadow: var(--focus-ring-primary);
+}
+
+.youtubeChapterSubmitButton {
+  width: 100%;
+  height: 46px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border-radius: 13px;
+  background: var(--color-primary);
+  color: var(--color-on-accent);
+  font-size: 14px;
+  font-weight: 900;
+  box-shadow: var(--shadow-button);
+}
+
+.youtubeChapterSubmitButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+  box-shadow: none;
+}
+
+.youtubeChapterInputGuide {
+  margin: -4px 2px 0;
+  color: var(--color-text-muted);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.youtubeChapterFormError {
+  margin: 7px 5px 0;
+  color: var(--color-danger);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.4;
 }
 
 .youtubeDetailEmpty {
@@ -105,13 +686,62 @@
   font-weight: 800;
 }
 
-.youtubeDetailClose:focus-visible {
+.youtubeDetailClose:focus-visible,
+.youtubeTimelineRail:focus-visible,
+.youtubeLoopButton:focus-visible,
+.youtubeLoopButtonActive:focus-visible,
+.youtubeSpeedControl:has(select:focus-visible),
+.youtubeChapterTestButton:focus-visible,
+.youtubeChapterButton:focus-visible,
+.youtubeChapterActive:focus-visible,
+.youtubeChapterDeleteButton:focus-visible,
+.youtubeChapterSubmitButton:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 
+@supports not (
+  (-webkit-backdrop-filter: blur(1px)) or
+    (backdrop-filter: blur(1px))
+) {
+  .youtubePracticePanel,
+  .youtubeChapterList,
+  .youtubeChapterInputPanel {
+    background: rgba(248, 248, 252, 0.96);
+  }
+}
+
+@media (max-width: 370px) {
+  .youtubePracticePanel {
+    gap: 5px;
+    padding: 6px;
+  }
+
+  .youtubeLoopButton,
+  .youtubeLoopButtonActive,
+  .youtubeChapterTestButton {
+    padding-right: 6px;
+    padding-left: 6px;
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 360px) {
+  .youtubePracticePanel {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .youtubeChapterTestButton {
+    grid-column: 1 / -1;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .youtubeDetailClose {
+  .youtubeDetailClose,
+  .youtubeChapterButton,
+  .youtubeChapterActive,
+  .youtubeTimelinePlayhead,
+  .youtubeTimelineProgress {
     transition: none;
   }
 }
