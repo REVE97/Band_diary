@@ -41,6 +41,7 @@
 }
 
 .loginPage {
+  position: relative;
   min-height: 100%;
   padding: 20px 0;
   display: flex;
@@ -302,6 +303,73 @@
   outline-offset: 1px;
 }
 
+.loginProductMeta {
+  position: absolute;
+  right: 0;
+  bottom: calc(4px + env(safe-area-inset-bottom));
+  z-index: 2;
+  max-width: 100%;
+  padding: 10px 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 14px;
+  background:
+    radial-gradient(
+      circle at 18% -25%,
+      rgba(255, 255, 255, 0.72),
+      transparent 52%
+    ),
+    rgba(248, 248, 252, 0.42);
+  box-shadow:
+    0 8px 22px rgba(25, 24, 31, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.86),
+    inset 0 -1px 0 rgba(91, 84, 122, 0.08);
+  color: rgba(86, 85, 96, 0.66);
+  text-align: right;
+  backdrop-filter: blur(14px) saturate(165%);
+  -webkit-backdrop-filter: blur(14px) saturate(165%);
+}
+
+.loginProductMeta p {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+  font-size: 10px;
+  font-weight: 650;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.loginProductMeta strong {
+  color: rgba(80, 70, 129, 0.78);
+  font-weight: 850;
+}
+
+.loginProductMeta a {
+  margin-top: 4px;
+  display: block;
+  color: rgba(94, 83, 150, 0.74);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.35;
+  white-space: nowrap;
+  transition:
+    color 140ms ease,
+    opacity 140ms ease;
+}
+
+.loginProductMeta a:active {
+  opacity: 0.62;
+}
+
+.loginProductMeta a:focus-visible {
+  border-radius: 4px;
+  outline: 2px solid rgba(107, 78, 255, 0.48);
+  outline-offset: 2px;
+}
+
 @supports not (
   (-webkit-backdrop-filter: blur(1px)) or
     (backdrop-filter: blur(1px))
@@ -313,6 +381,10 @@
   .loginForm input,
   .loginForm select {
     background: rgba(255, 255, 255, 0.92);
+  }
+
+  .loginProductMeta {
+    background: rgba(248, 248, 252, 0.96);
   }
 }
 
@@ -328,17 +400,40 @@
   .signupTextLink:hover {
     opacity: 0.72;
   }
+
+  .loginProductMeta a:hover {
+    color: var(--color-primary);
+  }
 }
 
 @media (max-width: 360px) {
   .loginCard {
     padding: 34px 20px 28px;
   }
+
+  .loginProductMeta {
+    padding: 9px 10px;
+  }
+
+  .loginProductMeta p,
+  .loginProductMeta a {
+    font-size: 9px;
+  }
+}
+
+@media (max-height: 700px) {
+  .loginPage {
+    min-height: 100%;
+    padding-top: 32px;
+    padding-bottom: 104px;
+    align-items: flex-start;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .primaryButton,
   .signupTextLink,
+  .loginProductMeta a,
   .loginForm input,
   .loginForm select {
     transition: none;

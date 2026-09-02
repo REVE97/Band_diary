@@ -11,6 +11,8 @@ import styles from './LoginPage.module.css'
 const LOGIN_SPLASH_SESSION_KEY = 'bandiaryLoginSplashShown'
 const LOGIN_SPLASH_FADE_DELAY = 3800
 const LOGIN_SPLASH_DURATION = 4300
+const APP_VERSION = '0.4.0'
+const BUG_REPORT_EMAIL = 'zxcv9675@naver.com'
 
 const shouldShowLoginSplash = () => {
   const prefersReducedMotion = window.matchMedia(
@@ -278,6 +280,17 @@ function LoginPage() {
           </button>
         </p>
       </div>
+
+      <footer className={styles.loginProductMeta} aria-label="앱 정보">
+        <p>
+          <span>Product by <strong>Reve</strong></span>
+          <span aria-hidden="true">·</span>
+          <span>v{APP_VERSION}</span>
+        </p>
+        <a href={`mailto:${BUG_REPORT_EMAIL}?subject=Bandiary%20버그%20문의`}>
+          버그 문의 · {BUG_REPORT_EMAIL}
+        </a>
+      </footer>
     </div>
   )
 }
