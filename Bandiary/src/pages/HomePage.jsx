@@ -33,6 +33,8 @@ const initialContentForm = {
   youtubeUrl: '',
 }
 
+const CONTENTS_PER_PAGE = 4
+
 function HomePage() {
   const { showToast } = useToast()
   const [selectedContent, setSelectedContent] = useState(null)
@@ -51,6 +53,8 @@ function HomePage() {
 
   // 콘텐츠 필터 상태값
   const [activeContentFilter, setActiveContentFilter] = useState('전체')
+  const [currentContentPage, setCurrentContentPage] = useState(1)
+  const contentListSectionRef = useRef(null)
 
   // 콘텐츠 추가 모달 상태값
   const [isContentModalOpen, setIsContentModalOpen] = useState(false)
@@ -113,6 +117,23 @@ function HomePage() {
     activeContentFilter === '전체'
       ? content
       : content.filter((item) => item.type === activeContentFilter)
+
+  const totalContentPages = Math.ceil(
+    filteredContent.length / CONTENTS_PER_PAGE
+  )
+  const safeContentPage = Math.min(
+    currentContentPage,
+    Math.max(totalContentPages, 1)
+  )
+  const currentPageStartIndex = (safeContentPage - 1) * CONTENTS_PER_PAGE
+  const paginatedContent = filteredContent.slice(
+    currentPageStartIndex,
+    currentPageStartIndex + CONTENTS_PER_PAGE
+  )
+  const contentPageNumbers = Array.from(
+    { length: totalContentPages },
+    (_, index) => index + 1
+  )
 
   const getUsers = async () => {
     if (!storageInfo?.userId) return
@@ -1283,6 +1304,7 @@ function HomePage() {
       }
 
       await getContent()
+      setCurrentContentPage(1)
       handleCloseContentModal()
 
       showToast(`${contentType} 콘텐츠가 등록되었습니다.`)
@@ -1366,7 +1388,24 @@ function HomePage() {
   // 콘텐츠 필터 변경
   const handleContentFilterChange = (filterValue) => {
     setActiveContentFilter(filterValue)
+    setCurrentContentPage(1)
     setSelectedContent(null)
+  }
+
+  const handleContentPageChange = (pageNumber) => {
+    const nextPage = Math.min(Math.max(pageNumber, 1), totalContentPages)
+
+    if (nextPage === safeContentPage) return
+
+    setCurrentContentPage(nextPage)
+    setSelectedContent(null)
+
+    window.requestAnimationFrame(() => {
+      contentListSectionRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      })
+    })
   }
 
   // 콘텐츠 카드 클릭
@@ -1475,6 +1514,7 @@ function HomePage() {
       }
 
       await getContent()
+      setCurrentContentPage(1)
 
       if (selectedContent?.id === deleteContentTarget.id) {
         setSelectedContent(null)
@@ -1621,9 +1661,12 @@ function HomePage() {
       </button>
 
       {/* 콘텐츠 목록 */}
-      <section className={styles.contentListSection}>
+      <section
+        className={styles.contentListSection}
+        ref={contentListSectionRef}
+      >
         <div className={styles.homeCardGrid}>
-          {filteredContent.map((item) => (
+          {paginatedContent.map((item) => (
             <ContentCard
               key={item.id}
               item={item}
@@ -1641,6 +1684,51 @@ function HomePage() {
               ? '등록된 콘텐츠가 없습니다.'
               : `${activeContentFilter} 콘텐츠가 없습니다.`}
           </div>
+        )}
+
+        {totalContentPages > 1 && (
+          <nav className={styles.pagination} aria-label="콘텐츠 페이지">
+            <button
+              type="button"
+              className={styles.paginationArrow}
+              onClick={() => handleContentPageChange(safeContentPage - 1)}
+              disabled={safeContentPage === 1}
+              aria-label="이전 페이지"
+            >
+              ‹
+            </button>
+
+            <div className={styles.paginationNumbers}>
+              {contentPageNumbers.map((pageNumber) => (
+                <button
+                  key={pageNumber}
+                  type="button"
+                  className={`${styles.paginationButton} ${
+                    safeContentPage === pageNumber
+                      ? styles.paginationActive
+                      : ''
+                  }`}
+                  onClick={() => handleContentPageChange(pageNumber)}
+                  aria-label={`${pageNumber}페이지`}
+                  aria-current={
+                    safeContentPage === pageNumber ? 'page' : undefined
+                  }
+                >
+                  {pageNumber}
+                </button>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              className={styles.paginationArrow}
+              onClick={() => handleContentPageChange(safeContentPage + 1)}
+              disabled={safeContentPage === totalContentPages}
+              aria-label="다음 페이지"
+            >
+              ›
+            </button>
+          </nav>
         )}
       </section>
 
