@@ -57,6 +57,10 @@
   background: var(--color-danger);
 }
 
+.youtube .placeholder {
+  background: #ff0033;
+}
+
 .previewIcon {
   width: 25px;
   height: 25px;
@@ -91,6 +95,10 @@
 
 .audio .title {
   color: var(--color-danger);
+}
+
+.youtube .title {
+  color: #d9002f;
 }
 
 .info > strong {

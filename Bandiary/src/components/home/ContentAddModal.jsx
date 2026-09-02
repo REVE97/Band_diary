@@ -5,6 +5,8 @@ import ModalPortal from '../common/ModalPortal'
 import pictureTypeIcon from '../../assets/images/picture.svg'
 import videoTypeIcon from '../../assets/images/video.svg'
 import audioTypeIcon from '../../assets/images/audio.svg'
+import youtubeTypeIcon from '../../assets/images/youtube.svg'
+import { extractYoutubeVideoId } from '../../features/common'
 import styles from './ContentAddModal.module.css'
 
 function ContentAddModal({
@@ -30,6 +32,7 @@ function ContentAddModal({
   const isPicture = contentType === '사진'
   const isVideo = contentType === '비디오'
   const isAudio = contentType === '오디오'
+  const isYoutube = contentType === '유튜브'
 
   useEffect(() => {
     // 콘텐츠 유형을 변경하면 단계별 입력 상태를 처음부터 다시 시작합니다.
@@ -46,6 +49,7 @@ function ContentAddModal({
       if (isVideo) {
         return '업로드할 비디오 파일을 선택해주세요. (30MB 이하)'
       }
+      if (isYoutube) return '재생할 유튜브 링크를 입력해주세요.'
 
       return '오디오 파일을 선택하고 파일별 제목을 입력해주세요.'
     }
@@ -61,6 +65,18 @@ function ContentAddModal({
     }
 
     if (currentStep === 2) {
+      if (isYoutube) {
+        if (!contentForm.youtubeUrl.trim()) {
+          return '유튜브 링크를 입력해주세요.'
+        }
+
+        if (!extractYoutubeVideoId(contentForm.youtubeUrl)) {
+          return '올바른 유튜브 영상 링크를 입력해주세요.'
+        }
+
+        return ''
+      }
+
       if (isAudio) {
         if (contentAudioFiles.length === 0) {
           return '오디오 파일을 한 개 이상 첨부해주세요.'
@@ -88,6 +104,10 @@ function ContentAddModal({
     }
 
     if (currentStep === 2) {
+      if (isYoutube) {
+        return Boolean(extractYoutubeVideoId(contentForm.youtubeUrl))
+      }
+
       if (isAudio) {
         return (
           contentAudioFiles.length > 0 &&
@@ -270,6 +290,25 @@ function ContentAddModal({
             </span>
             <strong>오디오</strong>
           </label>
+
+          <label className={isYoutube ? styles.active : ""}>
+            <input
+              type="radio"
+              name="contentType"
+              value="유튜브"
+              checked={isYoutube}
+              onChange={onContentTypeChange}
+              disabled={isContentUploading}
+            />
+            <span className={styles.contentTypeSymbol}>
+              <img
+                src={youtubeTypeIcon}
+                alt=""
+                aria-hidden="true"
+              />
+            </span>
+            <strong>유튜브</strong>
+          </label>
         </div>
 
         <div className={styles.loginForm + " " + styles.placeForm + " " + styles.contentAddForm}>
@@ -328,24 +367,53 @@ function ContentAddModal({
                 </div>
               )}
 
-              {/* 파일 선택 */}
-              <div className={styles.contentFileSelectBox}>
-                <label htmlFor="contentFile" className={styles.customFileButton}>
-                  {isAudio ? '오디오 파일 추가' : '파일 선택'}
-                </label>
+              {isYoutube && (
+                <>
+                  <div className={styles.contentUploadGuide}>
+                    <strong>유튜브 링크 등록 안내</strong>
+                    <p>
+                      일반 영상, Shorts, 공유 링크를 등록할 수 있습니다.
+                      재생이 허용된 영상만 상세 화면에서 표시됩니다.
+                    </p>
+                  </div>
 
-                <span className={styles.customFileName}>{contentFileName}</span>
+                  <div className={styles.contentAddField}>
+                    <label htmlFor="contentYoutubeUrl">유튜브 링크</label>
+                    <input
+                      id="contentYoutubeUrl"
+                      type="url"
+                      name="youtubeUrl"
+                      value={contentForm.youtubeUrl}
+                      placeholder="https://www.youtube.com/watch?v=..."
+                      onChange={handleChangeInput}
+                      disabled={isContentUploading}
+                    />
+                  </div>
+                </>
+              )}
 
-                <input
-                  id="contentFile"
-                  className={styles.customFileInput}
-                  type="file"
-                  accept={getFileAcceptValue()}
-                  multiple={isAudio}
-                  onChange={handleChangeFile}
-                  disabled={isContentUploading}
-                />
-              </div>
+              {!isYoutube && (
+                <>
+                  {/* 파일 선택 */}
+                  <div className={styles.contentFileSelectBox}>
+                    <label htmlFor="contentFile" className={styles.customFileButton}>
+                      {isAudio ? '오디오 파일 추가' : '파일 선택'}
+                    </label>
+
+                    <span className={styles.customFileName}>{contentFileName}</span>
+
+                    <input
+                      id="contentFile"
+                      className={styles.customFileInput}
+                      type="file"
+                      accept={getFileAcceptValue()}
+                      multiple={isAudio}
+                      onChange={handleChangeFile}
+                      disabled={isContentUploading}
+                    />
+                  </div>
+                </>
+              )}
 
               {/* 선택한 오디오 파일 및 제목 */}
               {isAudio && contentAudioFiles.length > 0 && (
@@ -429,9 +497,20 @@ function ContentAddModal({
                 <strong>{contentForm.title}</strong>
               </div>
 
-              {!isAudio && <span>파일명: {contentFileName}</span>}
+              {!isAudio && !isYoutube && (
+                <span>파일명: {contentFileName}</span>
+              )}
 
               {isVideo && <span>저장 방식: 비디오 파일 그대로 저장</span>}
+
+              {isYoutube && (
+                <>
+                  <span className={styles.contentYoutubeSummaryUrl}>
+                    링크: {contentForm.youtubeUrl}
+                  </span>
+                  <span>저장 방식: 유튜브 임베드 플레이어로 재생</span>
+                </>
+              )}
 
               {isAudio && (
                 <>

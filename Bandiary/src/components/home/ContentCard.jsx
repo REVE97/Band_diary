@@ -2,12 +2,14 @@ import { formatDate } from '../../features/common'
 import audioIcon from '../../assets/images/audio_white.svg'
 import videoIcon from '../../assets/images/video_white.svg'
 import pictureIcon from '../../assets/images/picture_white.svg'
+import youtubeIcon from '../../assets/images/youtube_white.svg'
 import styles from './ContentCard.module.css'
 
 function ContentCard({ item, isActive, isAdmin, onClick, onDeleteClick }) {
   const isPicture = item.type === '사진'
   const isVideo = item.type === '비디오'
   const isAudio = item.type === '오디오'
+  const isYoutube = item.type === '유튜브'
 
   const handleDeleteClick = (event) => {
     event.stopPropagation()
@@ -22,6 +24,7 @@ function ContentCard({ item, isActive, isAdmin, onClick, onDeleteClick }) {
   const getContentIcon = () => {
     if (isPicture) return pictureIcon
     if (isVideo) return videoIcon
+    if (isYoutube) return youtubeIcon
     return audioIcon
   }
 
@@ -35,6 +38,7 @@ function ContentCard({ item, isActive, isAdmin, onClick, onDeleteClick }) {
         isPicture ? styles.picture : '',
         isVideo ? styles.video : '',
         isAudio ? styles.audio : '',
+        isYoutube ? styles.youtube : '',
       ]
         .filter(Boolean)
         .join(' ')}

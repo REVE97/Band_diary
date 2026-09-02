@@ -2,6 +2,7 @@ import picture_icon from '../../assets/images/picture.svg'
 import video_icon from '../../assets/images/video.svg'
 import allView_icon from '../../assets/images/allView.svg'
 import audio_icon from '../../assets/images/audio.svg'
+import youtube_icon from '../../assets/images/youtube.svg'
 import styles from './ContentFilterTabs.module.css'
 
 const contentFilterOptions = [
@@ -25,6 +26,11 @@ const contentFilterOptions = [
     label: '오디오',
     value: '오디오',
     icon: audio_icon,
+  },
+  {
+    label: '유튜브',
+    value: '유튜브',
+    icon: youtube_icon,
   },
 ]
 

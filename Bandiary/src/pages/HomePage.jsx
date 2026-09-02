@@ -8,6 +8,7 @@ import ContentFilterTabs from '../components/home/ContentFilterTabs'
 import ProfileEditModal from '../components/home/ProfileEditModal'
 import ContentAddModal from '../components/home/ContentAddModal'
 import VideoDetailModal from '../components/home/VideoDetailModal'
+import YoutubeDetailModal from '../components/home/YoutubeDetailModal'
 import AudioDetailModal from '../components/home/AudioDetailModal'
 import PictureDetailModal from '../components/home/PictureDetailModal'
 import PlaceResultModal from '../components/place/PlaceResultModal'
@@ -19,6 +20,7 @@ import editIcon from '../assets/images/edit.svg'
 import instagramIcon from '../assets/images/instagram.svg'
 import discordIcon from '../assets/images/discord.svg'
 import usersIcon from '../assets/images/users.svg'
+import { extractYoutubeVideoId } from '../features/common'
 import styles from './HomePage.module.css'
 
 const initialProfileForm = {
@@ -28,6 +30,7 @@ const initialProfileForm = {
 
 const initialContentForm = {
   title: '',
+  youtubeUrl: '',
 }
 
 function HomePage() {
@@ -91,16 +94,18 @@ function HomePage() {
     ? profileInfo[0].members
     : []
 
-  // 비디오, 사진, 오디오 개수
+  // 비디오, 사진, 오디오, 유튜브 개수
   const videoCount = content.filter((item) => item.type === '비디오').length
   const pictureCount = content.filter((item) => item.type === '사진').length
   const audioCount = content.filter((item) => item.type === '오디오').length
+  const youtubeCount = content.filter((item) => item.type === '유튜브').length
 
   const contentCounts = {
     전체: content.length,
     비디오: videoCount,
     사진: pictureCount,
     오디오: audioCount,
+    유튜브: youtubeCount,
   }
 
   // 필터링된 콘텐츠 목록
@@ -147,10 +152,14 @@ function HomePage() {
     const videoContentIds = contentList
       .filter((item) => item.type === '비디오')
       .map((item) => item.id)
+    const youtubeContentIds = contentList
+      .filter((item) => item.type === '유튜브')
+      .map((item) => item.id)
 
     const audioFilesByContentId = new Map()
     const pictureFilesByContentId = new Map()
     const videoFilesByContentId = new Map()
+    const youtubeContentByContentId = new Map()
 
     if (audioContentIds.length > 0) {
       const { data: audioData, error: audioError } = await supabase
@@ -227,17 +236,42 @@ function HomePage() {
       }
     }
 
+    if (youtubeContentIds.length > 0) {
+      const { data: youtubeData, error: youtubeError } = await supabase
+        .from('content_youtube')
+        .select(
+          'id, content_id, video_id, original_url, thumbnail_url, channel_title, duration_seconds, created_at'
+        )
+        .in('content_id', youtubeContentIds)
+
+      if (youtubeError) {
+        console.error('유튜브 콘텐츠 조회 실패:', youtubeError)
+      } else {
+        const youtubeContentList = youtubeData || []
+
+        youtubeContentList.forEach((youtubeContent) => {
+          youtubeContentByContentId.set(
+            youtubeContent.content_id,
+            youtubeContent
+          )
+        })
+      }
+    }
+
     setContent(
       contentList.map((item) => {
         const savedAudioFiles = audioFilesByContentId.get(item.id) || []
         const savedPictureFiles = pictureFilesByContentId.get(item.id) || []
         const savedVideoFiles = videoFilesByContentId.get(item.id) || []
+        const savedYoutubeContent =
+          youtubeContentByContentId.get(item.id) || null
 
         return {
           ...item,
           audioFiles: savedAudioFiles,
           pictureFiles: savedPictureFiles,
           videoFiles: savedVideoFiles,
+          youtubeContent: savedYoutubeContent,
         }
       })
     )
@@ -794,6 +828,10 @@ function HomePage() {
 
   const handleContentTypeChange = (event) => {
     setContentType(event.target.value)
+    setContentForm((prev) => ({
+      ...prev,
+      youtubeUrl: '',
+    }))
     setContentFile(null)
     setContentFileName('선택된 파일 없음')
     setContentAudioFiles([])
@@ -1036,6 +1074,18 @@ function HomePage() {
       return ''
     }
 
+    if (contentType === '유튜브') {
+      if (!contentForm.youtubeUrl.trim()) {
+        return '유튜브 링크를 입력해주세요.'
+      }
+
+      if (!extractYoutubeVideoId(contentForm.youtubeUrl)) {
+        return '올바른 유튜브 영상 링크를 입력해주세요.'
+      }
+
+      return ''
+    }
+
     if (!contentFile) {
       if (contentType === '사진') return '이미지 파일을 첨부해주세요.'
       if (contentType === '비디오') return '영상 파일을 첨부해주세요.'
@@ -1068,6 +1118,7 @@ function HomePage() {
       const uploadedAudioFiles = []
       let uploadedPictureFile = null
       let uploadedVideoFile = null
+      let youtubeContentPayload = null
 
       if (contentType === '오디오') {
         for (let index = 0; index < contentAudioFiles.length; index += 1) {
@@ -1100,6 +1151,14 @@ function HomePage() {
             file_size: uploadFile.size,
             sort_order: index,
           })
+        }
+      } else if (contentType === '유튜브') {
+        const videoId = extractYoutubeVideoId(contentForm.youtubeUrl)
+
+        youtubeContentPayload = {
+          video_id: videoId,
+          original_url: contentForm.youtubeUrl.trim(),
+          thumbnail_url: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
         }
       } else if (contentType === '비디오') {
         const compressedVideo = await compressVideoTo540p(contentFile)
@@ -1208,6 +1267,21 @@ function HomePage() {
         }
       }
 
+      if (contentType === '유튜브' && youtubeContentPayload) {
+        const { error: youtubeInsertError } = await supabase
+          .from('content_youtube')
+          .insert([
+            {
+              content_id: createdContent.id,
+              ...youtubeContentPayload,
+            },
+          ])
+
+        if (youtubeInsertError) {
+          throw youtubeInsertError
+        }
+      }
+
       await getContent()
       handleCloseContentModal()
 
@@ -1243,7 +1317,9 @@ function HomePage() {
         fileNames:
           contentType === '오디오'
             ? contentAudioFiles.map((audioFile) => audioFile.originalFileName)
-            : [contentFile?.name],
+            : contentType === '유튜브'
+              ? [contentForm.youtubeUrl]
+              : [contentFile?.name],
       })
 
       const isContentAudioPermissionError =
@@ -1260,6 +1336,11 @@ function HomePage() {
         (error.code === '42501' ||
           error.message?.includes('content_video') ||
           error.message?.includes('schema cache'))
+      const isYoutubeTableError =
+        contentType === '유튜브' &&
+        (error.code === '42501' ||
+          error.message?.includes('content_youtube') ||
+          error.message?.includes('schema cache'))
 
       setResultModal({
         isOpen: true,
@@ -1271,8 +1352,10 @@ function HomePage() {
             ? 'content_picture 테이블 생성 SQL을 먼저 실행해주세요.'
             : isVideoTableError
               ? 'content_video 테이블 생성 SQL을 먼저 실행해주세요.'
-              : error.message ||
-                '콘텐츠 등록 중 오류가 발생했습니다. 파일 용량, 형식, 네트워크 상태 또는 Supabase 설정을 확인해주세요.',
+              : isYoutubeTableError
+                ? 'content_youtube 테이블 설정을 확인해주세요.'
+                : error.message ||
+                  '콘텐츠 등록 중 오류가 발생했습니다. 파일 용량, 형식, 네트워크 상태 또는 Supabase 설정을 확인해주세요.',
       })
     } finally {
       setIsContentUploading(false)
@@ -1532,7 +1615,7 @@ function HomePage() {
         className={styles.contentAddButton}
         data-floating-add-button
         onClick={handleOpenContentModal}
-        aria-label="사진, 비디오 또는 오디오 추가"
+        aria-label="사진, 비디오, 오디오 또는 유튜브 추가"
       >
         <img src={addIcon} alt="" aria-hidden="true" />
       </button>
@@ -1611,6 +1694,13 @@ function HomePage() {
 
       {detailContent?.type === '비디오' && (
         <VideoDetailModal
+          content={detailContent}
+          onClose={handleCloseDetailModal}
+        />
+      )}
+
+      {detailContent?.type === '유튜브' && (
+        <YoutubeDetailModal
           content={detailContent}
           onClose={handleCloseDetailModal}
         />
