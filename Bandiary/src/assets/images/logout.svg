@@ -1,21 +1,21 @@
-<svg
-  xmlns="http://www.w3.org/2000/svg"
-  viewBox="0 0 24 24"
-  fill="none"
-  role="img"
-  aria-label="power"
->
-  <path
-    d="M12 3.25v8.5"
-    stroke="#FF3B30"
-    stroke-width="1.9"
-    stroke-linecap="round"
-  />
-  <path
-    d="M6.34 6.34a8 8 0 1 0 11.32 0"
-    stroke="#FF3B30"
-    stroke-width="1.9"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+  <defs>
+    <linearGradient id="power-stroke" x1="7" y1="3" x2="17" y2="20" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF7B73"/>
+      <stop offset="0.5" stop-color="#FF453A"/>
+      <stop offset="1" stop-color="#D92D37"/>
+    </linearGradient>
+    <filter id="power-shadow" x="2" y="0" width="20" height="24" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="1.2" stdDeviation="0.8" flood-color="#9C2027" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#power-shadow)" stroke-linecap="round">
+    <path d="M12 3.25V11.75" stroke="white" stroke-opacity="0.72" stroke-width="3.1"/>
+    <path d="M6.34 6.34A8 8 0 1 0 17.66 6.34" stroke="white" stroke-opacity="0.72" stroke-width="3.1" stroke-linejoin="round"/>
+    <path d="M12 3.25V11.75" stroke="url(#power-stroke)" stroke-width="1.9"/>
+    <path d="M6.34 6.34A8 8 0 1 0 17.66 6.34" stroke="url(#power-stroke)" stroke-width="1.9" stroke-linejoin="round"/>
+    <path d="M12 3.25V8.1" stroke="white" stroke-opacity="0.44" stroke-width="0.55"/>
+    <path d="M6.85 7.05A7.1 7.1 0 0 0 5.2 12" stroke="white" stroke-opacity="0.38" stroke-width="0.55"/>
+  </g>
 </svg>
