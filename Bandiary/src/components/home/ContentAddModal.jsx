@@ -371,10 +371,8 @@ function ContentAddModal({
                 <>
                   <div className={styles.contentUploadGuide}>
                     <strong>유튜브 링크 등록 안내</strong>
-                    <p>
-                      일반 영상, Shorts, 공유 링크를 등록할 수 있습니다.
-                      재생이 허용된 영상만 상세 화면에서 표시됩니다.
-                    </p>
+                    <p>일반 영상, Shorts, 공유 링크를 등록할 수 있습니다.</p>
+                    <p>재생이 허용된 영상만 상세 화면에서 표시됩니다.</p>
                   </div>
 
                   <div className={styles.contentAddField}>
