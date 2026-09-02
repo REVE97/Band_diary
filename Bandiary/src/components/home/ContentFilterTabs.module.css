@@ -144,20 +144,29 @@
   }
 }
 
-@media (max-width: 360px) {
-  .button {
+@media (max-width: 420px) {
+  .row {
     gap: 3px;
-    padding: 0 3px;
+  }
+
+  .button {
+    height: 52px;
+    padding: 4px 2px;
+    flex-direction: column;
+    gap: 2px;
   }
 
   .icon {
-    width: 16px;
-    height: 16px;
+    width: 17px;
+    height: 17px;
   }
 
   .text {
+    max-width: 100%;
+    justify-content: center;
     gap: 2px;
     font-size: 10px;
+    line-height: 1;
   }
 
   .count {
