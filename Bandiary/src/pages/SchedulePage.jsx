@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import koLocale from '@fullcalendar/core/locales/ko'
@@ -10,6 +10,7 @@ import ScheduleDetailModal from '../components/schedule/ScheduleDetailModal'
 import PlaceResultModal from '../components/place/PlaceResultModal'
 import useToast from '../components/common/useToast'
 import addIcon from '../assets/images/add.svg'
+import { getLoginUserId } from '../features/session'
 import styles from './SchedulePage.module.css'
 
 const getScheduleTypeColor = (type) => {
@@ -95,6 +96,8 @@ const getDDayLabel = (dateValue) => {
 
 function SchedulePage() {
   const { showToast } = useToast()
+  const userId = getLoginUserId()
+  const isAdmin = userId === 'admin'
   const [scheduleList, setScheduleList] = useState([])
   const [selectedSchedule, setSelectedSchedule] = useState(null)
 
@@ -111,10 +114,22 @@ function SchedulePage() {
     message: '',
   })
 
-  const getScheduleList = async () => {
-    const { data, error } = await supabase
+  const getScheduleList = useCallback(async () => {
+    if (!userId) {
+      setScheduleList([])
+      return
+    }
+
+    let scheduleQuery = supabase
       .from('schedule')
       .select('*')
+
+    // 관리자는 전체 일정을 조회하고 일반 사용자는 자신의 일정만 조회합니다.
+    if (!isAdmin) {
+      scheduleQuery = scheduleQuery.eq('user_id', userId)
+    }
+
+    const { data, error } = await scheduleQuery
       .order('schedule_date', { ascending: true })
       .order('start_time', { ascending: true })
 
@@ -132,13 +147,13 @@ function SchedulePage() {
     }
 
     setScheduleList(data || [])
-  }
+  }, [isAdmin, userId])
 
   useEffect(() => {
     // Supabase의 초기 일정 목록을 페이지 진입 시 한 번만 조회합니다.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     getScheduleList()
-  }, [])
+  }, [getScheduleList])
 
   const upcomingSchedules = useMemo(() => {
     const todayKey = getLocalDateKey(new Date())
@@ -239,6 +254,11 @@ function SchedulePage() {
       return
     }
 
+    if (!userId) {
+      setErrorMessage('로그인 사용자 정보를 찾을 수 없습니다.')
+      return
+    }
+
     try {
       const payload = {
         title: scheduleForm.title.trim(),
@@ -250,6 +270,7 @@ function SchedulePage() {
         description: scheduleForm.description.trim() || null,
         color:
           scheduleForm.color || getScheduleTypeColor(scheduleForm.type),
+        user_id: userId,
       }
 
       const { error } = await supabase.from('schedule').insert([payload])
@@ -295,10 +316,16 @@ function SchedulePage() {
     if (!deleteScheduleTarget) return
 
     try {
-      const { error } = await supabase
+      let deleteQuery = supabase
         .from('schedule')
         .delete()
         .eq('id', deleteScheduleTarget.id)
+
+      if (!isAdmin) {
+        deleteQuery = deleteQuery.eq('user_id', userId)
+      }
+
+      const { error } = await deleteQuery
 
       if (error) {
         throw error

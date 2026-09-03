@@ -21,6 +21,7 @@ import instagramIcon from '../assets/images/instagram.svg'
 import discordIcon from '../assets/images/discord.svg'
 import usersIcon from '../assets/images/users.svg'
 import { extractYoutubeVideoId } from '../features/common'
+import { getLoginUserId } from '../features/session'
 import styles from './HomePage.module.css'
 
 const initialProfileForm = {
@@ -89,10 +90,10 @@ function HomePage() {
   const isFfmpegLoadedRef = useRef(false)
 
   // 유저 데이터 호출
-  const storageInfo = JSON.parse(sessionStorage.getItem('bandiaryLoginUser'))
+  const userId = getLoginUserId()
 
   // 관리자 여부 확인
-  const isAdmin = storageInfo?.userId === 'admin'
+  const isAdmin = userId === 'admin'
 
   const members = Array.isArray(profileInfo[0]?.members)
     ? profileInfo[0].members
@@ -136,12 +137,12 @@ function HomePage() {
   )
 
   const getUsers = async () => {
-    if (!storageInfo?.userId) return
+    if (!userId) return
 
     const { data, error } = await supabase
       .from('users')
       .select()
-      .eq('userId', storageInfo.userId)
+      .eq('userId', userId)
 
     if (error) {
       console.error(error)
@@ -153,9 +154,21 @@ function HomePage() {
 
   // 콘텐츠 데이터 호출
   const getContent = async () => {
-    const { data, error } = await supabase
+    if (!userId) {
+      setContent([])
+      return
+    }
+
+    let contentQuery = supabase
       .from('content')
       .select('*')
+
+    // 관리자는 전체 콘텐츠를 조회하고 일반 사용자는 자신의 콘텐츠만 조회합니다.
+    if (!isAdmin) {
+      contentQuery = contentQuery.eq('user_id', userId)
+    }
+
+    const { data, error } = await contentQuery
       .order('created_at', { ascending: false })
 
     if (error) {
@@ -440,7 +453,7 @@ function HomePage() {
   }
 
   const getSafeUserId = () => {
-    return String(storageInfo?.userId || 'guest').replace(
+    return String(userId || 'guest').replace(
       /[^a-zA-Z0-9_-]/g,
       '_'
     )
@@ -722,7 +735,7 @@ function HomePage() {
   }
 
   const handleUpdateProfile = async () => {
-    if (!storageInfo?.userId) {
+    if (!userId) {
       setErrorMessage('로그인 사용자 정보를 찾을 수 없습니다.')
       return
     }
@@ -761,7 +774,7 @@ function HomePage() {
       const { error } = await supabase
         .from('users')
         .update(payload)
-        .eq('userId', storageInfo.userId)
+        .eq('userId', userId)
 
       if (error) {
         throw error
@@ -1123,6 +1136,11 @@ function HomePage() {
       return
     }
 
+    if (!userId) {
+      setErrorMessage('로그인 사용자 정보를 찾을 수 없습니다.')
+      return
+    }
+
     setIsContentUploading(true)
     setErrorMessage('')
     setConvertMessage('')
@@ -1134,6 +1152,7 @@ function HomePage() {
       const payload = {
         type: contentType,
         title: contentForm.title.trim(),
+        user_id: userId,
       }
 
       const uploadedAudioFiles = []
@@ -1314,6 +1333,7 @@ function HomePage() {
           .from('content')
           .delete()
           .eq('id', createdContentId)
+          .eq('user_id', userId)
 
         if (removeContentError) {
           console.error('실패한 콘텐츠 데이터 정리 실패:', removeContentError)

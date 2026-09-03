@@ -11,16 +11,15 @@ import memoIcon from '../assets/images/notice-memo.svg'
 import searchIcon from '../assets/images/search.svg'
 
 import supabase from '../api/supabase'
+import { getLoginUserId } from '../features/session'
 import styles from './NoticePage.module.css'
 
 function NoticePage() {
   // 유저 데이터 호출
-  const storageInfo = JSON.parse(
-    sessionStorage.getItem('bandiaryLoginUser')
-  )
+  const userId = getLoginUserId()
 
   // 관리자 여부 확인
-  const isAdmin = storageInfo?.userId === 'admin'
+  const isAdmin = userId === 'admin'
 
   // 공지사항 전체 데이터
   const [notices, setNotices] = useState([])
@@ -53,9 +52,24 @@ function NoticePage() {
       setLoading(true)
       setErrorMessage('')
 
-      const { data, error } = await supabase
+      if (!userId) {
+        setNotices([])
+        setErrorMessage(
+          '로그인 사용자 정보를 찾을 수 없습니다.'
+        )
+        return
+      }
+
+      let noticeQuery = supabase
         .from('notice')
         .select('*')
+
+      // 관리자는 전체 공지를 조회하고 일반 사용자는 자신의 공지만 조회합니다.
+      if (!isAdmin) {
+        noticeQuery = noticeQuery.eq('user_id', userId)
+      }
+
+      const { data, error } = await noticeQuery
         .order('created_at', {
           ascending: false
         })
@@ -74,7 +88,7 @@ function NoticePage() {
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [isAdmin, userId])
 
   // notice 테이블 api 호출
   useEffect(() => {
@@ -473,7 +487,7 @@ function NoticePage() {
       {/* 등록 모달 */}
       {isAddModalOpen && (
         <NoticeAddModal
-          userId={storageInfo?.userId ?? ''}
+          userId={userId}
           onClose={() =>
             setIsAddModalOpen(false)
           }
@@ -497,7 +511,7 @@ function NoticePage() {
         <NoticeAddModal
           mode="edit"
           notice={editingNotice}
-          userId={storageInfo?.userId ?? ''}
+          userId={userId}
           onClose={() =>
             setEditingNotice(null)
           }

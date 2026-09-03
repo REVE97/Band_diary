@@ -291,9 +291,7 @@ function NoticeAddModal({
 
       // 수정 모드일 경우 notice 테이블 데이터 수정
       if (isEditMode) {
-        const {
-          error
-        } = await supabase
+        let updateQuery = supabase
           .from('notice')
           .update({
             type,
@@ -306,6 +304,17 @@ function NoticeAddModal({
             'id',
             notice.id
           )
+
+        if (sessionUserId !== 'admin') {
+          updateQuery = updateQuery.eq(
+            'user_id',
+            sessionUserId
+          )
+        }
+
+        const {
+          error
+        } = await updateQuery
 
         if (error) {
           throw error
@@ -330,7 +339,8 @@ function NoticeAddModal({
             title: trimmedTitle,
             content: trimmedContent,
             imageUrl,
-            important
+            important,
+            user_id: sessionUserId
           }
         ])
 

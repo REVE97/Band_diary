@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import supabase from '../api/supabase'
 import styles from './MusicsheetPage.module.css'
 
@@ -15,6 +15,7 @@ import guitarPdfIcon from '../assets/images/PdfIcon-guitar.svg'
 import keyboardPdfIcon from '../assets/images/PdfIcon-keyboard.svg'
 import vocalPdfIcon from '../assets/images/PdfIcon-vocal.svg'
 import searchIcon from '../assets/images/search.svg'
+import { getLoginUserId } from '../features/session'
 
 const initialMusicsheetForm = {
   session: 'Vocal',
@@ -71,10 +72,10 @@ function MusicsheetPage() {
     message: '',
   })
 
-  const storageInfo = JSON.parse(sessionStorage.getItem('bandiaryLoginUser'))
+  const userId = getLoginUserId()
 
   // 관리자 여부 확인
-  const isAdmin = storageInfo?.userId === 'admin'
+  const isAdmin = userId === 'admin'
 
   const sessionCounts = useMemo(() => {
     return musicsheetList.reduce(
@@ -123,10 +124,22 @@ function MusicsheetPage() {
     })
   }, [activeSessionFilter, musicsheetList, searchKeyword])
 
-  const getMusicsheetList = async () => {
-    const { data, error } = await supabase
+  const getMusicsheetList = useCallback(async () => {
+    if (!userId) {
+      setMusicsheetList([])
+      return
+    }
+
+    let musicsheetQuery = supabase
       .from('musicsheet')
       .select('*')
+
+    // 관리자는 전체 악보를 조회하고 일반 사용자는 자신의 악보만 조회합니다.
+    if (!isAdmin) {
+      musicsheetQuery = musicsheetQuery.eq('user_id', userId)
+    }
+
+    const { data, error } = await musicsheetQuery
       .order('created_at', { ascending: false })
 
     if (error) {
@@ -143,13 +156,13 @@ function MusicsheetPage() {
     }
 
     setMusicsheetList(data || [])
-  }
+  }, [isAdmin, userId])
 
   useEffect(() => {
     // Supabase의 초기 악보 목록을 페이지 진입 시 한 번만 조회합니다.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     getMusicsheetList()
-  }, [])
+  }, [getMusicsheetList])
 
   const handlePdfClick = (pdf) => {
     if (selectedPdf?.id === pdf.id) {
@@ -268,7 +281,7 @@ function MusicsheetPage() {
   const uploadMusicsheetFile = async (file) => {
     if (!file) return null
 
-    const safeUserId = String(storageInfo?.userId || 'guest').replace(
+    const safeUserId = String(userId || 'guest').replace(
       /[^a-zA-Z0-9_-]/g,
       '_'
     )
@@ -350,6 +363,11 @@ function MusicsheetPage() {
       return
     }
 
+    if (!userId) {
+      setErrorMessage('로그인 사용자 정보를 찾을 수 없습니다.')
+      return
+    }
+
     try {
       const pdfUrl = await uploadMusicsheetFile(musicsheetFile)
 
@@ -359,6 +377,7 @@ function MusicsheetPage() {
         description: musicsheetForm.description.trim(),
         fileName: musicsheetFile.name,
         pdfUrl,
+        user_id: userId,
       }
 
       const { error } = await supabase.from('musicsheet').insert([payload])

@@ -11,6 +11,7 @@ import restaurantPlaceIcon from '../assets/images/place-restaurant.svg'
 import searchIcon from '../assets/images/search.svg'
 import studioPlaceIcon from '../assets/images/place-studio.svg'
 import supabase from '../api/supabase'
+import { getLoginUserId } from '../features/session'
 import styles from './PlacePage.module.css'
 
 // 초기 입력 데이터 초기화
@@ -43,12 +44,10 @@ const getPlaceIcon = (placeType) => {
 function PlacePage() {
   const { showToast } = useToast()
   // 유저 데이터 호출
-  const storageInfo = JSON.parse(
-    sessionStorage.getItem('bandiaryLoginUser')
-  )
+  const userId = getLoginUserId()
 
   // 관리자 여부 확인
-  const isAdmin = storageInfo?.userId === 'admin'
+  const isAdmin = userId === 'admin'
 
   const [activeFilter, setActiveFilter] = useState('all')
   const [searchKeyword, setSearchKeyword] = useState('')
@@ -77,43 +76,79 @@ function PlacePage() {
   const [deleteTarget, setDeleteTarget] = useState(null)
 
   // Supabase studio 테이블 데이터 API 호출
-  const getStudio = async () => {
-    const { data, error } = await supabase
+  const getStudio = useCallback(async () => {
+    if (!userId) {
+      setStudioList([])
+      return
+    }
+
+    let studioQuery = supabase
       .from('studio')
       .select('*')
+
+    // 관리자는 전체 합주실을 조회하고 일반 사용자는 자신의 합주실만 조회합니다.
+    if (!isAdmin) {
+      studioQuery = studioQuery.eq('user_id', userId)
+    }
+
+    const { data, error } = await studioQuery
 
     if (error) {
       console.error(error)
     } else {
       setStudioList(data || [])
     }
-  }
+  }, [isAdmin, userId])
 
   // Supabase restaurant 테이블 데이터 API 호출
-  const getRestaurant = async () => {
-    const { data, error } = await supabase
+  const getRestaurant = useCallback(async () => {
+    if (!userId) {
+      setRestaurantList([])
+      return
+    }
+
+    let restaurantQuery = supabase
       .from('restaurant')
       .select('*')
+
+    // 관리자는 전체 맛집을 조회하고 일반 사용자는 자신의 맛집만 조회합니다.
+    if (!isAdmin) {
+      restaurantQuery = restaurantQuery.eq('user_id', userId)
+    }
+
+    const { data, error } = await restaurantQuery
 
     if (error) {
       console.error(error)
     } else {
       setRestaurantList(data || [])
     }
-  }
+  }, [isAdmin, userId])
 
   // Supabase parking 테이블 데이터 API 호출
-  const getParking = async () => {
-    const { data, error } = await supabase
+  const getParking = useCallback(async () => {
+    if (!userId) {
+      setParkingList([])
+      return
+    }
+
+    let parkingQuery = supabase
       .from('parking')
       .select('*')
+
+    // 관리자는 전체 주차장을 조회하고 일반 사용자는 자신의 주차장만 조회합니다.
+    if (!isAdmin) {
+      parkingQuery = parkingQuery.eq('user_id', userId)
+    }
+
+    const { data, error } = await parkingQuery
 
     if (error) {
       console.error(error)
     } else {
       setParkingList(data || [])
     }
-  }
+  }, [isAdmin, userId])
 
   useEffect(() => {
     // Supabase의 초기 장소 목록을 페이지 진입 시 한 번만 조회합니다.
@@ -121,7 +156,7 @@ function PlacePage() {
     getStudio()
     getRestaurant()
     getParking()
-  }, [])
+  }, [getParking, getRestaurant, getStudio])
 
   // 서로 다른 테이블의 데이터를 지도와 목록에서 사용할 공통 형태로 합칩니다.
   const allPlaces = useMemo(() => {
@@ -417,6 +452,11 @@ function PlacePage() {
       return
     }
 
+    if (!userId) {
+      setErrorMessage('로그인 사용자 정보를 찾을 수 없습니다.')
+      return
+    }
+
     const tags = placeForm.tags
       .split(',')
       .map((tag) => tag.trim())
@@ -431,6 +471,7 @@ function PlacePage() {
       longitude: Number(placeForm.longitude),
       tags,
       favorite: Boolean(placeForm.favorite),
+      user_id: userId,
     }
 
     const payload =
