@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" role="img" aria-label="filter icon">
+  <title>Filter Icon</title>
+  <path
+    d="M4 7H14M18 7H20M4 17H6M10 17H20M14 4V10M10 14V20"
+    stroke="#565560"
+    stroke-width="1.8"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>

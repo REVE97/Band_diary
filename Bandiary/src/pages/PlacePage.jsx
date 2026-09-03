@@ -6,6 +6,7 @@ import PlaceModal from '../components/place/PlaceModal'
 import PlaceResultModal from '../components/place/PlaceResultModal'
 import useToast from '../components/common/useToast'
 import addIcon from '../assets/images/add.svg'
+import filterIcon from '../assets/images/filter.svg'
 import parkingPlaceIcon from '../assets/images/place-parking.svg'
 import restaurantPlaceIcon from '../assets/images/place-restaurant.svg'
 import searchIcon from '../assets/images/search.svg'
@@ -29,10 +30,14 @@ const initialForm = {
 const getPlaceKey = (place) => `${place.type}-${place.id}`
 
 const placeLabels = {
+  all: '전체',
   studio: '합주실',
   restaurant: '주변 맛집',
   parking: '주차장',
 }
+
+const nearbyRestaurantRadius = 1000
+const nearbyRestaurantLimit = 5
 
 const getPlaceIcon = (placeType) => {
   if (placeType === 'restaurant') return restaurantPlaceIcon
@@ -51,8 +56,19 @@ function PlacePage() {
 
   const [activeFilter, setActiveFilter] = useState('all')
   const [searchKeyword, setSearchKeyword] = useState('')
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [selectedPlace, setSelectedPlace] = useState(null)
   const mapExplorerRef = useRef(null)
+  const searchInputRef = useRef(null)
+  const nearbyRequestIdRef = useRef(0)
+
+  const [isNearbyRestaurantsOpen, setIsNearbyRestaurantsOpen] =
+    useState(false)
+  const [nearbyRestaurantList, setNearbyRestaurantList] = useState([])
+  const [isLoadingNearbyRestaurants, setIsLoadingNearbyRestaurants] =
+    useState(false)
+  const [nearbyRestaurantError, setNearbyRestaurantError] = useState('')
 
   const [studioList, setStudioList] = useState([])
   const [restaurantList, setRestaurantList] = useState([])
@@ -158,6 +174,12 @@ function PlacePage() {
     getParking()
   }, [getParking, getRestaurant, getStudio])
 
+  useEffect(() => {
+    if (isSearchOpen) {
+      searchInputRef.current?.focus()
+    }
+  }, [isSearchOpen])
+
   // 서로 다른 테이블의 데이터를 지도와 목록에서 사용할 공통 형태로 합칩니다.
   const allPlaces = useMemo(() => {
     return [
@@ -221,32 +243,68 @@ function PlacePage() {
   const listTitle =
     activeFilter === 'all' ? '전체 장소' : placeLabels[activeFilter]
 
+  const resetNearbyRestaurants = useCallback(() => {
+    nearbyRequestIdRef.current += 1
+    setIsNearbyRestaurantsOpen(false)
+    setNearbyRestaurantList([])
+    setIsLoadingNearbyRestaurants(false)
+    setNearbyRestaurantError('')
+  }, [])
+
   const handleFilterChange = (filterValue) => {
     setActiveFilter(filterValue)
     setSelectedPlace(null)
+    setIsFilterOpen(false)
+    resetNearbyRestaurants()
   }
 
   const handleSearchKeywordChange = (event) => {
     setSearchKeyword(event.target.value)
     setSelectedPlace(null)
+    resetNearbyRestaurants()
   }
 
-  const handlePlaceClick = useCallback((place) => {
-    setSelectedPlace(place)
-  }, [])
+  const handleToggleSearch = () => {
+    setIsFilterOpen(false)
+    setIsSearchOpen((prev) => !prev)
+  }
+
+  const handleToggleFilter = () => {
+    setIsSearchOpen(false)
+    setIsFilterOpen((prev) => !prev)
+  }
+
+  const handleSearchKeyDown = (event) => {
+    if (event.key === 'Escape') {
+      setIsSearchOpen(false)
+    }
+  }
+
+  const handlePlaceClick = useCallback(
+    (place) => {
+      setSelectedPlace(place)
+      resetNearbyRestaurants()
+    },
+    [resetNearbyRestaurants]
+  )
 
   // 목록에서 장소를 선택하면 해당 마커를 표시하고 지도 영역으로 이동합니다.
-  const handlePlaceCardClick = useCallback((place) => {
-    setSelectedPlace(place)
-    mapExplorerRef.current?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    })
-  }, [])
+  const handlePlaceCardClick = useCallback(
+    (place) => {
+      setSelectedPlace(place)
+      resetNearbyRestaurants()
+      mapExplorerRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      })
+    },
+    [resetNearbyRestaurants]
+  )
 
   const handleClearSelectedPlace = useCallback(() => {
     setSelectedPlace(null)
-  }, [])
+    resetNearbyRestaurants()
+  }, [resetNearbyRestaurants])
 
   const handleOpenKakaoRoute = (event, place) => {
     event.stopPropagation()
@@ -256,6 +314,116 @@ function PlacePage() {
     )},${place.latitude},${place.longitude}`
 
     window.location.href = routeUrl
+  }
+
+  const searchNearbyRestaurants = (place) => {
+    return new Promise((resolve, reject) => {
+      const kakao = window.kakao
+
+      if (!kakao || !kakao.maps || !kakao.maps.services) {
+        reject(
+          new Error(
+            '카카오맵 services 라이브러리가 로드되지 않았습니다.'
+          )
+        )
+        return
+      }
+
+      const latitude = Number(place.latitude)
+      const longitude = Number(place.longitude)
+
+      if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+        reject(new Error('선택한 장소의 위치 정보가 올바르지 않습니다.'))
+        return
+      }
+
+      const places = new kakao.maps.services.Places()
+      const location = new kakao.maps.LatLng(latitude, longitude)
+
+      places.categorySearch(
+        'FD6',
+        (result, status) => {
+          if (status === kakao.maps.services.Status.OK) {
+            resolve(result.slice(0, nearbyRestaurantLimit))
+            return
+          }
+
+          if (status === kakao.maps.services.Status.ZERO_RESULT) {
+            resolve([])
+            return
+          }
+
+          reject(new Error('주변 맛집을 불러오지 못했습니다.'))
+        },
+        {
+          location,
+          radius: nearbyRestaurantRadius,
+          size: nearbyRestaurantLimit,
+          sort: kakao.maps.services.SortBy.DISTANCE,
+        }
+      )
+    })
+  }
+
+  const handleToggleNearbyRestaurants = async () => {
+    if (!selectedPlace) return
+
+    if (isNearbyRestaurantsOpen) {
+      nearbyRequestIdRef.current += 1
+      setIsNearbyRestaurantsOpen(false)
+      setIsLoadingNearbyRestaurants(false)
+      return
+    }
+
+    setIsNearbyRestaurantsOpen(true)
+    setNearbyRestaurantError('')
+
+    if (nearbyRestaurantList.length > 0) return
+
+    const requestId = nearbyRequestIdRef.current + 1
+    nearbyRequestIdRef.current = requestId
+    setIsLoadingNearbyRestaurants(true)
+
+    try {
+      const results = await searchNearbyRestaurants(selectedPlace)
+
+      if (nearbyRequestIdRef.current !== requestId) return
+
+      setNearbyRestaurantList(results)
+    } catch (error) {
+      if (nearbyRequestIdRef.current !== requestId) return
+
+      console.error(error)
+      setNearbyRestaurantList([])
+      setNearbyRestaurantError(error.message)
+    } finally {
+      if (nearbyRequestIdRef.current === requestId) {
+        setIsLoadingNearbyRestaurants(false)
+      }
+    }
+  }
+
+  const getNearbyRestaurantCategory = (restaurant) => {
+    const categories = restaurant.category_name?.split(' > ') || []
+
+    return categories.at(-1) || '음식점'
+  }
+
+  const getNearbyRestaurantDistance = (restaurant) => {
+    const distance = Number(restaurant.distance)
+
+    if (!Number.isFinite(distance)) return ''
+    if (distance < 1000) return `${distance.toLocaleString()}m`
+
+    return `${(distance / 1000).toFixed(1)}km`
+  }
+
+  const handleOpenNearbyRestaurant = (event, restaurant) => {
+    event.stopPropagation()
+
+    if (!restaurant.place_url) return
+
+    window.open(restaurant.place_url, '_blank', 'noopener,noreferrer')
   }
 
   const handleOpenModal = () => {
@@ -514,6 +682,7 @@ function PlacePage() {
     setActiveFilter(formType)
     setSearchKeyword('')
     setSelectedPlace(null)
+    resetNearbyRestaurants()
     handleCloseModal()
 
     showToast(`${placeLabels[formType]}이 등록되었습니다.`)
@@ -559,6 +728,7 @@ function PlacePage() {
       getPlaceKey(selectedPlace) === getPlaceKey(deleteTarget)
     ) {
       setSelectedPlace(null)
+      resetNearbyRestaurants()
     }
 
     showToast('장소가 삭제되었습니다.')
@@ -587,7 +757,9 @@ function PlacePage() {
         )}`}
         className={`${styles.placeCard} ${
           isSelected ? styles.active : ''
-        } ${isFavoriteSection ? styles.favoriteCard : ''}`}
+        } ${isFavoriteSection ? styles.favoriteCard : ''} ${
+          isAdmin ? styles.placeCardWithActions : ''
+        }`}
       >
         <button
           type="button"
@@ -627,17 +799,8 @@ function PlacePage() {
           </span>
         </button>
 
-        <div className={styles.cardActions}>
-          <button
-            type="button"
-            className={styles.routeButton}
-            onClick={(event) => handleOpenKakaoRoute(event, place)}
-            aria-label={`${place.name} 카카오맵 길찾기`}
-          >
-            길찾기
-          </button>
-
-          {isAdmin && (
+        {isAdmin && (
+          <div className={styles.cardActions}>
             <button
               type="button"
               className={styles.deleteButton}
@@ -646,8 +809,8 @@ function PlacePage() {
             >
               삭제
             </button>
-          )}
-        </div>
+          </div>
+        )}
       </article>
     )
   }
@@ -656,26 +819,104 @@ function PlacePage() {
     <div className={styles.page}>
       <section
         ref={mapExplorerRef}
-        className={styles.mapExplorer}
+        className={`${styles.mapExplorer} ${
+          isNearbyRestaurantsOpen
+            ? styles.mapExplorerRecommendationsOpen
+            : ''
+        }`}
         aria-label="장소 지도 탐색"
       >
         <div className={styles.mapControls}>
-          <label className={styles.searchField}>
-            <img src={searchIcon} alt="" aria-hidden="true" />
-            <input
-              type="search"
-              value={searchKeyword}
-              placeholder="합주실, 주변 맛집 또는 주차장 검색"
-              aria-label="장소명, 주소 또는 태그 검색"
-              onChange={handleSearchKeywordChange}
-            />
-          </label>
+          {isSearchOpen ? (
+            <div className={styles.searchField}>
+              <button
+                type="button"
+                className={styles.searchCollapseButton}
+                onClick={handleToggleSearch}
+                aria-label="장소 검색 닫기"
+              >
+                <img src={searchIcon} alt="" aria-hidden="true" />
+              </button>
 
-          <PlaceFilterTabs
-            activeFilter={activeFilter}
-            counts={placeCounts}
-            onChange={handleFilterChange}
-          />
+              <input
+                ref={searchInputRef}
+                type="search"
+                value={searchKeyword}
+                placeholder="장소명, 주소 또는 태그 검색"
+                aria-label="장소명, 주소 또는 태그 검색"
+                onChange={handleSearchKeywordChange}
+                onKeyDown={handleSearchKeyDown}
+              />
+
+              <button
+                type="button"
+                className={styles.searchCloseButton}
+                onClick={handleToggleSearch}
+              >
+                닫기
+              </button>
+            </div>
+          ) : (
+            <div
+              className={styles.compactMapControls}
+              aria-label="장소 검색 및 필터"
+            >
+              <button
+                type="button"
+                className={`${styles.mapControlIconButton} ${
+                  searchKeyword.trim()
+                    ? styles.mapControlIconButtonActive
+                    : ''
+                }`}
+                onClick={handleToggleSearch}
+                aria-label={
+                  searchKeyword.trim()
+                    ? `장소 검색 열기, 현재 검색어 ${searchKeyword}`
+                    : '장소 검색 열기'
+                }
+                aria-expanded={false}
+              >
+                <img src={searchIcon} alt="" aria-hidden="true" />
+              </button>
+
+              <button
+                type="button"
+                className={styles.activeFilterButton}
+                onClick={handleToggleFilter}
+                aria-expanded={isFilterOpen}
+                aria-controls="place-filter-popover"
+              >
+                <span>{placeLabels[activeFilter]}</span>
+              </button>
+
+              <button
+                type="button"
+                className={`${styles.mapControlIconButton} ${
+                  isFilterOpen ? styles.filterButtonActive : ''
+                }`}
+                onClick={handleToggleFilter}
+                aria-label="장소 유형 필터"
+                aria-expanded={isFilterOpen}
+                aria-controls="place-filter-popover"
+              >
+                <img
+                  src={filterIcon}
+                  className={styles.filterIcon}
+                  alt=""
+                  aria-hidden="true"
+                />
+              </button>
+
+              {isFilterOpen && (
+                <PlaceFilterTabs
+                  id="place-filter-popover"
+                  activeFilter={activeFilter}
+                  counts={placeCounts}
+                  onChange={handleFilterChange}
+                />
+              )}
+            </div>
+          )}
         </div>
 
         <div className={styles.mapBox}>
@@ -693,51 +934,160 @@ function PlacePage() {
             aria-label="선택한 장소"
             aria-live="polite"
           >
-            <button
-              type="button"
-              className={styles.selectedMapCloseButton}
-              onClick={handleClearSelectedPlace}
-              aria-label="선택한 장소 닫기"
-            >
-              ×
-            </button>
-
-            <div className={styles.selectedMapSummary}>
-              <span
-                className={`${styles.selectedMapIcon} ${
-                  selectedPlace.type === 'restaurant'
-                    ? styles.restaurantIcon
-                    : selectedPlace.type === 'parking'
-                      ? styles.parkingIcon
-                      : ''
-                }`}
-                aria-hidden="true"
-              >
-                <img
-                  src={getPlaceIcon(selectedPlace.type)}
-                  alt=""
+            <div className={styles.selectedMapTopRow}>
+              <div className={styles.selectedMapSummary}>
+                <span
+                  className={`${styles.selectedMapIcon} ${
+                    selectedPlace.type === 'restaurant'
+                      ? styles.restaurantIcon
+                      : selectedPlace.type === 'parking'
+                        ? styles.parkingIcon
+                        : ''
+                  }`}
                   aria-hidden="true"
-                />
-              </span>
+                >
+                  <img
+                    src={getPlaceIcon(selectedPlace.type)}
+                    alt=""
+                    aria-hidden="true"
+                  />
+                </span>
 
-              <div className={styles.selectedMapInfo}>
-                <strong>{selectedPlace.name}</strong>
-                <span>{getPlacePriceText(selectedPlace)}</span>
-                <small>{selectedPlace.address}</small>
+                <div className={styles.selectedMapInfo}>
+                  <strong>{selectedPlace.name}</strong>
+                  <span>{getPlacePriceText(selectedPlace)}</span>
+                  <small>{selectedPlace.address}</small>
+                </div>
               </div>
-            </div>
 
-            <div className={styles.selectedMapActions}>
+              <div className={styles.selectedMapActions}>
+                <button
+                  type="button"
+                  className={styles.selectedMapRouteButton}
+                  onClick={(event) =>
+                    handleOpenKakaoRoute(event, selectedPlace)
+                  }
+                >
+                  길찾기
+                </button>
+
+                <button
+                  type="button"
+                  className={styles.selectedMapRecommendButton}
+                  onClick={handleToggleNearbyRestaurants}
+                  aria-expanded={isNearbyRestaurantsOpen}
+                  aria-controls="nearby-restaurant-recommendations"
+                >
+                  {isNearbyRestaurantsOpen ? '추천 닫기' : '주변 맛집'}
+                </button>
+              </div>
+
               <button
                 type="button"
-                className={styles.selectedMapRouteButton}
-                onClick={(event) =>
-                  handleOpenKakaoRoute(event, selectedPlace)
-                }
+                className={styles.selectedMapCloseButton}
+                onClick={handleClearSelectedPlace}
+                aria-label="선택한 장소 닫기"
               >
-                길찾기
+                ×
               </button>
             </div>
+
+            {isNearbyRestaurantsOpen && (
+              <section
+                id="nearby-restaurant-recommendations"
+                className={styles.nearbyRecommendations}
+                aria-label="주변 맛집 추천"
+                aria-live="polite"
+              >
+                <div className={styles.nearbyRecommendationsHeader}>
+                  <strong>주변 맛집</strong>
+                  <span>반경 1km · 거리순</span>
+                </div>
+
+                {isLoadingNearbyRestaurants && (
+                  <div className={styles.nearbyRecommendationStatus}>
+                    주변 맛집을 찾고 있습니다.
+                  </div>
+                )}
+
+                {!isLoadingNearbyRestaurants && nearbyRestaurantError && (
+                  <div
+                    className={`${styles.nearbyRecommendationStatus} ${styles.nearbyRecommendationError}`}
+                  >
+                    {nearbyRestaurantError}
+                  </div>
+                )}
+
+                {!isLoadingNearbyRestaurants &&
+                  !nearbyRestaurantError &&
+                  nearbyRestaurantList.length === 0 && (
+                    <div className={styles.nearbyRecommendationStatus}>
+                      반경 1km 안에 추천할 맛집이 없습니다.
+                    </div>
+                  )}
+
+                {nearbyRestaurantList.length > 0 && (
+                  <div className={styles.nearbyRecommendationList}>
+                    {nearbyRestaurantList.map((restaurant, index) => (
+                      <article
+                        key={restaurant.id}
+                        className={styles.nearbyRecommendationCard}
+                      >
+                        <div className={styles.nearbyRecommendationTitleRow}>
+                          <span
+                            className={styles.nearbyRecommendationNumber}
+                            aria-hidden="true"
+                          >
+                            {index + 1}
+                          </span>
+                          <strong>{restaurant.place_name}</strong>
+                        </div>
+
+                        <div className={styles.nearbyRecommendationMeta}>
+                          <span>
+                            {getNearbyRestaurantCategory(restaurant)}
+                          </span>
+                          {getNearbyRestaurantDistance(restaurant) && (
+                            <span>
+                              {getNearbyRestaurantDistance(restaurant)}
+                            </span>
+                          )}
+                        </div>
+
+                        <address>{
+                          restaurant.road_address_name ||
+                          restaurant.address_name
+                        }</address>
+
+                        <div className={styles.nearbyRecommendationActions}>
+                          <button
+                            type="button"
+                            onClick={(event) =>
+                              handleOpenNearbyRestaurant(event, restaurant)
+                            }
+                            disabled={!restaurant.place_url}
+                          >
+                            상세보기
+                          </button>
+                          <button
+                            type="button"
+                            onClick={(event) =>
+                              handleOpenKakaoRoute(event, {
+                                name: restaurant.place_name,
+                                latitude: restaurant.y,
+                                longitude: restaurant.x,
+                              })
+                            }
+                          >
+                            길찾기
+                          </button>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                )}
+              </section>
+            )}
           </aside>
         )}
       </section>
