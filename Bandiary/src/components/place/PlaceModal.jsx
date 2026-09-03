@@ -24,7 +24,6 @@ function PlaceModal({
   const isStudio = formType === 'studio'
   const isRestaurant = formType === 'restaurant'
   const isParking = formType === 'parking'
-  const usesHourlyPrice = isStudio || isParking
 
   const hasSelectedPlace =
     placeForm.name.trim() &&
@@ -32,24 +31,9 @@ function PlaceModal({
     placeForm.latitude &&
     placeForm.longitude
 
-  const isBasicInfoFilled = isRestaurant
-    ? hasSelectedPlace && placeForm.category.trim()
-    : hasSelectedPlace
-
-  const isPriceFilled = placeForm.price.trim()
-  const isTagsFilled = placeForm.tags.trim()
-
   const isCurrentStepValid = () => {
     if (currentStep === 1) {
-      return Boolean(isBasicInfoFilled)
-    }
-
-    if (currentStep === 2) {
-      return Boolean(isPriceFilled)
-    }
-
-    if (currentStep === 3) {
-      return Boolean(isTagsFilled)
+      return Boolean(hasSelectedPlace)
     }
 
     return true
@@ -59,28 +43,6 @@ function PlaceModal({
     if (currentStep === 1) {
       if (!hasSelectedPlace) {
         return '장소명을 검색한 뒤 검색 결과에서 장소를 선택해주세요.'
-      }
-
-      if (isRestaurant && !placeForm.category.trim()) {
-        return '카테고리를 입력해주세요.'
-      }
-    }
-
-    if (currentStep === 2) {
-      if (!placeForm.price.trim()) {
-        return usesHourlyPrice
-          ? '시간당 가격을 입력해주세요.'
-          : '평균 가격을 입력해주세요.'
-      }
-
-      if (Number.isNaN(Number(placeForm.price))) {
-        return '가격은 숫자로 입력해주세요.'
-      }
-    }
-
-    if (currentStep === 3) {
-      if (!placeForm.tags.trim()) {
-        return '태그를 입력해주세요. (,로 구분) ex) 주차 가능,직원 상주'
       }
     }
 
@@ -106,7 +68,7 @@ function PlaceModal({
     setStepErrorMessage('')
 
     setCurrentStep((prev) => {
-      if (prev >= 4) return prev
+      if (prev >= 2) return prev
       return prev + 1
     })
   }
@@ -154,8 +116,6 @@ function PlaceModal({
 
   const getStepTitle = () => {
     if (currentStep === 1) return '장소를 검색하고 선택해주세요.'
-    if (currentStep === 2) return '가격 정보를 입력해주세요.'
-    if (currentStep === 3) return '태그를 입력해주세요.'
     return '입력한 정보를 확인해주세요.'
   }
 
@@ -228,23 +188,11 @@ function PlaceModal({
             className={getStepClassName(2)}
             aria-current={currentStep === 2 ? 'step' : undefined}
           >
-            2
-          </span>
-          <span
-            className={getStepClassName(3)}
-            aria-current={currentStep === 3 ? 'step' : undefined}
-          >
-            3
-          </span>
-          <span
-            className={getStepClassName(4)}
-            aria-current={currentStep === 4 ? 'step' : undefined}
-          >
             완료
           </span>
         </div>
 
-        <div className={styles.loginForm + " " + styles.placeForm}>
+        <div className={`${styles.loginForm} ${styles.placeForm}`}>
           {currentStep === 1 && (
             <>
               <div className={styles.placeSearchRow}>
@@ -302,39 +250,6 @@ function PlaceModal({
                 </div>
               )}
 
-              {isRestaurant && (
-                <input
-                  type="text"
-                  name="category"
-                  value={placeForm.category}
-                  placeholder="카테고리 예: 한식, 양식, 카페"
-                  onChange={handleChangeInput}
-                />
-              )}
-            </>
-          )}
-
-          {currentStep === 2 && (
-            <input
-              type="number"
-              inputMode="numeric"
-              name="price"
-              value={placeForm.price}
-              placeholder={usesHourlyPrice ? '시간당 가격' : '평균 가격'}
-              onChange={handleChangeInput}
-            />
-          )}
-
-          {currentStep === 3 && (
-            <>
-              <input
-                type="text"
-                name="tags"
-                value={placeForm.tags}
-                placeholder="태그 예: 주차 가능, 넓은 공간"
-                onChange={handleChangeInput}
-              />
-
               <label className={styles.favoriteToggle}>
                 <input
                   type="checkbox"
@@ -351,21 +266,11 @@ function PlaceModal({
             </>
           )}
 
-          {currentStep === 4 && (
+          {currentStep === 2 && (
             <div className={styles.placeSubmitSummary}>
               <strong>{placeForm.name}</strong>
 
               <span>{placeForm.address}</span>
-
-              <span>
-                {usesHourlyPrice
-                  ? `시간당 ₩ ${Number(placeForm.price).toLocaleString()}`
-                  : `${placeForm.category} · 평균 ₩ ${Number(
-                      placeForm.price
-                    ).toLocaleString()}`}
-              </span>
-
-              <span>태그: {placeForm.tags}</span>
 
               {placeForm.favorite && (
                 <span>자주 이용하는 장소로 표시</span>
@@ -389,7 +294,7 @@ function PlaceModal({
             </button>
           )}
 
-          {currentStep < 4 && (
+          {currentStep < 2 && (
             <button
               type="button"
               className={styles.primaryButton}
@@ -400,7 +305,7 @@ function PlaceModal({
             </button>
           )}
 
-          {currentStep === 4 && (
+          {currentStep === 2 && (
             <button
               type="button"
               className={styles.primaryButton}

@@ -258,7 +258,6 @@
 }
 
 .selectedMapInfo strong,
-.selectedMapInfo span,
 .selectedMapInfo small {
   max-width: 100%;
   overflow: hidden;
@@ -270,13 +269,6 @@
   color: var(--color-text-primary);
   font-size: 14px;
   font-weight: 900;
-}
-
-.selectedMapInfo span {
-  margin-top: 4px;
-  color: var(--color-text-primary);
-  font-size: 11px;
-  font-weight: 800;
 }
 
 .selectedMapInfo small {
@@ -626,18 +618,6 @@
   white-space: nowrap;
 }
 
-.price {
-  max-width: 100%;
-  margin-top: 5px;
-  overflow: hidden;
-  color: var(--color-text-primary);
-  font-size: 12px;
-  font-weight: 800;
-  line-height: 1.35;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .address {
   max-width: 100%;
   margin-top: 4px;
@@ -648,24 +628,6 @@
   line-height: 1.35;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.tagRow {
-  max-width: 100%;
-  margin-top: 7px;
-  display: flex;
-  gap: 5px;
-  overflow: hidden;
-}
-
-.tagRow > span {
-  flex: 0 0 auto;
-  padding: 3px 6px;
-  border-radius: 999px;
-  background: var(--color-primary-soft);
-  color: var(--color-primary);
-  font-size: 9px;
-  font-weight: 800;
 }
 
 .cardActions {

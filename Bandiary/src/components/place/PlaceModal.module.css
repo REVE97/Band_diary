@@ -132,7 +132,7 @@
 .placeStepRow {
   position: relative;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   align-items: center;
   margin: 28px 4px 26px;
 }
@@ -140,8 +140,8 @@
 .placeStepRow::before {
   position: absolute;
   top: 50%;
-  left: 12.5%;
-  right: 12.5%;
+  left: 25%;
+  right: 25%;
   height: 1px;
   content: '';
   background: var(--color-divider);

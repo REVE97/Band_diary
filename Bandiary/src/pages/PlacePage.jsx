@@ -18,12 +18,9 @@ import styles from './PlacePage.module.css'
 // 초기 입력 데이터 초기화
 const initialForm = {
   name: '',
-  category: '',
   address: '',
-  price: '',
   latitude: '',
   longitude: '',
-  tags: '',
   favorite: false,
 }
 
@@ -215,16 +212,7 @@ function PlacePage() {
       const matchesType =
         activeFilter === 'all' || place.type === activeFilter
 
-      const tagText = Array.isArray(place.tags)
-        ? place.tags.join(' ')
-        : place.tags || ''
-
-      const searchableText = [
-        place.name,
-        place.address,
-        place.category,
-        tagText,
-      ]
+      const searchableText = [place.name, place.address]
         .filter(Boolean)
         .join(' ')
         .toLocaleLowerCase()
@@ -563,15 +551,7 @@ function PlacePage() {
 
   // 입력 데이터 타입 검증
   const validateForm = () => {
-    const {
-      name,
-      category,
-      address,
-      price,
-      latitude,
-      longitude,
-      tags,
-    } = placeForm
+    const { name, address, latitude, longitude } = placeForm
 
     if (!name.trim()) {
       return '장소를 검색하고 선택해주세요.'
@@ -583,22 +563,6 @@ function PlacePage() {
 
     if (!latitude || !longitude) {
       return '장소 검색 결과를 선택해야 지도 위치가 등록됩니다.'
-    }
-
-    if (formType === 'restaurant' && !category.trim()) {
-      return '음식점 카테고리를 입력해주세요.'
-    }
-
-    if (!price.trim()) {
-      return '가격을 입력해주세요.'
-    }
-
-    if (!tags.trim()) {
-      return '태그를 입력해주세요.'
-    }
-
-    if (Number.isNaN(Number(price))) {
-      return '가격은 숫자로 입력해주세요.'
     }
 
     if (
@@ -625,33 +589,15 @@ function PlacePage() {
       return
     }
 
-    const tags = placeForm.tags
-      .split(',')
-      .map((tag) => tag.trim())
-      .filter(Boolean)
-
-    const commonPayload = {
+    const payload = {
       type: formType,
       name: placeForm.name.trim(),
       address: placeForm.address.trim(),
-      price: Number(placeForm.price),
       latitude: Number(placeForm.latitude),
       longitude: Number(placeForm.longitude),
-      tags,
       favorite: Boolean(placeForm.favorite),
       user_id: userId,
     }
-
-    const payload =
-      formType === 'restaurant'
-        ? {
-            ...commonPayload,
-            category: placeForm.category.trim(),
-          }
-        : {
-            ...commonPayload,
-            timeUnit: '1시간',
-          }
 
     const tableName = formType
 
@@ -736,16 +682,6 @@ function PlacePage() {
     setDeleteTarget(null)
   }
 
-  const getPlacePriceText = (place) => {
-    const price = Number(place.price || 0).toLocaleString()
-
-    if (place.type !== 'restaurant') {
-      return `₩ ${price} / ${place.timeUnit || '1시간'}`
-    }
-
-    return `${place.category || '맛집'} · 평균 ₩ ${price}`
-  }
-
   const renderPlaceCard = (place, isFavoriteSection = false) => {
     const isSelected =
       selectedPlace && getPlaceKey(selectedPlace) === getPlaceKey(place)
@@ -786,16 +722,7 @@ function PlacePage() {
 
           <span className={styles.placeInfo}>
             <strong>{place.name}</strong>
-            <span className={styles.price}>{getPlacePriceText(place)}</span>
             <span className={styles.address}>{place.address}</span>
-
-            {Array.isArray(place.tags) && place.tags.length > 0 && (
-              <span className={styles.tagRow}>
-                {place.tags.map((tag) => (
-                  <span key={tag}>{tag}</span>
-                ))}
-              </span>
-            )}
           </span>
         </button>
 
@@ -842,8 +769,8 @@ function PlacePage() {
                 ref={searchInputRef}
                 type="search"
                 value={searchKeyword}
-                placeholder="장소명, 주소 또는 태그 검색"
-                aria-label="장소명, 주소 또는 태그 검색"
+                placeholder="장소명 또는 주소 검색"
+                aria-label="장소명 또는 주소 검색"
                 onChange={handleSearchKeywordChange}
                 onKeyDown={handleSearchKeyDown}
               />
@@ -955,7 +882,6 @@ function PlacePage() {
 
                 <div className={styles.selectedMapInfo}>
                   <strong>{selectedPlace.name}</strong>
-                  <span>{getPlacePriceText(selectedPlace)}</span>
                   <small>{selectedPlace.address}</small>
                 </div>
               </div>
