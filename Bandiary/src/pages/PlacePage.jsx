@@ -1033,31 +1033,33 @@ function PlacePage() {
                         key={restaurant.id}
                         className={styles.nearbyRecommendationCard}
                       >
-                        <div className={styles.nearbyRecommendationTitleRow}>
-                          <span
-                            className={styles.nearbyRecommendationNumber}
-                            aria-hidden="true"
-                          >
-                            {index + 1}
-                          </span>
-                          <strong>{restaurant.place_name}</strong>
-                        </div>
-
-                        <div className={styles.nearbyRecommendationMeta}>
-                          <span>
-                            {getNearbyRestaurantCategory(restaurant)}
-                          </span>
-                          {getNearbyRestaurantDistance(restaurant) && (
-                            <span>
-                              {getNearbyRestaurantDistance(restaurant)}
+                        <div className={styles.nearbyRecommendationInfo}>
+                          <div className={styles.nearbyRecommendationTitleRow}>
+                            <span
+                              className={styles.nearbyRecommendationNumber}
+                              aria-hidden="true"
+                            >
+                              {index + 1}
                             </span>
-                          )}
-                        </div>
+                            <strong>{restaurant.place_name}</strong>
+                          </div>
 
-                        <address>{
-                          restaurant.road_address_name ||
-                          restaurant.address_name
-                        }</address>
+                          <div className={styles.nearbyRecommendationMeta}>
+                            <span>
+                              {getNearbyRestaurantCategory(restaurant)}
+                            </span>
+                            {getNearbyRestaurantDistance(restaurant) && (
+                              <span>
+                                {getNearbyRestaurantDistance(restaurant)}
+                              </span>
+                            )}
+                          </div>
+
+                          <address>
+                            {restaurant.road_address_name ||
+                              restaurant.address_name}
+                          </address>
+                        </div>
 
                         <div className={styles.nearbyRecommendationActions}>
                           <button
