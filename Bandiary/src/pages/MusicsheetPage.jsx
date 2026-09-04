@@ -536,9 +536,6 @@ function MusicsheetPage() {
                   <span className={styles.sessionBadge}>{pdf.session}</span>
                   <strong>{pdf.title}</strong>
                   <span className={styles.description}>{pdf.description}</span>
-                  <span className={styles.fileMeta}>
-                    {pdf.fileName || 'PDF 파일'}
-                  </span>
                 </span>
               </button>
 
