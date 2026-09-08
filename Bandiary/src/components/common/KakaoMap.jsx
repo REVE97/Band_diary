@@ -1,5 +1,6 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
+import { loadKakaoMaps } from '../../api/kakaoMaps'
 import parkingMarkerIcon from '../../assets/images/place-parking-marker.svg'
 import restaurantMarkerIcon from '../../assets/images/place-restaurant-marker.svg'
 import studioMarkerIcon from '../../assets/images/place-studio-marker.svg'
@@ -25,6 +26,8 @@ function KakaoMap({
   onSelectPlace,
   onClearSelection,
 }) {
+  const [kakao, setKakao] = useState(null)
+  const [loadError, setLoadError] = useState('')
   const mapContainerRef = useRef(null)
   const mapInstanceRef = useRef(null)
   const markersRef = useRef([])
@@ -34,14 +37,25 @@ function KakaoMap({
     clearSelectionRef.current = onClearSelection
   }, [onClearSelection])
 
-  // 페이지 진입 시 서울권 전체가 보이는 지도를 한 번만 생성합니다.
   useEffect(() => {
-    const kakao = window.kakao
+    let cancelled = false
 
-    if (!kakao || !kakao.maps) {
-      console.error('카카오맵 SDK가 로드되지 않았습니다.')
-      return undefined
+    loadKakaoMaps()
+      .then((sdk) => {
+        if (!cancelled) setKakao(sdk)
+      })
+      .catch((error) => {
+        if (!cancelled) setLoadError(error.message)
+      })
+
+    return () => {
+      cancelled = true
     }
+  }, [])
+
+  // SDK 로딩이 끝나면 서울권 전체가 보이는 지도를 생성합니다.
+  useEffect(() => {
+    if (!kakao) return
 
     const centerPosition = new kakao.maps.LatLng(
       seoulCenter.latitude,
@@ -69,11 +83,10 @@ function KakaoMap({
       markersRef.current = []
       mapInstanceRef.current = null
     }
-  }, [])
+  }, [kakao])
 
   // 현재 검색 및 유형 필터에 포함된 모든 장소를 마커로 출력합니다.
   useEffect(() => {
-    const kakao = window.kakao
     const map = mapInstanceRef.current
 
     if (!kakao || !kakao.maps || !map) return
@@ -120,11 +133,10 @@ function KakaoMap({
           marker,
         }
       })
-  }, [onSelectPlace, places])
+  }, [kakao, onSelectPlace, places])
 
   // 카드 또는 마커를 선택하면 해당 좌표를 확대해 보여줍니다.
   useEffect(() => {
-    const kakao = window.kakao
     const map = mapInstanceRef.current
 
     if (!kakao || !kakao.maps || !map) return
@@ -147,11 +159,12 @@ function KakaoMap({
     markersRef.current.forEach(({ key, marker }) => {
       marker.setZIndex(key === selectedKey ? 10 : 1)
     })
-  }, [selectedPlace])
+  }, [kakao, onSelectPlace, places, selectedPlace])
 
   return (
     <div className={styles.wrap}>
       <div ref={mapContainerRef} className={styles.map} />
+      {loadError && <p className={styles.error} role="alert">{loadError}</p>}
     </div>
   )
 }

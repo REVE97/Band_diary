@@ -12,6 +12,7 @@ import restaurantPlaceIcon from '../assets/images/place-restaurant.svg'
 import searchIcon from '../assets/images/search.svg'
 import studioPlaceIcon from '../assets/images/place-studio.svg'
 import supabase from '../api/supabase'
+import { loadKakaoMaps } from '../api/kakaoMaps'
 import { getLoginUserId } from '../features/session'
 import styles from './PlacePage.module.css'
 import floatingAddButtonStyles from '../components/common/FloatingAddButton.module.css'
@@ -305,19 +306,10 @@ function PlacePage() {
     window.location.href = routeUrl
   }
 
-  const searchNearbyRestaurants = (place) => {
+  const searchNearbyRestaurants = async (place) => {
+    const kakao = await loadKakaoMaps()
+
     return new Promise((resolve, reject) => {
-      const kakao = window.kakao
-
-      if (!kakao || !kakao.maps || !kakao.maps.services) {
-        reject(
-          new Error(
-            '카카오맵 services 라이브러리가 로드되지 않았습니다.'
-          )
-        )
-        return
-      }
-
       const latitude = Number(place.latitude)
       const longitude = Number(place.longitude)
 
@@ -458,24 +450,10 @@ function PlacePage() {
   }
 
   // 카카오 장소명 검색
-  const searchPlacesByKeyword = (keyword) => {
+  const searchPlacesByKeyword = async (keyword) => {
+    const kakao = await loadKakaoMaps()
+
     return new Promise((resolve, reject) => {
-      const kakao = window.kakao
-
-      if (
-        !kakao ||
-        !kakao.maps ||
-        !kakao.maps.services
-      ) {
-        reject(
-          new Error(
-            '카카오맵 services 라이브러리가 로드되지 않았습니다.'
-          )
-        )
-
-        return
-      }
-
       const places = new kakao.maps.services.Places()
 
       places.keywordSearch(keyword, (result, status) => {
