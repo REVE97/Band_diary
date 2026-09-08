@@ -366,6 +366,7 @@
 }
 
 .contentAddButton {
+  composes: button from '../components/common/FloatingAddButton.module.css';
   position: fixed;
   right: max(18px, calc((100vw - 430px) / 2 + 22px));
   bottom: calc(112px + env(safe-area-inset-bottom));
@@ -376,16 +377,6 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: var(--color-primary);
-  box-shadow: var(--shadow-floating);
-}
-
-.contentAddButton {
-  opacity: 0.5;
-}
-
-.contentAddButton:active {
-  transform: scale(0.96);
 }
 
 .contentAddButton img {

@@ -248,6 +248,7 @@
 }
 
 .noticeAddButton {
+  composes: button from '../components/common/FloatingAddButton.module.css';
   position: fixed;
   right:
     max(
@@ -265,13 +266,6 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: var(--color-primary);
-  box-shadow: var(--shadow-floating);
-  opacity: 0.5;
-}
-
-.noticeAddButton:active {
-  transform: scale(0.96);
 }
 
 .noticeAddButton img {
