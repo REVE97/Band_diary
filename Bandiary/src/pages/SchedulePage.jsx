@@ -12,6 +12,7 @@ import useToast from '../components/common/useToast'
 import addIcon from '../assets/images/add.svg'
 import { getLoginUserId } from '../features/session'
 import styles from './SchedulePage.module.css'
+import floatingAddButtonStyles from '../components/common/FloatingAddButton.module.css'
 
 const getScheduleTypeColor = (type) => {
   if (type === '합주') return '#4dabf7'
@@ -413,7 +414,7 @@ function SchedulePage() {
     <div className={styles.page}>
       <button
         type="button"
-        className={styles.contentAddButton}
+        className={`${styles.contentAddButton} ${floatingAddButtonStyles.button}`}
         data-floating-add-button
         onClick={() => handleOpenScheduleModal()}
         aria-label="일정 추가"

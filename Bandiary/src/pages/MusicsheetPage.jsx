@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import supabase from '../api/supabase'
 import styles from './MusicsheetPage.module.css'
+import floatingAddButtonStyles from '../components/common/FloatingAddButton.module.css'
 
 import PdfPreview from '../components/common/PdfPreview'
 import MusicsheetAddModal from '../components/musicsheet/MusicsheetAddModal'
@@ -500,7 +501,7 @@ function MusicsheetPage() {
 
       <button
         type="button"
-        className={styles.contentAddButton}
+        className={`${styles.contentAddButton} ${floatingAddButtonStyles.button}`}
         data-floating-add-button
         onClick={handleOpenMusicsheetModal}
         aria-label="PDF 악보 추가"

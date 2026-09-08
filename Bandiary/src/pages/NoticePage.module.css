@@ -248,7 +248,6 @@
 }
 
 .noticeAddButton {
-  composes: button from '../components/common/FloatingAddButton.module.css';
   position: fixed;
   right:
     max(

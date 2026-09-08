@@ -23,6 +23,7 @@ import usersIcon from '../assets/images/users.svg'
 import { extractYoutubeVideoId } from '../features/common'
 import { getLoginUserId } from '../features/session'
 import styles from './HomePage.module.css'
+import floatingAddButtonStyles from '../components/common/FloatingAddButton.module.css'
 
 const initialProfileForm = {
   description: '',
@@ -1672,7 +1673,7 @@ function HomePage() {
 
       <button
         type="button"
-        className={styles.contentAddButton}
+        className={`${styles.contentAddButton} ${floatingAddButtonStyles.button}`}
         data-floating-add-button
         onClick={handleOpenContentModal}
         aria-label="사진, 비디오, 오디오 또는 유튜브 추가"

@@ -13,6 +13,7 @@ import searchIcon from '../assets/images/search.svg'
 import supabase from '../api/supabase'
 import { getLoginUserId } from '../features/session'
 import styles from './NoticePage.module.css'
+import floatingAddButtonStyles from '../components/common/FloatingAddButton.module.css'
 
 function NoticePage() {
   // 유저 데이터 호출
@@ -474,7 +475,7 @@ function NoticePage() {
       {/* 등록 버튼 */}
       <button
         type="button"
-        className={styles.noticeAddButton}
+        className={`${styles.noticeAddButton} ${floatingAddButtonStyles.button}`}
         data-floating-add-button
         aria-label="공지 또는 메모 등록"
         onClick={() =>

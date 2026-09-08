@@ -14,6 +14,7 @@ import studioPlaceIcon from '../assets/images/place-studio.svg'
 import supabase from '../api/supabase'
 import { getLoginUserId } from '../features/session'
 import styles from './PlacePage.module.css'
+import floatingAddButtonStyles from '../components/common/FloatingAddButton.module.css'
 
 // 초기 입력 데이터 초기화
 const initialForm = {
@@ -1058,7 +1059,7 @@ function PlacePage() {
 
       <button
         type="button"
-        className={styles.placeAddButton}
+        className={`${styles.placeAddButton} ${floatingAddButtonStyles.button}`}
         data-floating-add-button
         onClick={handleOpenModal}
         aria-label="장소 추가"

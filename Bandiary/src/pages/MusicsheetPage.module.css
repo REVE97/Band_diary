@@ -289,7 +289,6 @@
 }
 
 .contentAddButton {
-  composes: button from '../components/common/FloatingAddButton.module.css';
   position: fixed;
   right: max(18px, calc((100vw - 430px) / 2 + 22px));
   bottom: calc(112px + env(safe-area-inset-bottom));
