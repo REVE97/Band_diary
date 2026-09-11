@@ -167,11 +167,31 @@
 .audioPlayButton {
   width: 52px;
   height: 52px;
-  padding-left: 2px;
+  padding: 0;
   background: var(--color-primary);
   color: var(--color-on-accent);
   font-size: 18px;
   box-shadow: var(--shadow-button);
+}
+
+.audioControlIcon {
+  display: block;
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  background-color: currentColor;
+  mask: var(--audio-control-icon) center / contain no-repeat;
+  -webkit-mask: var(--audio-control-icon) center / contain no-repeat;
+}
+
+.audioPlayButton .audioControlIcon {
+  width: 26px;
+  height: 26px;
+}
+
+.audioQueueControl .audioControlIcon {
+  width: 16px;
+  height: 16px;
 }
 
 .audioTransportButton:disabled {

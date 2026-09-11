@@ -9,6 +9,10 @@ import supabase from '../../api/supabase'
 
 import commentSendIcon from '../../assets/images/comment-send.svg'
 import songIcon from '../../assets/images/song.svg'
+import audioPlayIcon from '../../assets/images/audio-play.svg'
+import audioPauseIcon from '../../assets/images/audio-pause.svg'
+import audioPreviousIcon from '../../assets/images/audio-previous.svg'
+import audioNextIcon from '../../assets/images/audio-next.svg'
 import styles from './AudioDetailModal.module.css'
 
 const fetchAudioFeedbacks = (audioId) =>
@@ -421,7 +425,11 @@ function AudioDetailModal({ content, onClose }) {
                     onClick={handlePreviousAudio}
                     aria-label="이전 오디오 또는 처음으로 이동"
                   >
-                    ◀
+                    <span
+                      className={styles.audioControlIcon}
+                      style={{ '--audio-control-icon': `url("${audioPreviousIcon}")` }}
+                      aria-hidden="true"
+                    />
                   </button>
 
                   <button
@@ -432,7 +440,11 @@ function AudioDetailModal({ content, onClose }) {
                       isAudioPlaying ? '오디오 일시정지' : '오디오 재생'
                     }
                   >
-                    {isAudioPlaying ? 'Ⅱ' : '▶'}
+                    <span
+                      className={styles.audioControlIcon}
+                      style={{ '--audio-control-icon': `url("${isAudioPlaying ? audioPauseIcon : audioPlayIcon}")` }}
+                      aria-hidden="true"
+                    />
                   </button>
 
                   <button
@@ -442,7 +454,11 @@ function AudioDetailModal({ content, onClose }) {
                     disabled={activeAudioIndex >= audioFiles.length - 1}
                     aria-label="다음 오디오"
                   >
-                    ▶
+                    <span
+                      className={styles.audioControlIcon}
+                      style={{ '--audio-control-icon': `url("${audioNextIcon}")` }}
+                      aria-hidden="true"
+                    />
                   </button>
                 </div>
 
@@ -627,9 +643,11 @@ function AudioDetailModal({ content, onClose }) {
                     aria-label={`${audioFile.title} 선택`}
                   >
                     <span className={styles.audioQueueControl}>
-                      {index === activeAudioIndex && isAudioPlaying
-                        ? 'Ⅱ'
-                        : '▶'}
+                      <span
+                        className={styles.audioControlIcon}
+                        style={{ '--audio-control-icon': `url("${index === activeAudioIndex && isAudioPlaying ? audioPauseIcon : audioPlayIcon}")` }}
+                        aria-hidden="true"
+                      />
                     </span>
 
                     <span className={styles.audioListTitle}>
