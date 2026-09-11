@@ -27,10 +27,11 @@ const musicsheetFilterOptions = [
   },
 ]
 
-function MusicsheetFilterTabs({ activeFilter, counts, onChange }) {
+function MusicsheetFilterTabs({ id, activeFilter, counts, onChange }) {
   return (
-    <div className={styles.row} aria-label="세션별 악보 필터">
-      {musicsheetFilterOptions.map((option) => (
+    <div id={id} className={styles.panel}>
+      <div className={styles.grid} role="group" aria-label="세션별 악보 필터">
+        {musicsheetFilterOptions.map((option) => (
           <button
             key={option.value}
             type="button"
@@ -45,7 +46,8 @@ function MusicsheetFilterTabs({ activeFilter, counts, onChange }) {
             <span>{option.label}</span>
             <span className={styles.count}>{counts?.[option.value] ?? 0}</span>
           </button>
-      ))}
+        ))}
+      </div>
     </div>
   )
 }

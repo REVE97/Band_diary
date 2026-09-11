@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import NoticeAddModal from '../components/notice/NoticeAddModal'
 import NoticeDetailModal from '../components/notice/NoticeDetailModal'
@@ -9,6 +9,7 @@ import importantIcon from '../assets/images/notice-important.svg'
 import noticeIcon from '../assets/images/notice-announcement.svg'
 import memoIcon from '../assets/images/notice-memo.svg'
 import searchIcon from '../assets/images/search.svg'
+import filterIcon from '../assets/images/filter.svg'
 
 import supabase from '../api/supabase'
 import { getLoginUserId } from '../features/session'
@@ -16,6 +17,11 @@ import styles from './NoticePage.module.css'
 import floatingAddButtonStyles from '../components/common/FloatingAddButton.module.css'
 
 function NoticePage() {
+  const searchInputRef = useRef(null)
+  const searchToggleRef = useRef(null)
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [isFilterOpen, setIsFilterOpen] = useState(false)
+
   // 유저 데이터 호출
   const userId = getLoginUserId()
 
@@ -211,6 +217,25 @@ function NoticePage() {
     ).format(date)
   }
 
+  useEffect(() => {
+    if (isSearchOpen) searchInputRef.current?.focus()
+  }, [isSearchOpen])
+
+  const handleToggleSearch = () => {
+    setIsFilterOpen(false)
+    setIsSearchOpen((prev) => !prev)
+  }
+
+  const handleCloseSearch = () => {
+    setIsSearchOpen(false)
+    window.requestAnimationFrame(() => searchToggleRef.current?.focus())
+  }
+
+  const handleToggleFilter = () => {
+    setIsSearchOpen(false)
+    setIsFilterOpen((prev) => !prev)
+  }
+
   // 제목 검색 실행
   const handleSearch = (event) => {
     event.preventDefault()
@@ -223,6 +248,7 @@ function NoticePage() {
   // 공지 및 메모 유형 필터 변경
   const handleNoticeFilterChange = (filterValue) => {
     setSelectedType(filterValue)
+    setIsFilterOpen(false)
   }
 
   // 상세 모달 열기
@@ -291,33 +317,85 @@ function NoticePage() {
             className={styles.noticeControls}
             aria-label="공지 검색"
           >
-            <form onSubmit={handleSearch}>
-              <label className={styles.searchField}>
-                <img
-                  src={searchIcon}
-                  alt=""
-                  aria-hidden="true"
-                />
-
+            {isSearchOpen ? (
+              <form className={styles.searchField} onSubmit={handleSearch}>
+                <button
+                  type="button"
+                  className={styles.searchCollapseButton}
+                  onClick={handleCloseSearch}
+                  aria-label="공지 검색 닫기"
+                >
+                  <img src={searchIcon} alt="" aria-hidden="true" />
+                </button>
                 <input
+                  ref={searchInputRef}
                   type="search"
                   value={searchInput}
                   placeholder="공지 제목 검색"
-                  aria-label="공지사항 제목 검색"
+                  aria-label="공지 제목 검색"
                   onChange={(event) => {
                     setSearchInput(event.target.value)
                     setSearchKeyword(event.target.value)
                   }}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Escape') handleCloseSearch()
+                  }}
                 />
-              </label>
-            </form>
-
-            {/* 공지 및 메모 유형 필터 */}
-            <NoticeFilterTabs
-              activeFilter={selectedType}
-              counts={noticeCounts}
-              onChange={handleNoticeFilterChange}
-            />
+                <button
+                  type="button"
+                  className={styles.searchCloseButton}
+                  onClick={handleCloseSearch}
+                >
+                  닫기
+                </button>
+              </form>
+            ) : (
+              <div className={styles.compactControls}>
+                <button
+                  ref={searchToggleRef}
+                  type="button"
+                  className={`${styles.controlIconButton} ${
+                    searchKeyword.trim() ? styles.controlIconButtonActive : ''
+                  }`}
+                  onClick={handleToggleSearch}
+                  aria-label={searchKeyword.trim()
+                    ? `공지 검색 열기, 현재 검색어 ${searchKeyword}`
+                    : '공지 검색 열기'}
+                  aria-expanded={false}
+                >
+                  <img src={searchIcon} alt="" aria-hidden="true" />
+                </button>
+                <button
+                  type="button"
+                  className={styles.activeFilterButton}
+                  onClick={handleToggleFilter}
+                  aria-expanded={isFilterOpen}
+                  aria-controls="notice-filter-popover"
+                >
+                  <span>{selectedType}</span>
+                </button>
+                <button
+                  type="button"
+                  className={`${styles.controlIconButton} ${
+                    isFilterOpen ? styles.filterButtonActive : ''
+                  }`}
+                  onClick={handleToggleFilter}
+                  aria-label="공지 유형 필터"
+                  aria-expanded={isFilterOpen}
+                  aria-controls="notice-filter-popover"
+                >
+                  <img src={filterIcon} className={styles.filterIcon} alt="" aria-hidden="true" />
+                </button>
+                {isFilterOpen && (
+                  <NoticeFilterTabs
+                    id="notice-filter-popover"
+                    activeFilter={selectedType}
+                    counts={noticeCounts}
+                    onChange={handleNoticeFilterChange}
+                  />
+                )}
+              </div>
+            )}
           </section>
 
           {/* 중요 공지 */}

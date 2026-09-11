@@ -16,6 +16,7 @@ import guitarPdfIcon from '../assets/images/PdfIcon-guitar.svg'
 import keyboardPdfIcon from '../assets/images/PdfIcon-keyboard.svg'
 import vocalPdfIcon from '../assets/images/PdfIcon-vocal.svg'
 import searchIcon from '../assets/images/search.svg'
+import filterIcon from '../assets/images/filter.svg'
 import { getLoginUserId } from '../features/session'
 
 const initialMusicsheetForm = {
@@ -49,6 +50,10 @@ const getSessionPdfIcon = (session) => {
 function MusicsheetPage() {
   const { showToast } = useToast()
   const previewSectionRef = useRef(null)
+  const searchInputRef = useRef(null)
+  const searchToggleRef = useRef(null)
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [musicsheetList, setMusicsheetList] = useState([])
   const [selectedPdf, setSelectedPdf] = useState(null)
   const [searchKeyword, setSearchKeyword] = useState('')
@@ -190,8 +195,28 @@ function MusicsheetPage() {
     return () => window.cancelAnimationFrame(frameId)
   }, [selectedPdf])
 
+  useEffect(() => {
+    if (isSearchOpen) searchInputRef.current?.focus()
+  }, [isSearchOpen])
+
+  const handleToggleSearch = () => {
+    setIsFilterOpen(false)
+    setIsSearchOpen((prev) => !prev)
+  }
+
+  const handleCloseSearch = () => {
+    setIsSearchOpen(false)
+    window.requestAnimationFrame(() => searchToggleRef.current?.focus())
+  }
+
+  const handleToggleFilter = () => {
+    setIsSearchOpen(false)
+    setIsFilterOpen((prev) => !prev)
+  }
+
   const handleMusicsheetFilterChange = (filterValue) => {
     setActiveSessionFilter(filterValue)
+    setIsFilterOpen(false)
     setSelectedPdf(null)
   }
 
@@ -481,22 +506,82 @@ function MusicsheetPage() {
   return (
     <div className={styles.page}>
       <section className={styles.libraryControls} aria-label="악보 검색과 필터">
-        <label className={styles.searchField}>
-          <img src={searchIcon} alt="" aria-hidden="true" />
-          <input
-            type="search"
-            value={searchKeyword}
-            placeholder="곡명 또는 설명 검색"
-            aria-label="곡명 또는 설명 검색"
-            onChange={(event) => setSearchKeyword(event.target.value)}
-          />
-        </label>
-
-        <MusicsheetFilterTabs
-          activeFilter={activeSessionFilter}
-          counts={sessionCounts}
-          onChange={handleMusicsheetFilterChange}
-        />
+        {isSearchOpen ? (
+          <div className={styles.searchField}>
+            <button
+              type="button"
+              className={styles.searchCollapseButton}
+              onClick={handleCloseSearch}
+              aria-label="악보 검색 닫기"
+            >
+              <img src={searchIcon} alt="" aria-hidden="true" />
+            </button>
+            <input
+              ref={searchInputRef}
+              type="search"
+              value={searchKeyword}
+              placeholder="곡명 또는 설명 검색"
+              aria-label="곡명 또는 설명 검색"
+              onChange={(event) => setSearchKeyword(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === 'Escape') handleCloseSearch()
+              }}
+            />
+            <button
+              type="button"
+              className={styles.searchCloseButton}
+              onClick={handleCloseSearch}
+            >
+              닫기
+            </button>
+          </div>
+        ) : (
+          <div className={styles.compactControls}>
+            <button
+              ref={searchToggleRef}
+              type="button"
+              className={`${styles.controlIconButton} ${
+                searchKeyword.trim() ? styles.controlIconButtonActive : ''
+              }`}
+              onClick={handleToggleSearch}
+              aria-label={searchKeyword.trim()
+                ? `악보 검색 열기, 현재 검색어 ${searchKeyword}`
+                : '악보 검색 열기'}
+              aria-expanded={false}
+            >
+              <img src={searchIcon} alt="" aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              className={styles.activeFilterButton}
+              onClick={handleToggleFilter}
+              aria-expanded={isFilterOpen}
+              aria-controls="musicsheet-filter-popover"
+            >
+              <span>{activeSessionFilter}</span>
+            </button>
+            <button
+              type="button"
+              className={`${styles.controlIconButton} ${
+                isFilterOpen ? styles.filterButtonActive : ''
+              }`}
+              onClick={handleToggleFilter}
+              aria-label="악보 세션 필터"
+              aria-expanded={isFilterOpen}
+              aria-controls="musicsheet-filter-popover"
+            >
+              <img src={filterIcon} className={styles.filterIcon} alt="" aria-hidden="true" />
+            </button>
+            {isFilterOpen && (
+              <MusicsheetFilterTabs
+                id="musicsheet-filter-popover"
+                activeFilter={activeSessionFilter}
+                counts={sessionCounts}
+                onChange={handleMusicsheetFilterChange}
+              />
+            )}
+          </div>
+        )}
       </section>
 
       <button
