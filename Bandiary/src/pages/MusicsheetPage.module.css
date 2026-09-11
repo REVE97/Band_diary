@@ -177,6 +177,7 @@
 .musicsheetList {
   display: flex;
   flex-direction: column;
+  gap: 12px;
 }
 
 .musicsheetCard {
@@ -185,13 +186,30 @@
   --session-border: var(--color-primary-border);
 
   position: relative;
+  width: 100%;
   display: flex;
   align-items: center;
   gap: 10px;
   min-height: 124px;
-  padding: 14px 0;
-  border-bottom: 1px solid var(--color-divider);
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
   background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.musicsheetCard.active {
+  border-color: var(--session-border);
+  background: var(--color-surface-subtle);
+  box-shadow: var(--shadow-selected);
+}
+
+.musicsheetCard:active {
+  transform: scale(0.985);
 }
 
 .vocal {
@@ -434,6 +452,11 @@
 }
 
 @media (max-width: 370px) {
+  .musicsheetCard {
+    gap: 8px;
+    padding: 10px;
+  }
+
   .cardSelectButton {
     grid-template-columns: 68px minmax(0, 1fr);
     gap: 10px;
