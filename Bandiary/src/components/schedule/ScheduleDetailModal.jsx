@@ -24,63 +24,60 @@ function ScheduleDetailModal({ schedule, onClose, onDelete }) {
         aria-modal="true"
         aria-labelledby="schedule-detail-modal-title"
       >
-        <div className={styles.placeModalHeader}>
-          <div>
-            <h2 id="schedule-detail-modal-title">일정 상세</h2>
-            <p>{schedule.type}</p>
-          </div>
-
-          <button
-            aria-label="닫기"
-            type="button"
-            className={styles.placeModalClose}
-            onClick={onClose}
-          >
+        <header className={styles.placeModalHeader}>
+          <span className={styles.scheduleDetailType}>
+            <span style={{ backgroundColor: schedule.color || '#6b4eff' }} aria-hidden="true" />
+            {schedule.type}
+          </span>
+          <button aria-label="닫기" type="button" className={styles.placeModalClose} onClick={onClose}>
             <span className={styles.closeIcon} aria-hidden="true" />
           </button>
-        </div>
+        </header>
 
         <div className={styles.scheduleDetailBody}>
-          <div className={styles.scheduleDetailType}>
-            <span style={{ backgroundColor: schedule.color || '#6b4eff' }} />
-            <strong>{schedule.type}</strong>
+          <h2 id="schedule-detail-modal-title" className={styles.scheduleDetailTitle}>
+            {schedule.title}
+          </h2>
+
+          <div className={styles.scheduleDetailInfo}>
+            <div className={styles.scheduleDetailInfoRow}>
+              <span className={styles.infoIconBox} aria-hidden="true"><span className={styles.calendarIcon} /></span>
+              <dl>
+                <dt>날짜</dt>
+                <dd>{formatDate(schedule.schedule_date)}</dd>
+              </dl>
+            </div>
+            <div className={styles.scheduleDetailInfoRow}>
+              <span className={styles.infoIconBox} aria-hidden="true"><span className={styles.clockIcon} /></span>
+              <dl>
+                <dt>시간</dt>
+                <dd>{getTimeValue(schedule.start_time)} – {getTimeValue(schedule.end_time)}</dd>
+              </dl>
+            </div>
+            <div className={styles.scheduleDetailInfoRow}>
+              <span className={styles.infoIconBox} aria-hidden="true"><span className={styles.locationIcon} /></span>
+              <dl>
+                <dt>장소</dt>
+                <dd>{schedule.location || '등록된 장소가 없습니다.'}</dd>
+              </dl>
+            </div>
           </div>
 
-          <div className={styles.scheduleDetailTitleBox}>
-            <strong>{schedule.title}</strong>
-          </div>
-
-          <div className={styles.scheduleDetailInfoCard}>
-            <span>날짜</span>
-            <strong>{formatDate(schedule.schedule_date)}</strong>
-          </div>
-
-          <div className={styles.scheduleDetailInfoCard}>
-            <span>시간</span>
-            <strong>
-              {getTimeValue(schedule.start_time)} ~{' '}
-              {getTimeValue(schedule.end_time)}
-            </strong>
-          </div>
-
-          <div className={styles.scheduleDetailInfoCard}>
-            <span>장소</span>
-            <strong>{schedule.location || '등록된 장소가 없습니다.'}</strong>
-          </div>
-
-          <div className={styles.scheduleDetailInfoCard}>
-            <span>메모</span>
-            <p>{schedule.description || '등록된 메모가 없습니다.'}</p>
-          </div>
+          <section className={styles.scheduleDetailMemo}>
+            <span className={styles.memoIcon} aria-hidden="true" />
+            <div>
+              <h3>메모</h3>
+              <p>{schedule.description || '등록된 메모가 없습니다.'}</p>
+            </div>
+          </section>
         </div>
 
-        <button
-          type="button"
-          className={styles.scheduleDeleteButton}
-          onClick={() => onDelete(schedule)}
-        >
-          삭제
-        </button>
+        <footer className={styles.scheduleDetailFooter}>
+          <button type="button" className={styles.scheduleDeleteButton} onClick={() => onDelete(schedule)}>
+            <span className={styles.deleteIcon} aria-hidden="true" />
+            삭제
+          </button>
+        </footer>
       </div>
     </ModalPortal>
   )

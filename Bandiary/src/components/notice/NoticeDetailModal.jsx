@@ -126,46 +126,37 @@ function NoticeDetailModal({
           aria-labelledby="notice-detail-modal-title"
         >
 
-          {/* 헤더 */}
           <header className={styles.placeModalHeader}>
-            <div>
-              <h2
-                id="notice-detail-modal-title"
-                className={styles.noticeDetailTitle}
-              >
-                {notice.title}
-              </h2>
+            <div className={styles.noticeDetailBadges}>
+              <span className={styles.noticeTypeBadge} aria-label={`유형: ${notice.type}`}>
+                <span className={styles.typeDot} aria-hidden="true" />
+                {notice.type}
+              </span>
+              {notice.important && (
+                <span className={styles.noticeImportantBadge}>
+                  <span className={styles.pinIcon} aria-hidden="true" />
+                  중요 공지
+                </span>
+              )}
             </div>
-
-            <button
-              type="button"
-              className={styles.placeModalClose}
-              aria-label="닫기"
-              onClick={onClose}
-            >
+            <button type="button" className={styles.placeModalClose} aria-label="닫기" onClick={onClose}>
               <span className={styles.closeIcon} aria-hidden="true" />
             </button>
           </header>
 
           <div className={styles.noticeDetailBody}>
+            <h2 id="notice-detail-modal-title" className={styles.noticeDetailTitle}>
+              {notice.title}
+            </h2>
 
-            {/* 작성 정보 */}
             <div className={styles.noticeDetailMeta}>
-              <div>
-                <span>작성자</span>
-                <strong>
-                  {notice.name || '-'}
-                </strong>
-              </div>
-
-              <div>
-                <span>등록 날짜</span>
-                <strong>
-                  {formatDateTime(
-                    notice.created_at
-                  )}
-                </strong>
-              </div>
+              <span className={styles.userIcon} aria-hidden="true" />
+              <span>작성자</span>
+              <strong>{notice.name || '-'}</strong>
+              <span className={styles.metaDivider} aria-hidden="true">·</span>
+              <span aria-label={`등록 날짜: ${formatDateTime(notice.created_at)}`}>
+                {formatDateTime(notice.created_at)}
+              </span>
             </div>
 
             {/* 내용 */}
@@ -179,7 +170,7 @@ function NoticeDetailModal({
             {/* 이미지 */}
             {notice.imageUrl && (
               <section className={styles.noticeDetailImageSection}>
-                <span>첨부 이미지</span>
+                <span className={styles.imageLabel}><span className={styles.imageIcon} aria-hidden="true" />첨부 이미지</span>
 
                 <div className={styles.noticeDetailImage}>
                   <img
@@ -190,55 +181,36 @@ function NoticeDetailModal({
               </section>
             )}
 
-            {/* 세부 속성 */}
-            <div className={styles.noticeDetailProperties}>
-              <div>
-                <span>유형</span>
+          </div>
 
-                <strong>
-                  {notice.type}
-                </strong>
-              </div>
+          {/* 수정 및 삭제 버튼 */}
+          <div className={styles.noticeDetailActionRow}>
 
-              <div>
-                <span>중요 공지</span>
+            {/* 수정 */}
+            <button
+              type="button"
+              className={styles.noticeEditButton}
+              disabled={deleting}
+              onClick={openEditModal}
+            >
+              <span className={styles.editIcon} aria-hidden="true" />
+              수정
+            </button>
 
-                <strong>
-                  {notice.important
-                    ? '설정'
-                    : '미설정'}
-                </strong>
-              </div>
-            </div>
-
-            {/* 수정 및 삭제 버튼 */}
-            <div className={styles.noticeDetailActionRow}>
-
-              {/* 수정 */}
+            {/* 삭제 */}
+            {isAdmin && (
               <button
                 type="button"
-                className={styles.noticeEditButton}
+                className={styles.noticeDeleteButton}
                 disabled={deleting}
-                onClick={openEditModal}
+                onClick={openDeleteConfirm}
               >
-                수정
+                <span className={styles.deleteIcon} aria-hidden="true" />
+                {deleting
+                  ? '삭제 중...'
+                  : '삭제'}
               </button>
-
-              {/* 삭제 */}
-              {isAdmin && (
-                <button
-                  type="button"
-                  className={styles.noticeDeleteButton}
-                  disabled={deleting}
-                  onClick={openDeleteConfirm}
-                >
-                  {deleting
-                    ? '삭제 중...'
-                    : '삭제'}
-                </button>
-              )}
-
-            </div>
+            )}
 
           </div>
 
