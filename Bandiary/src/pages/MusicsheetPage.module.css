@@ -188,10 +188,9 @@
   position: relative;
   width: 100%;
   display: flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 124px;
-  padding: 12px;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
   border: 1px solid var(--color-border);
   border-radius: 16px;
   background: var(--color-surface);
@@ -206,10 +205,6 @@
   border-color: var(--session-border);
   background: var(--color-surface-subtle);
   box-shadow: var(--shadow-selected);
-}
-
-.musicsheetCard:active {
-  transform: scale(0.985);
 }
 
 .vocal {
@@ -248,11 +243,11 @@
   --session-border: var(--color-primary-border);
 }
 
-.cardSelectButton {
+.cardContent {
+  width: 100%;
   min-width: 0;
-  flex: 1;
   display: grid;
-  grid-template-columns: 76px minmax(0, 1fr);
+  grid-template-columns: 68px minmax(0, 1fr);
   align-items: center;
   gap: 14px;
   padding: 0;
@@ -261,16 +256,17 @@
 }
 
 .pdfThumbnail {
-  width: 76px;
-  height: 94px;
+  position: relative;
+  width: 68px;
+  height: 78px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 5px;
-  border: 1px solid var(--session-border);
+  border: 1px solid transparent;
   border-radius: 14px;
-  background: var(--color-surface);
+  background: var(--session-soft);
   color: var(--session-color);
   transition:
     border-color 0.2s ease,
@@ -283,15 +279,21 @@
 }
 
 .pdfIcon {
-  width: 30px;
-  height: 30px;
+  width: 36px;
+  height: 36px;
   display: block;
   object-fit: contain;
 }
 
 .pdfLabel {
-  color: var(--session-color);
-  font-size: 12px;
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  background: var(--session-color);
+  color: var(--color-on-accent);
+  font-size: 8px;
   font-weight: 900;
   letter-spacing: 0.04em;
 }
@@ -336,70 +338,106 @@
   overflow: hidden;
   color: var(--color-text-secondary);
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 500;
   line-height: 1.4;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .cardActions {
-  flex: 0 0 56px;
+  width: 100%;
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
   gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-divider);
 }
 
 .previewButton,
+.downloadButton,
 .deleteButton {
-  min-height: 30px;
-  padding: 0 4px;
+  min-width: 0;
+  min-height: 40px;
+  padding: 0 10px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
-  background: transparent;
-  font-size: 11px;
-  font-weight: 900;
+  gap: 6px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 800;
   line-height: 1;
   text-decoration: none;
   white-space: nowrap;
+  transition: background 0.2s ease;
 }
 
 .previewButton {
-  color: var(--color-text-primary);
+  flex: 1;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
 }
 
 .downloadButton {
-  width: 36px;
-  height: 44px;
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-  border-radius: 8px;
-  background: transparent;
+  flex: 1;
+  background: var(--color-surface-subtle);
+  color: var(--color-text-secondary);
 }
 
+.deleteButton {
+  flex: 0 0 auto;
+  position: relative;
+  margin-left: 4px;
+  padding: 0 2px 0 10px;
+  background: transparent;
+  color: var(--color-danger);
+}
+
+.deleteButton::before {
+  content: '';
+  position: absolute;
+  left: -2px;
+  top: 10px;
+  bottom: 10px;
+  width: 1px;
+  background: var(--color-divider);
+}
+
+.previewIcon,
+.deleteIcon,
 .downloadButton img {
   width: 20px;
   height: 20px;
   display: block;
+  flex: 0 0 auto;
 }
 
-.downloadButton span {
-  color: var(--color-text-muted);
-  font-size: 10px;
-  font-weight: 700;
-  line-height: 1;
+.previewIcon {
+  background: currentColor;
+  mask: url('../assets/images/preview-eye.svg') center / contain no-repeat;
+  -webkit-mask: url('../assets/images/preview-eye.svg') center / contain no-repeat;
 }
 
-.deleteButton {
-  color: var(--color-danger);
+.deleteIcon {
+  background: currentColor;
+  mask: url('../assets/images/trash.svg') center / contain no-repeat;
+  -webkit-mask: url('../assets/images/trash.svg') center / contain no-repeat;
 }
 
-.cardSelectButton:focus-visible,
+@media (hover: hover) {
+  .previewButton:hover {
+    background: var(--color-primary-border);
+  }
+
+  .downloadButton:hover {
+    background: var(--color-surface-muted);
+  }
+
+  .deleteButton:hover {
+    background: var(--color-danger-soft);
+  }
+}
+
 .previewButton:focus-visible,
 .downloadButton:focus-visible,
 .deleteButton:focus-visible,
@@ -453,21 +491,36 @@
 
 @media (max-width: 370px) {
   .musicsheetCard {
-    gap: 8px;
-    padding: 10px;
+    padding: 12px;
   }
 
-  .cardSelectButton {
-    grid-template-columns: 68px minmax(0, 1fr);
+  .cardContent {
+    grid-template-columns: 58px minmax(0, 1fr);
     gap: 10px;
   }
 
   .pdfThumbnail {
-    width: 68px;
-    height: 88px;
+    width: 58px;
+    height: 72px;
   }
 
   .cardActions {
-    flex-basis: 50px;
+    gap: 6px;
+  }
+
+  .previewButton,
+  .downloadButton,
+  .deleteButton {
+    gap: 4px;
+    padding-right: 6px;
+    padding-left: 6px;
+    font-size: 11px;
+  }
+
+  .previewIcon,
+  .deleteIcon,
+  .downloadButton img {
+    width: 18px;
+    height: 18px;
   }
 }

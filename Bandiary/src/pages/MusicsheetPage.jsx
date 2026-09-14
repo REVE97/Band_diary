@@ -603,12 +603,7 @@ function MusicsheetPage() {
                 pdf.session
               )} ${selectedPdf?.id === pdf.id ? styles.active : ''}`}
             >
-              <button
-                type="button"
-                className={styles.cardSelectButton}
-                onClick={() => handlePdfClick(pdf)}
-                aria-label={`${pdf.title} 악보 미리보기`}
-              >
+              <div className={styles.cardContent}>
                 <span className={styles.pdfThumbnail} aria-hidden="true">
                   <img
                     src={getSessionPdfIcon(pdf.session)}
@@ -623,15 +618,17 @@ function MusicsheetPage() {
                   <strong>{pdf.title}</strong>
                   <span className={styles.description}>{pdf.description}</span>
                 </span>
-              </button>
+              </div>
 
               <div className={styles.cardActions}>
                 <button
                   type="button"
                   className={styles.previewButton}
                   onClick={() => handlePdfClick(pdf)}
+                  aria-label={`${pdf.title} 악보 미리보기`}
                 >
-                  미리보기
+                  <span className={styles.previewIcon} aria-hidden="true" />
+                  <span>미리보기</span>
                 </button>
 
                 {pdf.pdfUrl && (
@@ -655,7 +652,8 @@ function MusicsheetPage() {
                     }
                     aria-label={`${pdf.title} 삭제`}
                   >
-                    삭제
+                    <span className={styles.deleteIcon} aria-hidden="true" />
+                    <span>삭제</span>
                   </button>
                 )}
               </div>
