@@ -97,7 +97,7 @@ function ProfileEditModal({
             aria-label="프로필 수정 모달 닫기"
             onClick={onClose}
           >
-            ×
+            <span className={styles.closeIcon} aria-hidden="true" />
           </button>
         </div>
 

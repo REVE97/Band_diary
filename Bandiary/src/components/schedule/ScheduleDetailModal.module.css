@@ -107,3 +107,14 @@
 .scheduleDeleteButton:active {
   transform: scale(0.98);
 }
+
+.closeIcon {
+  display: inline-block;
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+  background: currentColor;
+  mask: url('../../assets/images/close.svg') center / contain no-repeat;
+  -webkit-mask: url('../../assets/images/close.svg') center / contain no-repeat;
+}

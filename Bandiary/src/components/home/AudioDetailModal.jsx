@@ -379,7 +379,7 @@ function AudioDetailModal({ content, onClose }) {
             onClick={onClose}
             aria-label="오디오 상세 모달 닫기"
           >
-            ×
+            <span className={styles.closeIcon} aria-hidden="true" />
           </button>
         </div>
 
@@ -560,7 +560,7 @@ function AudioDetailModal({ content, onClose }) {
                             disabled={deletingFeedbackId === feedback.id}
                             aria-label="구간 피드백 삭제"
                           >
-                            {deletingFeedbackId === feedback.id ? '...' : '−'}
+                            {deletingFeedbackId === feedback.id ? '...' : '삭제'}
                           </button>
                         )}
                       </div>

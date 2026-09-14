@@ -122,7 +122,7 @@ function MusicsheetAddModal({
             onClick={onClose}
             aria-label="악보 추가 모달 닫기"
           >
-            ×
+            <span className={styles.closeIcon} aria-hidden="true" />
           </button>
         </header>
 

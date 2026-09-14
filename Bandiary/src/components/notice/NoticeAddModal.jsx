@@ -431,7 +431,7 @@ function NoticeAddModal({
               disabled={submitting}
               onClick={handleModalClose}
             >
-              ×
+              <span className={styles.closeIcon} aria-hidden="true" />
             </button>
 
           </header>

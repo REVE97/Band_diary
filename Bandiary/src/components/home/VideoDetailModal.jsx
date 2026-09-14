@@ -650,7 +650,7 @@ function VideoDetailModal({ content, onClose }) {
             onClick={onClose}
             aria-label="비디오 상세 모달 닫기"
           >
-            ×
+            <span className={styles.closeIcon} aria-hidden="true" />
           </button>
         </header>
 
@@ -897,7 +897,7 @@ function VideoDetailModal({ content, onClose }) {
                         disabled={deletingChapterId === chapter.id}
                         aria-label={`${chapter.title} 곡 구간 삭제`}
                       >
-                        {deletingChapterId === chapter.id ? '...' : '−'}
+                        {deletingChapterId === chapter.id ? '...' : '삭제'}
                       </button>
                     )}
                   </div>

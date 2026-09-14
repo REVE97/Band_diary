@@ -201,12 +201,13 @@ function ContentAddModal({
           </div>
 
           <button
+            aria-label="닫기"
             type="button"
             className={styles.placeModalClose}
             onClick={onClose}
             disabled={isContentUploading}
           >
-            ×
+            <span className={styles.closeIcon} aria-hidden="true" />
           </button>
         </div>
 
@@ -478,7 +479,7 @@ function ContentAddModal({
                           disabled={isContentUploading}
                           aria-label={`${audioFile.title || audioFile.originalFileName} 제거`}
                         >
-                          ×
+                          <span className={styles.closeIcon} aria-hidden="true" />
                         </button>
                       </div>
                     ))}

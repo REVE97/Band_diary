@@ -77,7 +77,7 @@ function ContentCard({ item, isActive, isAdmin, onClick, onDeleteClick }) {
               onClick={handleDeleteClick}
               aria-label={`${item.title} 삭제`}
             >
-              -
+              삭제
             </button>
           )}
         </div>
@@ -89,9 +89,7 @@ function ContentCard({ item, isActive, isAdmin, onClick, onDeleteClick }) {
       <span
         className={styles.arrow}
         aria-hidden="true"
-      >
-        ›
-      </span>
+      />
     </div>
   )
 }

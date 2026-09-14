@@ -143,7 +143,7 @@ function NoticeDetailModal({
               aria-label="닫기"
               onClick={onClose}
             >
-              ×
+              <span className={styles.closeIcon} aria-hidden="true" />
             </button>
           </header>
 

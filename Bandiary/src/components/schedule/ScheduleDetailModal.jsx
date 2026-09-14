@@ -31,11 +31,12 @@ function ScheduleDetailModal({ schedule, onClose, onDelete }) {
           </div>
 
           <button
+            aria-label="닫기"
             type="button"
             className={styles.placeModalClose}
             onClick={onClose}
           >
-            ×
+            <span className={styles.closeIcon} aria-hidden="true" />
           </button>
         </div>
 

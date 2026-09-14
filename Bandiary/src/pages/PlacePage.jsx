@@ -893,7 +893,7 @@ function PlacePage() {
                 onClick={handleClearSelectedPlace}
                 aria-label="선택한 장소 닫기"
               >
-                ×
+                <span className={styles.closeIcon} aria-hidden="true" />
               </button>
             </div>
 

@@ -617,7 +617,7 @@ function YoutubeDetailModal({ content, onClose }) {
               onClick={onClose}
               aria-label="유튜브 상세 모달 닫기"
             >
-              ×
+              <span className={styles.closeIcon} aria-hidden="true" />
             </button>
           </header>
 
@@ -794,7 +794,7 @@ function YoutubeDetailModal({ content, onClose }) {
                           disabled={deletingChapterId === chapter.id}
                           aria-label={`${chapter.title} 곡 구간 삭제`}
                         >
-                          {deletingChapterId === chapter.id ? '...' : '−'}
+                          {deletingChapterId === chapter.id ? '...' : '삭제'}
                         </button>
                       )}
                     </div>

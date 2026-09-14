@@ -403,9 +403,7 @@ function SchedulePage() {
           </span>
         </span>
 
-        <span className={styles.scheduleChevron} aria-hidden="true">
-          ›
-        </span>
+        <span className={styles.scheduleChevron} aria-hidden="true" />
       </button>
     )
   }
