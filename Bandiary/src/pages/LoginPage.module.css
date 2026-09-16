@@ -65,12 +65,26 @@
   overflow: hidden;
   background: var(--color-surface);
   transform: translateX(-50%);
-  animation: loginSplashEnter 0.22s ease-out both;
+  animation: loginSplashEnter 0.4s ease-out both;
+  isolation: isolate;
 }
 
 .loginSplash.leaving {
   pointer-events: none;
-  animation: loginSplashLeave 0.5s ease-in both;
+  animation: loginSplashLeave 0.65s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.loginSplash::before {
+  content: "";
+  position: absolute;
+  inset: -15%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 28% 43%, rgba(172, 183, 243, 0.25), transparent 44%),
+    radial-gradient(ellipse at 76% 55%, rgba(162, 213, 240, 0.22), transparent 42%),
+    radial-gradient(ellipse at 54% 66%, rgba(217, 192, 237, 0.2), transparent 38%);
+  animation: loginSplashLight 3.45s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .loginSplashContent {
@@ -81,7 +95,7 @@
 }
 
 .loginSplashWelcome {
-  width: min(76%, 276px);
+  width: min(86%, 340px);
   height: auto;
   display: block;
   object-fit: contain;
@@ -440,6 +454,23 @@
   }
 }
 
+@keyframes loginSplashLight {
+  from {
+    opacity: 0;
+    transform: translate3d(-3%, 2%, 0) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(2%, -1%, 0) scale(1.04);
+  }
+}
+
+.loginSplash.leaving .loginSplashContent {
+  opacity: 0;
+  transform: scale(1.035);
+  transition: opacity 0.55s ease, transform 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 @keyframes loginSplashEnter {
   from {
     opacity: 0;
@@ -472,7 +503,15 @@
 @media (prefers-reduced-motion: reduce) {
   .loginSplash,
   .loginSplash.leaving,
-  .loginSplashWelcome {
+  .loginSplashWelcome,
+  .loginSplash::before {
     animation: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loginSplash.leaving .loginSplashContent {
+    transition: none;
+    transform: none;
   }
 }

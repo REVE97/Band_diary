@@ -9,8 +9,8 @@ import supabase from '../api/supabase'
 import styles from './LoginPage.module.css'
 
 const LOGIN_SPLASH_SESSION_KEY = 'bandiaryLoginSplashShown'
-const LOGIN_SPLASH_FADE_DELAY = 3800
-const LOGIN_SPLASH_DURATION = 4300
+const LOGIN_SPLASH_FADE_DELAY = 2800
+const LOGIN_SPLASH_DURATION = 3450
 const APP_VERSION = '0.4.0'
 const BUG_REPORT_EMAIL = 'zxcv9675@naver.com'
 

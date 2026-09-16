@@ -1,138 +1,80 @@
-<svg
-  xmlns="http://www.w3.org/2000/svg"
-  width="340"
-  height="92"
-  viewBox="0 0 340 92"
-  fill="none"
-  role="img"
-  aria-label="Welcome"
->
+<svg xmlns="http://www.w3.org/2000/svg" width="368" height="112" viewBox="0 0 368 112" fill="none" role="img" aria-label="Welcome">
+  <defs>
+    <!-- Independent rounded letterforms keep their spacing on every platform. -->
+    <path id="letter-w" d="M22 33L31 77Q32 81 34 77L44 43L54 77Q56 81 57 77L67 33"/>
+    <path id="letter-e" d="M89 62H113C113 43 87 43 87 64C87 81 105 83 113 74"/>
+    <path id="letter-l" d="M136 31V78"/>
+    <path id="letter-c" d="M183 53C168 42 157 52 157 64C157 78 171 84 183 75"/>
+    <path id="letter-o" d="M233 64C233 44 206 44 206 64C206 84 233 84 233 64Z"/>
+    <path id="letter-m" d="M254 78V51M254 60C254 46 274 46 274 60V78M274 60C274 46 294 46 294 60V78"/>
+    <path id="letter-e-last" d="M318 62H342C342 43 316 43 316 64C316 81 334 83 342 74"/>
+    <linearGradient id="glass-body" x1="0" y1="28" x2="0" y2="84" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffffff" stop-opacity=".96"/>
+      <stop offset=".23" stop-color="#c0c8e6" stop-opacity=".7"/>
+      <stop offset=".49" stop-color="#7887ae" stop-opacity=".8"/>
+      <stop offset=".64" stop-color="#e3eaff" stop-opacity=".58"/>
+      <stop offset=".84" stop-color="#afb4dc" stop-opacity=".76"/>
+      <stop offset="1" stop-color="#657394" stop-opacity=".88"/>
+    </linearGradient>
+    <linearGradient id="glass-edge" x1="0" y1="28" x2="12" y2="84" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffffff"/>
+      <stop offset=".38" stop-color="#8d99bc" stop-opacity=".7"/>
+      <stop offset=".7" stop-color="#ffffff" stop-opacity=".95"/>
+      <stop offset="1" stop-color="#7383ac" stop-opacity=".8"/>
+    </linearGradient>
+    <linearGradient id="glass-highlight" x1="0" y1="30" x2="0" y2="78" gradientUnits="userSpaceOnUse">
+      <stop stop-color="white" stop-opacity=".95"/>
+      <stop offset=".42" stop-color="white" stop-opacity=".05"/>
+      <stop offset=".7" stop-color="white" stop-opacity=".65"/>
+      <stop offset="1" stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="light-band">
+      <stop stop-color="white" stop-opacity="0"/>
+      <stop offset=".5" stop-color="white" stop-opacity=".85"/>
+      <stop offset="1" stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="glass-shadow" filterUnits="userSpaceOnUse" x="0" y="0" width="368" height="112" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="3" stdDeviation="2.5" flood-color="#6975a2" flood-opacity=".22"/>
+    </filter>
+    <mask id="letters-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="368" height="112">
+      <g stroke="white" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+        <use href="#letter-w"/><use href="#letter-e"/><use href="#letter-l"/>
+        <use href="#letter-c"/><use href="#letter-o"/><use href="#letter-m"/><use href="#letter-e-last"/>
+      </g>
+    </mask>
+  </defs>
   <style>
-    .handwriting-stroke {
-      stroke: #19181f;
-      stroke-width: 3.15;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      stroke-dasharray: 1;
-      stroke-dashoffset: 1;
-      opacity: 0;
-      animation: draw-stroke var(--duration, 260ms)
-        cubic-bezier(0.35, 0, 0.25, 1) var(--delay, 0ms) both;
+    .letter {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: glass-appear 1050ms cubic-bezier(.16, 1, .3, 1) var(--delay) both;
     }
-
-    .fine-stroke {
-      stroke-width: 2;
+    .edge { stroke: url(#glass-edge); stroke-width: 10; }
+    .body { stroke: url(#glass-body); stroke-width: 8; }
+    .highlight { stroke: url(#glass-highlight); stroke-width: 1.6; transform: translate(-2px, -1px); }
+    .light { opacity: 0; animation: glass-light 1300ms cubic-bezier(.4, 0, .2, 1) 1200ms both; }
+    @keyframes glass-appear {
+      from { opacity: 0; transform: translateY(12px) scale(.94); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
-
-    .pressure-stroke {
-      stroke-width: 4.1;
-      --stroke-opacity: 0.72;
+    @keyframes glass-light {
+      0% { opacity: 0; transform: translateX(-90px); }
+      20%, 70% { opacity: .8; }
+      100% { opacity: 0; transform: translateX(400px); }
     }
-
-    @keyframes draw-stroke {
-      0% {
-        opacity: 0;
-        stroke-dashoffset: 1;
-      }
-
-      2% {
-        opacity: var(--stroke-opacity, 1);
-      }
-
-      100% {
-        opacity: var(--stroke-opacity, 1);
-        stroke-dashoffset: 0;
-      }
-    }
-
     @media (prefers-reduced-motion: reduce) {
-      .handwriting-stroke {
-        animation: none;
-        opacity: var(--stroke-opacity, 1);
-        stroke-dashoffset: 0;
-      }
+      .letter { animation: none; }
+      .light { animation: none; opacity: 0; }
     }
   </style>
-
-  <!-- W -->
-  <path
-    class="handwriting-stroke"
-    pathLength="1"
-    style="--delay: 760ms; --duration: 620ms"
-    d="M13 29C17 20 23 17 27 21C32 26 26 50 27 64C28 73 33 76 38 68C45 57 49 40 52 28C50 42 47 61 51 69C55 77 61 75 67 67C74 57 78 42 80 30C78 44 75 57 77 65"
-  />
-  <path
-    class="handwriting-stroke pressure-stroke"
-    pathLength="1"
-    style="--delay: 790ms; --duration: 330ms"
-    d="M27 22C30 31 26 51 27 63C28 69 30 73 33 73"
-  />
-  <path
-    class="handwriting-stroke pressure-stroke"
-    pathLength="1"
-    style="--delay: 980ms; --duration: 300ms"
-    d="M52 30C50 44 47 61 51 68C53 72 55 74 58 73"
-  />
-
-  <!-- e -->
-  <path
-    class="handwriting-stroke"
-    pathLength="1"
-    style="--delay: 1320ms; --duration: 300ms"
-    d="M77 65C84 63 92 59 95 54C97 50 93 48 89 51C82 55 81 63 85 69C90 76 102 73 114 59"
-  />
-
-  <!-- l -->
-  <path
-    class="handwriting-stroke"
-    pathLength="1"
-    style="--delay: 1560ms; --duration: 360ms"
-    d="M114 59C120 44 122 28 128 21C132 17 136 19 135 25C134 34 124 42 121 51C118 58 116 68 120 72C125 77 135 68 141 59"
-  />
-  <path
-    class="handwriting-stroke pressure-stroke"
-    pathLength="1"
-    style="--delay: 1690ms; --duration: 230ms"
-    d="M134 27C132 36 124 44 121 52C119 59 117 67 120 71"
-  />
-
-  <!-- c -->
-  <path
-    class="handwriting-stroke"
-    pathLength="1"
-    style="--delay: 1860ms; --duration: 300ms"
-    d="M141 59C146 51 157 48 162 53C165 56 162 59 158 57C153 55 149 58 148 63C147 69 152 73 158 73C166 73 172 67 177 59"
-  />
-
-  <!-- o -->
-  <path
-    class="handwriting-stroke"
-    pathLength="1"
-    style="--delay: 2100ms; --duration: 320ms"
-    d="M177 60C182 51 193 50 198 56C203 63 198 73 190 74C182 75 178 69 180 63C182 57 190 54 197 58C203 61 207 63 211 59"
-  />
-
-  <!-- m -->
-  <path
-    class="handwriting-stroke"
-    pathLength="1"
-    style="--delay: 2360ms; --duration: 440ms"
-    d="M211 59C210 64 209 69 209 73C212 64 217 53 224 53C231 53 228 63 225 73C229 63 235 53 242 53C249 53 246 64 243 71C242 75 247 76 252 72C257 68 259 62 262 58"
-  />
-
-  <!-- e -->
-  <path
-    class="handwriting-stroke"
-    pathLength="1"
-    style="--delay: 2740ms; --duration: 320ms"
-    d="M262 65C269 63 278 59 281 54C283 50 279 48 275 51C268 55 267 63 271 69C276 76 289 73 301 59"
-  />
-
-  <!-- finishing flourish -->
-  <path
-    class="handwriting-stroke fine-stroke"
-    pathLength="1"
-    style="--delay: 3000ms; --duration: 320ms"
-    d="M301 59C306 66 313 70 322 67C329 65 334 61 337 57"
-  />
+  <g stroke-linecap="round" stroke-linejoin="round">
+    <g class="letter" style="--delay: 180ms"><g filter="url(#glass-shadow)"><use class="edge" href="#letter-w"/><use class="body" href="#letter-w"/></g><use class="highlight" href="#letter-w"/></g>
+    <g class="letter" style="--delay: 260ms"><g filter="url(#glass-shadow)"><use class="edge" href="#letter-e"/><use class="body" href="#letter-e"/></g><use class="highlight" href="#letter-e"/></g>
+    <g class="letter" style="--delay: 340ms"><g filter="url(#glass-shadow)"><use class="edge" href="#letter-l"/><use class="body" href="#letter-l"/></g><use class="highlight" href="#letter-l"/></g>
+    <g class="letter" style="--delay: 420ms"><g filter="url(#glass-shadow)"><use class="edge" href="#letter-c"/><use class="body" href="#letter-c"/></g><use class="highlight" href="#letter-c"/></g>
+    <g class="letter" style="--delay: 500ms"><g filter="url(#glass-shadow)"><use class="edge" href="#letter-o"/><use class="body" href="#letter-o"/></g><use class="highlight" href="#letter-o"/></g>
+    <g class="letter" style="--delay: 580ms"><g filter="url(#glass-shadow)"><use class="edge" href="#letter-m"/><use class="body" href="#letter-m"/></g><use class="highlight" href="#letter-m"/></g>
+    <g class="letter" style="--delay: 660ms"><g filter="url(#glass-shadow)"><use class="edge" href="#letter-e-last"/><use class="body" href="#letter-e-last"/></g><use class="highlight" href="#letter-e-last"/></g>
+  </g>
+  <g mask="url(#letters-mask)"><path class="light" d="M0 12H48L80 100H32Z" fill="url(#light-band)"/></g>
 </svg>
