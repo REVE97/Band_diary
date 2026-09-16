@@ -18,6 +18,7 @@ import vocalPdfIcon from '../assets/images/PdfIcon-vocal.svg'
 import searchIcon from '../assets/images/search.svg'
 import filterIcon from '../assets/images/filter.svg'
 import { getLoginUserId } from '../features/session'
+import { readMusicsheetDraft, saveMusicsheetDraft, clearMusicsheetDraft } from '../features/musicsheetDraft'
 
 const initialMusicsheetForm = {
   session: 'Vocal',
@@ -61,8 +62,10 @@ function MusicsheetPage() {
   // 세션 필터 상태값
   const [activeSessionFilter, setActiveSessionFilter] = useState('전체')
 
-  const [isMusicsheetModalOpen, setIsMusicsheetModalOpen] = useState(false)
-  const [musicsheetForm, setMusicsheetForm] = useState(initialMusicsheetForm)
+  const [restoredDraft] = useState(() => readMusicsheetDraft(getLoginUserId()))
+  const [isMusicsheetModalOpen, setIsMusicsheetModalOpen] = useState(Boolean(restoredDraft))
+  const [musicsheetForm, setMusicsheetForm] = useState(restoredDraft?.form || initialMusicsheetForm)
+  const [musicsheetStep, setMusicsheetStep] = useState(restoredDraft?.step || 1)
   const [musicsheetFile, setMusicsheetFile] = useState(null)
   const [musicsheetFileName, setMusicsheetFileName] =
     useState('선택된 파일 없음')
@@ -79,6 +82,14 @@ function MusicsheetPage() {
   })
 
   const userId = getLoginUserId()
+
+  useEffect(() => {
+    if (isMusicsheetModalOpen) {
+      saveMusicsheetDraft(userId, musicsheetForm, musicsheetStep)
+    } else {
+      clearMusicsheetDraft(userId)
+    }
+  }, [userId, isMusicsheetModalOpen, musicsheetForm, musicsheetStep])
 
   // 관리자 여부 확인
   const isAdmin = userId === 'admin'
@@ -221,6 +232,7 @@ function MusicsheetPage() {
   }
 
   const handleOpenMusicsheetModal = () => {
+    setMusicsheetStep(1)
     setMusicsheetForm(initialMusicsheetForm)
     setMusicsheetFile(null)
     setMusicsheetFileName('선택된 파일 없음')
@@ -229,6 +241,8 @@ function MusicsheetPage() {
   }
 
   const handleCloseMusicsheetModal = () => {
+    clearMusicsheetDraft(userId)
+    setMusicsheetStep(1)
     setIsMusicsheetModalOpen(false)
     setMusicsheetForm(initialMusicsheetForm)
     setMusicsheetFile(null)
@@ -684,6 +698,9 @@ function MusicsheetPage() {
 
       {isMusicsheetModalOpen && (
         <MusicsheetAddModal
+          currentStep={musicsheetStep}
+          onStepChange={setMusicsheetStep}
+          onOpenConverter={() => saveMusicsheetDraft(userId, musicsheetForm, musicsheetStep)}
           musicsheetForm={musicsheetForm}
           musicsheetFileName={musicsheetFileName}
           errorMessage={errorMessage}

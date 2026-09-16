@@ -44,7 +44,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: var(--color-surface-muted);
+  background: var(--color-surface);
   color: var(--color-text-muted);
   font-size: 23px;
   font-weight: 500;
@@ -152,35 +152,37 @@
   box-shadow: var(--focus-ring-primary);
 }
 
-.filePanel {
-  min-height: 220px;
+.uploadStep {
   display: grid;
-  grid-template-columns: 52px minmax(0, 1fr);
+  gap: 16px;
+}
+
+.filePanel {
+  position: relative;
+  min-height: 180px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
   align-content: center;
   align-items: center;
-  gap: 14px;
-  padding: 22px;
+  gap: 12px;
+  padding: 18px 16px;
   border: 1px dashed var(--color-primary-border);
   border-radius: 18px;
   background: var(--color-primary-soft);
 }
 
-.fileTypeBadge {
-  width: 52px;
-  height: 64px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--color-primary-border);
-  border-radius: 12px;
-  background: var(--color-surface);
-  color: var(--color-primary);
-  font-size: 12px;
-  font-weight: 900;
+.fileEmpty {
+  justify-items: center;
+  text-align: center;
 }
 
 .fileDetails {
   min-width: 0;
+  max-width: 100%;
+}
+
+.fileSelected .fileDetails {
+  padding-right: 16px;
 }
 
 .fileDetails strong {
@@ -197,28 +199,168 @@
 .fileDetails p {
   margin: 6px 0 0;
   color: var(--color-text-muted);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   line-height: 1.5;
 }
 
-.fileButton {
+.selectedCheck {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--color-primary);
+}
+
+.selectedCheck::after {
+  content: '';
+  width: 16px;
+  height: 16px;
+  background: var(--color-on-accent);
+  mask: url('../../assets/images/toast-check.svg') center / contain no-repeat;
+  -webkit-mask: url('../../assets/images/toast-check.svg') center / contain no-repeat;
+}
+
+.filePicker {
+  position: relative;
   grid-column: 1 / -1;
-  height: 42px;
-  display: inline-flex;
+  width: 100%;
+}
+
+.fileButton {
+  width: 100%;
+  min-height: 48px;
+  display: flex;
   align-items: center;
   justify-content: center;
+  padding: 10px 12px;
   border: 1px solid var(--color-primary-border);
   border-radius: 12px;
   background: var(--color-surface);
   color: var(--color-primary);
   font-size: 13px;
   font-weight: 900;
-  cursor: pointer;
 }
 
+/* Native file input stays focusable and receives the actual touch/click. */
 .fileInput {
-  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.fileInput:focus-visible + .fileButton {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+.converterCard {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid var(--color-primary-border);
+  border-radius: 16px;
+  background: linear-gradient(145deg, var(--color-surface), var(--color-primary-soft));
+}
+
+.converterHeading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.converterHeading > div {
+  min-width: 0;
+}
+
+.converterHeading h3 {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.5;
+  letter-spacing: -0.03em;
+}
+
+.converterHeading p {
+  margin: 3px 0 0;
+  color: var(--color-text-muted);
+  font-size: 12px;
+  line-height: 1.5;
+  word-break: keep-all;
+}
+
+.imageIconTile {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+}
+
+.imageIcon {
+  width: 28px;
+  height: 28px;
+  background: currentColor;
+  mask: url('../../assets/images/picture.svg') center / contain no-repeat;
+  -webkit-mask: url('../../assets/images/picture.svg') center / contain no-repeat;
+}
+
+.converterLink {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-primary-border);
+  border-radius: 12px;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-size: 13px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.externalLinkIcon {
+  width: 17px;
+  height: 17px;
+  flex: 0 0 auto;
+  background: currentColor;
+  mask: url('../../assets/images/external-link.svg') center / contain no-repeat;
+  -webkit-mask: url('../../assets/images/external-link.svg') center / contain no-repeat;
+}
+
+.externalHint,
+.converterHelp {
+  color: var(--color-text-muted);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.6;
+  text-align: center;
+  word-break: keep-all;
+}
+
+.externalHint {
+  margin: 6px 0 0;
+}
+
+.converterHelp {
+  margin: 10px 0 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-primary-border);
 }
 
 .submitSummary {
@@ -314,13 +456,14 @@
 }
 
 .closeButton:focus-visible,
-.fileButton:focus-visible,
+.converterLink:focus-visible,
 .primaryButton:focus-visible,
 .previousButton:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 
+.converterLink:active,
 .closeButton:active,
 .primaryButton:active:not(:disabled),
 .previousButton:active {

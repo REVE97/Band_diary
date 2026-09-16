@@ -10,13 +10,16 @@ function MusicsheetAddModal({
   musicsheetForm,
   musicsheetFileName,
   errorMessage,
+  currentStep,
+  onStepChange,
+  onOpenConverter,
   onClose,
   onSubmit,
   onSessionChange,
   onInputChange,
   onFileChange,
 }) {
-  const [currentStep, setCurrentStep] = useState(1)
+  const hasFile = musicsheetFileName !== '선택된 파일 없음'
   const [stepErrorMessage, setStepErrorMessage] = useState('')
 
   const getStepTitle = () => {
@@ -67,12 +70,12 @@ function MusicsheetAddModal({
     }
 
     setStepErrorMessage('')
-    setCurrentStep((prev) => Math.min(prev + 1, 3))
+    onStepChange(Math.min(currentStep + 1, 3))
   }
 
   const handlePrevStep = () => {
     setStepErrorMessage('')
-    setCurrentStep((prev) => Math.max(prev - 1, 1))
+    onStepChange(Math.max(currentStep - 1, 1))
   }
 
   const handleChangeSession = (event) => {
@@ -190,27 +193,58 @@ function MusicsheetAddModal({
           )}
 
           {currentStep === 2 && (
-            <div className={styles.filePanel}>
-              <span className={styles.fileTypeBadge} aria-hidden="true">
-                PDF
-              </span>
+            <div className={styles.uploadStep}>
+              <div className={`${styles.filePanel} ${hasFile ? styles.fileSelected : styles.fileEmpty}`}>
+                <div className={styles.fileDetails} aria-live="polite">
+                  <strong title={musicsheetFileName}>{musicsheetFileName}</strong>
+                  <p>{hasFile ? 'PDF 파일이 선택되었어요.' : '등록할 PDF 악보를 선택해주세요.'}</p>
+                </div>
 
-              <div className={styles.fileDetails}>
-                <strong>{musicsheetFileName}</strong>
-                <p>PDF 파일을 선택하면 파일명이 자동으로 저장됩니다.</p>
+                {hasFile && <span className={styles.selectedCheck} aria-hidden="true" />}
+
+                <div className={styles.filePicker}>
+                  <input
+                    id="musicsheetFile"
+                    className={styles.fileInput}
+                    type="file"
+                    accept="application/pdf,.pdf"
+                    onChange={handleChangeFile}
+                  />
+                  <label htmlFor="musicsheetFile" className={styles.fileButton}>
+                    {hasFile ? '파일 다시 선택' : 'PDF 파일 선택'}
+                  </label>
+                </div>
               </div>
 
-              <label htmlFor="musicsheetFile" className={styles.fileButton}>
-                파일 선택
-              </label>
-
-              <input
-                id="musicsheetFile"
-                className={styles.fileInput}
-                type="file"
-                accept="application/pdf,.pdf"
-                onChange={handleChangeFile}
-              />
+              <aside className={styles.converterCard} aria-labelledby="musicsheet-converter-title">
+                <div className={styles.converterHeading}>
+                  <span className={styles.imageIconTile} aria-hidden="true">
+                    <span className={styles.imageIcon} />
+                  </span>
+                  <div>
+                    <h3 id="musicsheet-converter-title">이미지 악보만 있나요?</h3>
+                    <p>사진을 PDF로 변환해 등록해보세요.</p>
+                  </div>
+                </div>
+                <a
+                  className={styles.converterLink}
+                  href="https://reve-log.vercel.app/labs/imagestopdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={onOpenConverter}
+                  aria-describedby="musicsheet-converter-external musicsheet-converter-help"
+                >
+                  이미지 → PDF 변환
+                  <span className={styles.externalLinkIcon} aria-hidden="true" />
+                </a>
+                <p id="musicsheet-converter-external" className={styles.externalHint}>
+                  외부 페이지에서 열려요
+                </p>
+                <p id="musicsheet-converter-help" className={styles.converterHelp}>
+                  변환한 PDF를 저장한 뒤 돌아와<br />
+                  위에서 파일을 선택해주세요.
+                </p>
+              </aside>
             </div>
           )}
 
